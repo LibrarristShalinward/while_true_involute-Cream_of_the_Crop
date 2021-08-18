@@ -1,7 +1,7 @@
 AUTO_RESUME: True
 DATA_DIR: './data/imagenet'
 MODEL: 'Childnet_Testing'
-RESUME_PATH: './experiments/workspace/ckps/42.pth.tar'
+RESUME_PATH: './experiments/workspace/ckps/604.pth.tar'
 SAVE_PATH: '.\\experiments\\workspace\\test'
 SEED: 42
 LOG_INTERVAL: 50
@@ -25,7 +25,7 @@ DATASET:
 NET:
   GP: 'avg'
   DROPOUT_RATE: 0.0
-  SELECTION: 42
+  SELECTION: 604
 
   EMA:
     USE: True
