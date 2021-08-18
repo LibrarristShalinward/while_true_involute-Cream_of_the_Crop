@@ -28,7 +28,7 @@ def main():
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
-    os.system("cp {} {}".format(args.cfg, os.path.join(save_path, 'config.yaml')))
+    os.system("copy {} {}".format(args.cfg, os.path.join(save_path, 'config.yaml')))
 
     if args.mode == 'train':
         os.system("python -m "
