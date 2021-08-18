@@ -43,11 +43,11 @@ def main():
                   "tools/retrain.py "
                   "--cfg {}".format(cfg.NUM_GPU, args.cfg))
     elif args.mode == 'test':
-        os.system("python -m "
-                  "torch.distributed.launch "
-                  "--nproc_per_node={} "
+        os.system("python "
+                #   "-m torch.distributed.launch "
+                #   "--nproc_per_node={} "
                   "tools/test.py "
-                  "--cfg {}".format(cfg.NUM_GPU, args.cfg))
+                  "--cfg {}".format(args.cfg))
     else:
         raise ValueError('Mode not supported yet!')
 
