@@ -1,0 +1,11 @@
+yacs
+numpy==1.17.3
+opencv-python==4.1.2.30
+torchvision==0.2.1
+thop
+pillow
+torch==1.7.1
+timm==0.1.20
+tensorboardx==1.2
+tensorboard
+future
