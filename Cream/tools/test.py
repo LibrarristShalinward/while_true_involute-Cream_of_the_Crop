@@ -7,6 +7,7 @@ import os
 import warnings
 import datetime
 import torch
+from torch._C import device
 import torch.nn as nn
 import _init_paths
 
@@ -15,7 +16,8 @@ from torch.utils.tensorboard import SummaryWriter
 # import timm packages
 from timm.utils import ModelEma
 from timm.models import resume_checkpoint
-from timm.data import Dataset, create_loader
+from timm.data import Dataset#, create_loader
+from loader import create_loader
 
 # import apex as distributed package otherwise we use torch.nn.parallel.distributed as distributed package
 try:
@@ -32,6 +34,7 @@ from lib.models.structures.childnet import gen_childnet
 from lib.utils.util import parse_config_args, get_logger, get_model_flops_params
 from lib.config import DEFAULT_CROP_PCT, IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 
+device = torch.device('cpu')
 
 def main():
     args, cfg = parse_config_args('child net testing')
@@ -113,7 +116,7 @@ def main():
     assert cfg.AUTO_RESUME is True and os.path.exists(cfg.RESUME_PATH)
     _, __ = resume_checkpoint(model, cfg.RESUME_PATH)
 
-    # model = model.cuda()
+    model = model.to(device)
 
     model_ema = None
     if cfg.NET.EMA.USE:
@@ -139,7 +142,7 @@ def main():
         batch_size=cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
         is_training=False,
         num_workers=cfg.WORKERS,
-        distributed=True,
+        distributed=False,
         interpolation='bicubic',
         pin_memory=cfg.DATASET.PIN_MEM,
         crop_pct=DEFAULT_CROP_PCT,
@@ -148,7 +151,7 @@ def main():
     )
 
     # only test accuracy of model-EMA
-    validate_loss_fn = nn.CrossEntropyLoss().cuda()
+    validate_loss_fn = nn.CrossEntropyLoss().to(device)
     validate(0, model_ema.ema, loader_eval, validate_loss_fn, cfg,
              log_suffix='_EMA', logger=logger,
              writer=writer, local_rank=args.local_rank)
