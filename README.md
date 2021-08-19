@@ -13,9 +13,10 @@
 ### 论文摘要：
 One-shot weight sharing methods have recently drawn great attention in neural architecture search due to high efficiency and competitive performance. However, weight sharing across models has an inherent deficiency, i.e., insufficient training of subnetworks in hypernetworks. To alleviate this problem, we present a simple yet effective architecture distillation method. The central idea is that subnetworks can learn collaboratively and teach each other throughout the training process, aiming to boost the convergence of individual models. We introduce the concept of prioritized path, which refers to the architecture candidates exhibiting superior performance during training. Distilling knowledge from the prioritized paths is able to boost the training of subnetworks. Since the prioritized paths are changed on the fly depending on their performance and complexity, the final obtained paths are the cream of the crop. We directly select the most promising one from the prioritized paths as the final architecture, without using other complex search methods, such as reinforcement learning or evolution algorithms. The experiments on ImageNet verify such path distillation method can improve the convergence ratio and performance of the hypernetwork, as well as boosting the training of subnetworks. The discovered architectures achieve superior performance compared to the recent MobileNetV3 and EfficientNet families under aligned settings. Moreover, the experiments on object detection and more challenging search space show the generality and robustness of the proposed method. Code and models are available at https://github.com/microsoft/cream.git2 .
 
-### 论文内容概述：
+### 模型内容概述：
+<br>
 
-神经结构搜索优化 Distilling Prioritized Paths
+详见[模型分析](Model_Anal.md)
 
 ----
 
@@ -66,13 +67,13 @@ conda activate Cream
 pip install -r requirements_new #使用新的依赖
 python ./tools/main.py test .\experiments\configs\test\test.yaml #斜杠方向的变化是为了适应Cream\tools\main.py中命令拼接的bug
 ```
+----
 
 ## 关于新的检验集运行结果
 <br>
 
 我们于*21/8/19*使用**Cream-14**模型重新运行了检验集，并保留了本次运行的[日志](Cream\experiments\workspace\test\0819-Childnet_Testing\test.log)。结果与原文结果对比如下：
 
-<center>
 
 |指标|原文的|我们的|
 |:--:|:--:|:--:|
@@ -80,6 +81,5 @@ python ./tools/main.py test .\experiments\configs\test\test.yaml #斜杠方向�
 |一级准确率（Top-1 Acc.）|53.8%|53.9%|
 |五级准确率（Top-5 Acc.）|77.2%|77.4%|
 
-</center>
 
 运行结果于原文基本吻合
