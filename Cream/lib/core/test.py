@@ -7,7 +7,19 @@ import time
 import torch
 
 from collections import OrderedDict
-from lib.utils.util import AverageMeter, accuracy, reduce_tensor
+from lib.utils.util import AverageMeter, reduce_tensor#, accuracy
+from warnings import warn
+
+def accuracy(output, target, topk=(1,)):
+    """Computes the precision@k for the specified values of k"""
+    maxk = max(topk)
+    batch_size = target.size(0)
+
+    _, pred = output.topk(maxk, 1, True, True)
+    pred = pred.t()
+    correct = pred.eq(target.view(1, -1).expand_as(pred))
+    # warn(str(correct[:5].reshape((-1)).float().sum(0)))
+    return [correct[:k].reshape((-1)).float().sum(0) * 100. / batch_size for k in topk]
 
 # validate function
 def validate(epoch, model, loader, loss_fn, cfg, log_suffix='', logger=None, writer=None, local_rank=0):
@@ -25,6 +37,7 @@ def validate(epoch, model, loader, loss_fn, cfg, log_suffix='', logger=None, wri
             last_batch = batch_idx == last_idx
 
             output = model(input)
+            
             if isinstance(output, (tuple, list)):
                 output = output[0]
 
@@ -48,7 +61,7 @@ def validate(epoch, model, loader, loss_fn, cfg, log_suffix='', logger=None, wri
             else:
                 reduced_loss = loss.data
 
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
 
             losses_m.update(reduced_loss.item(), input.size(0))
             prec1_m.update(prec1.item(), output.size(0))
@@ -56,7 +69,8 @@ def validate(epoch, model, loader, loss_fn, cfg, log_suffix='', logger=None, wri
 
             batch_time_m.update(time.time() - end)
             end = time.time()
-            if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
+            # if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
+            if local_rank == 0:
                 log_name = 'Test' + log_suffix
                 logger.info(
                     '{0}: [{1:>4d}/{2}]  '
