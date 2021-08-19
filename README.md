@@ -36,6 +36,7 @@ One-shot weight sharing methods have recently drawn great attention in neural ar
 - 由于torch版本差异，对于[Cream/lib/core/test.py](Cream/lib/core/test.py)文件中现**第55行**的误差计算函数`accuracy()`，我们不在采用timm库中的版本，而是将库中的函数粘贴到此文件中并将`return`行的`torch.tensor.view()`函数用`torch.tensor.reshape()`替代，以规避用前者将二维张量转换为一维时的报错
 - 注释了[Cream/lib/core/test.py](Cream/lib/core/test.py)、[Cream/tools/loader.py](Cream/tools/loader.py)、[Cream/tools/test.py](Cream/tools/test.py)中涉及cuda的部分， 以避免cuda缺失造成的报错
 - 在[Cream/tools/test.py](Cream/tools/test.py)中引入了`torch.device("cpu")`，并注释了GPU相关的部分，以适应CPU运行环境
+- 改动了[Cream\tools\main.py](Cream\tools\main.py)、[Cream/tools/test.py](Cream/tools/test.py)中部分系统命令相关的语句，将ubuntu命令转换为了Windows下的命令行命令
 - 为了方便观察运行进度，修改了[Cream/lib/core/test.py](Cream/lib/core/test.py)文件中现**第73行**的输出log的条件，使得每一个batch完成后均会在命令行窗口输出日志
 
 ### 运行环境
@@ -53,3 +54,32 @@ One-shot weight sharing methods have recently drawn great attention in neural ar
 sh valprep.sh
 ```
 - 该文件会自动将检验集图片按标签分类为文件夹。此过程可能长达数小时，请耐心等待。
+
+### 使用检验集进行评估
+<br>
+若要使用检验集进行评估，请在主文件夹下使用命令行窗口运行如下命令（参考原README）
+
+```
+cd Cream
+conda create -n Cream python=3.8
+conda activate Cream
+pip install -r requirements_new #使用新的依赖
+python ./tools/main.py test .\experiments\configs\test\test.yaml #斜杠方向的变化是为了适应Cream\tools\main.py中命令拼接的bug
+```
+
+## 关于新的检验集运行结果
+<br>
+
+我们于*21/8/19*使用**Cream-14**模型重新运行了检验集，并保留了本次运行的[日志](Cream\experiments\workspace\test\0819-Childnet_Testing\test.log)。结果与原文结果对比如下：
+
+<center>
+
+|指标|原文的|我们的|
+|:--:|:--:|:--:|
+|运行时间|-|8分34秒|
+|一级准确率（Top-1 Acc.）|53.8%|53.9%|
+|五级准确率（Top-5 Acc.）|77.2%|77.4%|
+
+</center>
+
+运行结果于原文基本吻合
