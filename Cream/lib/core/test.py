@@ -10,6 +10,7 @@ from collections import OrderedDict
 from lib.utils.util import AverageMeter, reduce_tensor#, accuracy
 from warnings import warn
 
+#这是自己加的部分！！！！！！！！！！！
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
     maxk = max(topk)
