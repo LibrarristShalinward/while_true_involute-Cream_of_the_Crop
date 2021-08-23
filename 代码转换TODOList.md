@@ -5,6 +5,8 @@
 - [Cream\lib\models\builders\build_childnet.py](Cream\lib\models\builders\build_childnet.py)
 - [Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)
 - [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
+- [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
+- [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
 
 # 需要迁移的库函数/类
 
