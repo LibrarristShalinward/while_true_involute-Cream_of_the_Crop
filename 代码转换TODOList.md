@@ -1,3 +1,5 @@
+<font size = "3">
+
 # 需要转换的代码文件
 
 1. [Cream\lib\models\blocks\inverted_residual_block.py](Cream\lib\models\blocks\inverted_residual_block.py)
@@ -13,39 +15,59 @@
 11. [Cream\lib\core\train.py](Cream\lib\core\train.py)
 12. [Cream\lib\core\retrain.py](Cream\lib\core\retrain.py)
 13. [Cream\lib\core\test.py](Cream\lib\core\test.py)
+14. [Cream\tools\retrain.py](Cream\tools\retrain.py)
 
 # 需要迁移的库函数/类
 
-- `timm.models.efficientnet_blocks`
-  - `make_divisible`
-  - `round_channels`
-- `timm.models.layers`
-  - `get_condconv_initializer`
+- `timm`
+  - `models`
+    - `efficientnet_blocks`
+      - `make_divisible`
+      - `round_channels`
+    - `layers.get_condconv_initializer`
+  - `utils`
+    - `accuracy`
+    - `AverageMeter`
+    - `update_summary`
 - `ptflops.get_model_complexity_info`
-- `timm.utils`
-  - `AverageMeter`
-  - `accuracy`
 
 
 # 需要重写的库函数/类
 
-- `timm.models.layers`
-  - `create_conv2d`
-  - `SelectAdaptivePool2d`
-  - `activations.hard_sigmoid`
-  - `activations.Swish`
-- `timm.models.efficientnet_blocks`
-  - `SqueezeExcite`
-  - `drop_path`
-  - `InvertedResidual`
-  - `DepthwiseSeparableConv`
-  - `ConvBnAct`
+- `timm`
+  - `data`
+    - `Dataset`
+    - `create_loader`
+  - `loss.LabelSmoothingCrossEntropy`
+  - `models`
+    - `efficientnet_blocks`
+      - `ConvBnAct`
+      - `DepthwiseSeparableConv`
+      - `drop_path`
+      - `InvertedResidual`
+      - `SqueezeExcite`
+    - `layers`
+      - `activations`
+        - `hard_sigmoid`
+        - `Swish`
+      - `create_conv2d`
+      - `SelectAdaptivePool2d`
+    - `resume_checkpoint`
+  - `optim.create_optimizer`
+  - `scheduler.create_scheduler`
+  - `utils`
+    - `CheckpointSaver`
+    - `ModelEma`
+      - `reduce_tensor`
 - `thop.profile`
-- `timm.utils`
-  - `reduce_tensor`
 
-# 可以忽略的代码文件
+# 可以忽略差异直接进行迁移的代码文件
 
 1. [Cream\lib\utils\op_by_layer_dict.py](Cream\lib\utils\op_by_layer_dict.py)
 2. [Cream\lib\utils\search_structure_supernet.py](Cream\lib\utils\search_structure_supernet.py)
 3. [Cream\lib\config.py](Cream\lib\config.py)
+4. [Cream\tools\_init_paths.py](Cream\tools\_init_paths.py)
+5. [Cream\tools\generate_subImageNet.py](Cream\tools\generate_subImageNet.py)
+6. Cream\tools\main.py](Cream\tools\main.py)
+
+（4、5可能无需迁移）
