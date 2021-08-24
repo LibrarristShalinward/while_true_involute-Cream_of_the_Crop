@@ -35,9 +35,9 @@
 # 需要重写的库函数/类
 
 - `timm`
-  - `data`
-    - `Dataset`
-    - `create_loader`
+  - ~~`data`~~ - 完成！（89+196+46+71+275+63=740行）
+    - ~~`Dataset`~~
+    - ~~`create_loader`~~
   - `loss.LabelSmoothingCrossEntropy`
   - `models`
     - `efficientnet_blocks`

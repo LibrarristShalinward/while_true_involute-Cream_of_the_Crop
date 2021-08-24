@@ -1,44 +1,26 @@
+'''
+本文件为timm.data.random_erasing的全复制
+由于引用过于复杂，故不对未被调用的函数进行筛除
+'''
 import random
 import math
-import torch
+import paddle
 
 
-def _get_pixels(per_pixel, rand_color, patch_size, dtype=torch.float32, device='cuda'):
-    # NOTE I've seen CUDA illegal memory access errors being caused by the normal_()
-    # paths, flip the order so normal is run on CPU if this becomes a problem
-    # Issue has been fixed in master https://github.com/pytorch/pytorch/issues/19508
+def _get_pixels(per_pixel, rand_color, patch_size, dtype="float32"):
     if per_pixel:
-        return torch.empty(patch_size, dtype=dtype, device=device).normal_()
+        return paddle.empty(patch_size, dtype=dtype).normal_()
     elif rand_color:
-        return torch.empty((patch_size[0], 1, 1), dtype=dtype, device=device).normal_()
+        return paddle.empty((patch_size[0], 1, 1), dtype=dtype).normal_()
     else:
-        return torch.zeros((patch_size[0], 1, 1), dtype=dtype, device=device)
+        return paddle.zeros((patch_size[0], 1, 1), dtype=dtype)
 
 
 class RandomErasing:
-    """ Randomly selects a rectangle region in an image and erases its pixels.
-        'Random Erasing Data Augmentation' by Zhong et al.
-        See https://arxiv.org/pdf/1708.04896.pdf
-
-        This variant of RandomErasing is intended to be applied to either a batch
-        or single image tensor after it has been normalized by dataset mean and std.
-    Args:
-         probability: Probability that the Random Erasing operation will be performed.
-         min_area: Minimum percentage of erased area wrt input image area.
-         max_area: Maximum percentage of erased area wrt input image area.
-         min_aspect: Minimum aspect ratio of erased area.
-         mode: pixel color mode, one of 'const', 'rand', or 'pixel'
-            'const' - erase block is constant color of 0 for all channels
-            'rand'  - erase block is same per-channel random (normal) color
-            'pixel' - erase block is per-pixel random (normal) color
-        max_count: maximum number of erasing blocks per image, area per box is scaled by count.
-            per-image count is randomly chosen between 1 and this value.
-    """
-
     def __init__(
             self,
             probability=0.5, min_area=0.02, max_area=1/3, min_aspect=0.3, max_aspect=None,
-            mode='const', min_count=1, max_count=None, num_splits=0, device='cuda'):
+            mode='const', min_count=1, max_count=None, num_splits=0):
         self.probability = probability
         self.min_area = min_area
         self.max_area = max_area
@@ -56,7 +38,6 @@ class RandomErasing:
             self.per_pixel = True  # per pixel random normal
         else:
             assert not mode or mode == 'const'
-        self.device = device
 
     def _erase(self, img, chan, img_h, img_w, dtype):
         if random.random() > self.probability:
@@ -75,7 +56,7 @@ class RandomErasing:
                     left = random.randint(0, img_w - w)
                     img[:, top:top + h, left:left + w] = _get_pixels(
                         self.per_pixel, self.rand_color, (chan, h, w),
-                        dtype=dtype, device=self.device)
+                        dtype=dtype)
                     break
 
     def __call__(self, input):

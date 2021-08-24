@@ -1,16 +1,21 @@
 import re
 from PIL import Image
 from paddle.framework import dtype
-from paddle.vision.transforms import crop, resize, RandomHorizontalFlip, ColorJitter, Normalize
+from paddle.vision.transforms import crop, resize, RandomHorizontalFlip, ColorJitter, Normalize, Compose, Resize, CenterCrop
 import warnings
 import random
 import math
+
+from paddle.vision.transforms.transforms import Resize
 from .auto_augment import rand_augment_transform, augment_and_mix_transform, auto_augment_transform
+from .random_erasing import RandomErasing
 import numpy as np
 import paddle
 
+# 原timm.data.constants变量
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
+DEFAULT_CROP_PCT = 0.875
 
 # 原timm.data.transforms变量
 _RANDOM_INTERPOLATION = (Image.BILINEAR, Image.BICUBIC)
@@ -127,12 +132,49 @@ def transforms_imagenet_train(
         ]
         if re_prob > 0.:
             final_tfl.append(
-                RandomErasing(re_prob, mode=re_mode, max_count=re_count, num_splits=re_num_splits, device='cpu'))
+                RandomErasing(re_prob, mode=re_mode, max_count=re_count, num_splits=re_num_splits))
 
     if separate:
-        return transforms.Compose(primary_tfl), transforms.Compose(secondary_tfl), transforms.Compose(final_tfl)
+        return Compose(primary_tfl), Compose(secondary_tfl), Compose(final_tfl)
     else:
-        return transforms.Compose(primary_tfl + secondary_tfl + final_tfl)
+        return Compose(primary_tfl + secondary_tfl + final_tfl)
+
+# 原timm.data.transforms_factory.transforms_imagenet_eval
+def transforms_imagenet_eval(
+        img_size=224,
+        crop_pct=None,
+        interpolation='bilinear',
+        use_prefetcher=False,
+        mean=IMAGENET_DEFAULT_MEAN,
+        std=IMAGENET_DEFAULT_STD):
+    crop_pct = crop_pct or DEFAULT_CROP_PCT
+
+    if isinstance(img_size, tuple):
+        assert len(img_size) == 2
+        if img_size[-1] == img_size[-2]:
+            # fall-back to older behaviour so Resize scales to shortest edge if target is square
+            scale_size = int(math.floor(img_size[0] / crop_pct))
+        else:
+            scale_size = tuple([int(x / crop_pct) for x in img_size])
+    else:
+        scale_size = int(math.floor(img_size / crop_pct))
+
+    tfl = [
+        Resize(scale_size, _pil_interp(interpolation)),
+        CenterCrop(img_size),
+    ]
+    if use_prefetcher:
+        # prefetcher and collate will handle tensor conversion and norm
+        tfl += [ToNumpy()]
+    else:
+        tfl += [
+            ToTensor(),
+            Normalize(
+                     mean=mean,
+                     std=std)
+        ]
+
+    return Compose(tfl)
 
 # 原timm.data.transforms.RandomResizedCropAndInterpolation
 class RandomResizedCropAndInterpolation:
