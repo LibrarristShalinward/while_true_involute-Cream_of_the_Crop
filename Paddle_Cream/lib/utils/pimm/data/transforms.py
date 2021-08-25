@@ -160,7 +160,8 @@ def transforms_imagenet_eval(
         scale_size = int(math.floor(img_size / crop_pct))
 
     tfl = [
-        Resize(scale_size, _pil_interp(interpolation)),
+        # Resize(scale_size, _pil_interp(interpolation)),
+        Resize(scale_size, interpolation),
         CenterCrop(img_size),
     ]
     if use_prefetcher:

@@ -1,3 +1,4 @@
+from paddle.framework import dtype
 from .transforms import create_transform
 from ..paddle_extend import DistributedSampler, DataLoader
 import paddle
@@ -35,6 +36,7 @@ def create_loader(
         collate_fn=None,
         fp16=False,
         tf_preprocessing=False,
+        no_cuda = True
 ):
     re_num_splits = 0
     if re_split:
@@ -85,7 +87,8 @@ def create_loader(
             re_prob=re_prob if is_training else 0.,
             re_mode=re_mode,
             re_count=re_count,
-            re_num_splits=re_num_splits
+            re_num_splits=re_num_splits, 
+            no_cuda = no_cuda
         )
 
     return loader
@@ -101,10 +104,16 @@ class PrefetchLoader:
                  re_prob=0.,
                  re_mode='const',
                  re_count=1,
-                 re_num_splits=0):
+                 re_num_splits=0, 
+                 no_cuda = True):
         self.loader = loader
-        self.mean = paddle.to_tensor([x * 255 for x in mean]).cuda().reshape((1, 3, 1, 1))
-        self.std = paddle.to_tensor([x * 255 for x in std]).cuda().reshape((1, 3, 1, 1))
+        if no_cuda:
+            self.mean = paddle.to_tensor([x * 255 for x in mean]).reshape((1, 3, 1, 1))
+            self.std = paddle.to_tensor([x * 255 for x in std]).reshape((1, 3, 1, 1))
+        else:
+            self.mean = paddle.to_tensor([x * 255 for x in mean]).cuda().reshape((1, 3, 1, 1))
+            self.std = paddle.to_tensor([x * 255 for x in std]).cuda().reshape((1, 3, 1, 1))
+        
         self.fp16 = fp16
         if fp16:
             self.mean = self.mean.half()
@@ -114,17 +123,20 @@ class PrefetchLoader:
                 probability=re_prob, mode=re_mode, max_count=re_count, num_splits=re_num_splits)
         else:
             self.random_erasing = None
+        
+        self.no_cuda = no_cuda
 
     def __iter__(self):
         first = True
 
         for next_input, next_target in self.loader:
-            next_input = next_input.cuda(non_blocking=True)
-            next_target = next_target.cuda(non_blocking=True)
+            if not self.no_cuda:
+                next_input = next_input.cuda(non_blocking=True)
+                next_target = next_target.cuda(non_blocking=True)
             if self.fp16:
-                next_input = next_input.half().sub_(self.mean).div_(self.std)
+                next_input = (paddle.to_tensor(next_input, dtype = "float16") - self.mean) / (self.std)
             else:
-                next_input = next_input.float().sub_(self.mean).div_(self.std)
+                next_input = (paddle.to_tensor(next_input, dtype = "float32") - self.mean) / (self.std)
             if self.random_erasing is not None:
                 next_input = self.random_erasing(next_input)
 
@@ -181,9 +193,10 @@ def fast_collate(batch):
     elif isinstance(batch[0][0], np.ndarray):
         targets = paddle.to_tensor([b[1] for b in batch], dtype="int64")
         assert len(targets) == batch_size
-        tensor = paddle.zeros((batch_size, *batch[0][0].shape), dtype="uint8")
+        tensor = paddle.zeros((batch_size, *batch[0][0].shape), dtype="int64")
         for i in range(batch_size):
             tensor[i] += paddle.to_tensor(batch[i][0])
+        tensor = paddle.to_tensor(tensor, dtype = "uint8")
         return tensor, targets
     elif isinstance(batch[0][0], paddle.Tensor):
         targets = paddle.to_tensor([b[1] for b in batch], dtype="int64")
