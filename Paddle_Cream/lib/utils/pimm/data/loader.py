@@ -1,6 +1,6 @@
 from paddle.framework import dtype
 from .transforms import create_transform
-from ..paddle_extend import DistributedSampler, DataLoader
+from ..paddle_extension import DistributedSampler, DataLoader
 import paddle
 import numpy as np
 from .random_erasing import RandomErasing
