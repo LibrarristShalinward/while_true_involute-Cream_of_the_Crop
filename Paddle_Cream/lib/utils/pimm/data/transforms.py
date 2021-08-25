@@ -18,7 +18,7 @@ IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
 DEFAULT_CROP_PCT = 0.875
 
 # 原timm.data.transforms变量
-_RANDOM_INTERPOLATION = (Image.BILINEAR, Image.BICUBIC)
+_RANDOM_INTERPOLATION = ("bilinear", "bicubic")
 
 
 # 原timm.data.transforms_factory.create_transform
@@ -238,14 +238,14 @@ class RandomResizedCropAndInterpolation:
 # 原timm.data.transforms._pil_interp
 def _pil_interp(method):
     if method == 'bicubic':
-        return Image.BICUBIC
+        return 'bicubic'
     elif method == 'lanczos':
-        return Image.LANCZOS
+        return 'lanczos'
     elif method == 'hamming':
-        return Image.HAMMING
+        return 'hamming'
     else:
         # default bilinear, do we want to allow nearest?
-        return Image.BILINEAR
+        return "bilinear"
 
 # 原timm.data.transforms.ToNumpy
 class ToNumpy:
@@ -270,7 +270,7 @@ class ToTensor:
         return paddle.to_tensor(np_img, dtype = dtype)
 
 # 原torchvision.transforms.functional.resized_crop
-def resized_crop(img, i, j, h, w, size, interpolation=Image.BILINEAR):
+def resized_crop(img, i, j, h, w, size, interpolation="bilinear"):
     img = crop(img, i, j, h, w)
     img = resize(img, size, interpolation)
     return img
