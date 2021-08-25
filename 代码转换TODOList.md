@@ -38,7 +38,7 @@
   - [x] ~~`data`~~ - 完成！（89+196+46+71+275+63=740行）检验通过！
     - [x] ~~`Dataset`~~
     - [x] ~~`create_loader`~~
-  - [ ] `loss.LabelSmoothingCrossEntropy`
+  - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（29行）检验通过！
   - [ ] `models`
     - [ ] `efficientnet_blocks`
       - [ ] `ConvBnAct`
