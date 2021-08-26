@@ -43,14 +43,14 @@
     - [ ] `efficientnet_blocks`
       - [ ] ~~`ConvBnAct`~~
       - [ ] ~~`DepthwiseSeparableConv`~~
-      - [ ] `drop_path`
-      - [ ] `InvertedResidual`
+      - [ ] ~~`drop_path`~~
+      - [ ] ~~`InvertedResidual`~~
       - [ ] `SqueezeExcite`
     - [ ] `layers`
       - [ ] `activations`
         - [ ] `hard_sigmoid`
         - [ ] `Swish`
-      - [ ] `create_conv2d`
+      - [ ] ~~`create_conv2d`~~
       - [ ] `SelectAdaptivePool2d`
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
