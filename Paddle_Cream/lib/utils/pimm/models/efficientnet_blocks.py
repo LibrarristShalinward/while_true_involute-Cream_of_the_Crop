@@ -180,6 +180,27 @@ class InvertedResidual(nn.Layer):
 
         return x
 
+# 原timm.models.layers.drop.SqueezeExcite
+
+class SqueezeExcite(nn.Module):
+    def __init__(self, in_chs, se_ratio=0.25, reduced_base_chs=None,
+                 act_layer=nn.ReLU, gate_fn=nn.funtional.sigmoid, divisor=1, **_):
+        super(SqueezeExcite, self).__init__()
+        self.gate_fn = gate_fn
+        reduced_chs = make_divisible((reduced_base_chs or in_chs) * se_ratio, divisor)
+        self.avg_pool = nn.AdaptiveAvgPool2D(1)
+        self.conv_reduce = nn.Conv2D(in_chs, reduced_chs, 1, bias=True)
+        self.act1 = act_layer(inplace=True)
+        self.conv_expand = nn.Conv2D(reduced_chs, in_chs, 1, bias=True)
+
+    def forward(self, x):
+        x_se = self.avg_pool(x)
+        x_se = self.conv_reduce(x_se)
+        x_se = self.act1(x_se)
+        x_se = self.conv_expand(x_se)
+        x = x * self.gate_fn(x_se)
+        return x
+
 # 原timm.models.effcientnet_blocks.resolve_se_args
 def resolve_se_args(kwargs, in_chs, act_layer=None):
     se_kwargs = kwargs.copy() if kwargs is not None else {}

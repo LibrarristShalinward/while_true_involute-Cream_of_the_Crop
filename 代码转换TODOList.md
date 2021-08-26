@@ -35,17 +35,17 @@
 # 需要重写的库函数/类
 
 - [ ] `timm`
-  - [x] ~~`data`~~ - 完成！（89+196+46+71+275+63=740行）检验通过！
+  - [x] ~~`data`~~ - 完成！（2+89+196+46+71+275+63=742行）检验通过！
     - [x] ~~`Dataset`~~
     - [x] ~~`create_loader`~~
-  - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（29行）检验通过！
+  - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（1+28=29行）检验通过！
   - [ ] `models`
-    - [ ] `efficientnet_blocks`
+    - [ ] ~~`efficientnet_blocks`~~ - 完成！（1+98+40+60+246+20+55=520行）
       - [ ] ~~`ConvBnAct`~~
       - [ ] ~~`DepthwiseSeparableConv`~~
       - [ ] ~~`drop_path`~~
       - [ ] ~~`InvertedResidual`~~
-      - [ ] `SqueezeExcite`
+      - [ ] ~~`SqueezeExcite`~~
     - [ ] `layers`
       - [ ] `activations`
         - [ ] `hard_sigmoid`

@@ -1,5 +1,5 @@
 '''
-本文件为timm.models.layers.helpers的全复制
+本文件为timm.models.layers.helpers的全复制修改
 由于引用过于复杂，故不对未被调用的函数进行筛除
 '''
 
