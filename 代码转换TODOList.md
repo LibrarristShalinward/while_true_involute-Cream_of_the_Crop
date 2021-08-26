@@ -41,8 +41,8 @@
   - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（29行）检验通过！
   - [ ] `models`
     - [ ] `efficientnet_blocks`
-      - [ ] `ConvBnAct`
-      - [ ] `DepthwiseSeparableConv`
+      - [ ] ~~`ConvBnAct`~~
+      - [ ] ~~`DepthwiseSeparableConv`~~
       - [ ] `drop_path`
       - [ ] `InvertedResidual`
       - [ ] `SqueezeExcite`
