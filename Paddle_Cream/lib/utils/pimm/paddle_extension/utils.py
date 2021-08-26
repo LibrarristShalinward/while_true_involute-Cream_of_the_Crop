@@ -3,7 +3,6 @@
 '''
 from paddle.io import DistributedBatchSampler, DataLoader
 from paddle.nn import Layer
-from paddle import Tensor
 
 
 # 对标torch.utils.data.distributed.DistributedSampler
@@ -70,5 +69,5 @@ class Identity(Layer):
     def __init__(self, *args, **kwargs):
         super(Identity, self).__init__()
 
-    def forward(self, input: Tensor) -> Tensor:
+    def forward(self, input):
         return input
