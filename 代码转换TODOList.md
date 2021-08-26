@@ -40,17 +40,17 @@
     - [x] ~~`create_loader`~~
   - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（1+28=29行）检验通过！
   - [ ] `models`
-    - [ ] ~~`efficientnet_blocks`~~ - 完成！（1+98+40+60+246+20+55=520行）
+    - [x] ~~`efficientnet_blocks`~~ - 完成！（1+98+40+60+246+20+55=520行）检验通过！
       - [x] ~~`ConvBnAct`~~
       - [x] ~~`DepthwiseSeparableConv`~~
-      - [ ] ~~`drop_path`~~
-      - [ ] ~~`InvertedResidual`~~
-      - [ ] ~~`SqueezeExcite`~~
+      - [x] ~~`drop_path`~~
+      - [x] ~~`InvertedResidual`~~
+      - [x] ~~`SqueezeExcite`~~
     - [ ] `layers`
-      - [ ] `activations`
-        - [ ] `hard_sigmoid`
-        - [ ] `Swish`
-      - [ ] ~~`create_conv2d`~~
+      - [x] ~~`activations`~~完成！（19行）检验通过！
+        - [x] ~~`hard_sigmoid`~~
+        - [x] ~~`Swish`~~
+      - [x] ~~`create_conv2d`~~
       - [ ] `SelectAdaptivePool2d`
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
