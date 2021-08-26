@@ -8,9 +8,7 @@ from .cond_conv2d import CondConv2d
 def create_conv2d(in_chs, out_chs, kernel_size, **kwargs):
     assert 'groups' not in kwargs
     if isinstance(kernel_size, list):
-        assert 'num_experts' not in kwargs  # MixNet + CondConv combo not supported currently
-        # We're going to use only lists for defining the MixedConv2d kernel groups,
-        # ints, tuples, other iterables will continue to pass to normal conv and specify h, w.
+        assert 'num_experts' not in kwargs
         m = MixedConv2d(in_chs, out_chs, kernel_size, **kwargs)
     else:
         depthwise = kwargs.pop('depthwise', False)

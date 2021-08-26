@@ -1,7 +1,6 @@
-from Paddle_Cream.lib.utils.pimm.models.create_conv2d import create_conv2d
 import paddle
 from paddle import nn
-from .cond_conv2d import create_conv2d
+from .create_conv2d import create_conv2d
 from ..paddle_extension import Identity
 
 # 原timm.models.effcientnet_blocks中的参数
@@ -25,7 +24,7 @@ class ConvBnAct(nn.Layer):
             kernel_size, 
             stride=stride, dilation=dilation, padding=pad_type)
         self.bn1 = norm_layer(out_chs, **norm_kwargs)
-        self.act1 = act_layer(inplace=True)
+        self.act1 = act_layer()
     
     def feature_info(self, location):
         if location == 'expansion' or location == 'depthwise':
@@ -56,7 +55,7 @@ class DepthwiseSeparableConv(nn.Layer):
         self.conv_dw = create_conv2d(
             in_chs, in_chs, dw_kernel_size, stride=stride, dilation=dilation, padding=pad_type, depthwise=True)
         self.bn1 = norm_layer(in_chs, **norm_kwargs)
-        self.act1 = act_layer(inplace=True)
+        self.act1 = act_layer()
         
         if has_se:
             se_kwargs = resolve_se_args(se_kwargs, in_chs, act_layer)
@@ -66,7 +65,7 @@ class DepthwiseSeparableConv(nn.Layer):
         
         self.conv_pw = create_conv2d(in_chs, out_chs, pw_kernel_size, padding=pad_type)
         self.bn2 = norm_layer(out_chs, **norm_kwargs)
-        self.act2 = act_layer(inplace=True) if self.has_pw_act else Identity()
+        self.act2 = act_layer() if self.has_pw_act else Identity()
     
     def feature_info(self, location):
         if location == 'expansion':
@@ -126,13 +125,13 @@ class InvertedResidual(nn.Layer):
 
         self.conv_pw = create_conv2d(in_chs, mid_chs, exp_kernel_size, padding=pad_type, **conv_kwargs)
         self.bn1 = norm_layer(mid_chs, **norm_kwargs)
-        self.act1 = act_layer(inplace=True)
+        self.act1 = act_layer()
         
         self.conv_dw = create_conv2d(
             mid_chs, mid_chs, dw_kernel_size, stride=stride, dilation=dilation,
             padding=pad_type, depthwise=True, **conv_kwargs)
         self.bn2 = norm_layer(mid_chs, **norm_kwargs)
-        self.act2 = act_layer(inplace=True)
+        self.act2 = act_layer()
 
         if has_se:
             se_kwargs = resolve_se_args(se_kwargs, in_chs, act_layer)
@@ -182,16 +181,16 @@ class InvertedResidual(nn.Layer):
 
 # 原timm.models.layers.drop.SqueezeExcite
 
-class SqueezeExcite(nn.Module):
+class SqueezeExcite(nn.Layer):
     def __init__(self, in_chs, se_ratio=0.25, reduced_base_chs=None,
-                 act_layer=nn.ReLU, gate_fn=nn.funtional.sigmoid, divisor=1, **_):
+                 act_layer=nn.ReLU, gate_fn=nn.functional.sigmoid, divisor=1, **_):
         super(SqueezeExcite, self).__init__()
         self.gate_fn = gate_fn
         reduced_chs = make_divisible((reduced_base_chs or in_chs) * se_ratio, divisor)
         self.avg_pool = nn.AdaptiveAvgPool2D(1)
-        self.conv_reduce = nn.Conv2D(in_chs, reduced_chs, 1, bias=True)
-        self.act1 = act_layer(inplace=True)
-        self.conv_expand = nn.Conv2D(reduced_chs, in_chs, 1, bias=True)
+        self.conv_reduce = nn.Conv2D(in_chs, reduced_chs, 1)
+        self.act1 = act_layer()
+        self.conv_expand = nn.Conv2D(reduced_chs, in_chs, 1)
 
     def forward(self, x):
         x_se = self.avg_pool(x)
@@ -219,14 +218,14 @@ def resolve_se_args(kwargs, in_chs, act_layer=None):
 # 原timm.models.effcientnet_blocks.SqueezeExcite
 class SqueezeExcite(nn.Layer):
     def __init__(self, in_chs, se_ratio=0.25, reduced_base_chs=None,
-                 act_layer=nn.ReLU, gate_fn=nn.funtional.sigmoid, divisor=1, **_):
+                 act_layer=nn.ReLU, gate_fn=nn.functional.sigmoid, divisor=1, **_):
         super(SqueezeExcite, self).__init__()
         self.gate_fn = gate_fn
         reduced_chs = make_divisible((reduced_base_chs or in_chs) * se_ratio, divisor)
         self.avg_pool = nn.AdaptiveAvgPool2D(1)
-        self.conv_reduce = nn.Conv2D(in_chs, reduced_chs, 1, bias=True)
-        self.act1 = act_layer(inplace=True)
-        self.conv_expand = nn.Conv2D(reduced_chs, in_chs, 1, bias=True)
+        self.conv_reduce = nn.Conv2D(in_chs, reduced_chs, 1)
+        self.act1 = act_layer()
+        self.conv_expand = nn.Conv2D(reduced_chs, in_chs, 1)
     
     def forward(self, x):
         x_se = self.avg_pool(x)

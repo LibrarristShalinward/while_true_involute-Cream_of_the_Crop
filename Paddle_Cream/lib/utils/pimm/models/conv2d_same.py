@@ -22,9 +22,9 @@ class Conv2dSame(Conv2D):
     """
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding=0, dilation=1, groups=1, bias=True):
+                 padding=0, dilation=1, groups=1, bias_attr = None):
         super(Conv2dSame, self).__init__(
-            in_channels, out_channels, kernel_size, stride, 0, dilation, groups, bias)
+            in_channels, out_channels, kernel_size, stride, 0, dilation, groups, bias_attr = bias_attr)
 
     def forward(self, x):
         return conv2d_same(x, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
@@ -32,7 +32,7 @@ class Conv2dSame(Conv2D):
 
 def create_conv2d_pad(in_chs, out_chs, kernel_size, **kwargs):
     padding = kwargs.pop('padding', '')
-    kwargs.setdefault('bias', False)
+    kwargs.setdefault('bias_attr', False)
     padding, is_dynamic = get_padding_value(padding, kernel_size, **kwargs)
     if is_dynamic:
         return Conv2dSame(in_chs, out_chs, kernel_size, **kwargs)
