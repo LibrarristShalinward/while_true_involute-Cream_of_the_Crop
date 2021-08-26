@@ -1,6 +1,7 @@
 from paddle import nn
 import paddle
 from .conv2d_same import create_conv2d_pad
+from .cond_conv2d import CondConv2d
 
 
 # 原timm.models.layers.create_conv2d.create_conv2d
