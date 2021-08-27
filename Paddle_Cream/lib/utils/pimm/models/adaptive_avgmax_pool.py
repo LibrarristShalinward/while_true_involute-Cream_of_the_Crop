@@ -42,33 +42,33 @@ def select_adaptive_pool2d(x, pool_type='avg', output_size=1):
     return x
 
 
-class AdaptiveAvgMaxPool2d(nn.Layer):
+class AdaptiveAvgMaxPool2D(nn.Layer):
     def __init__(self, output_size=1):
-        super(AdaptiveAvgMaxPool2d, self).__init__()
+        super(AdaptiveAvgMaxPool2D, self).__init__()
         self.output_size = output_size
 
     def forward(self, x):
         return adaptive_avgmax_pool2d(x, self.output_size)
 
 
-class AdaptiveCatAvgMaxPool2d(nn.Layer):
+class AdaptiveCatAvgMaxPool2D(nn.Layer):
     def __init__(self, output_size=1):
-        super(AdaptiveCatAvgMaxPool2d, self).__init__()
+        super(AdaptiveCatAvgMaxPool2D, self).__init__()
         self.output_size = output_size
 
     def forward(self, x):
         return adaptive_catavgmax_pool2d(x, self.output_size)
 
 
-class SelectAdaptivePool2d(nn.Layer):
+class SelectAdaptivePool2D(nn.Layer):
     def __init__(self, output_size=1, pool_type='avg'):
-        super(SelectAdaptivePool2d, self).__init__()
+        super(SelectAdaptivePool2D, self).__init__()
         self.output_size = output_size
         self.pool_type = pool_type
         if pool_type == 'avgmax':
-            self.pool = AdaptiveAvgMaxPool2d(output_size)
+            self.pool = AdaptiveAvgMaxPool2D(output_size)
         elif pool_type == 'catavgmax':
-            self.pool = AdaptiveCatAvgMaxPool2d(output_size)
+            self.pool = AdaptiveCatAvgMaxPool2D(output_size)
         elif pool_type == 'max':
             self.pool = nn.AdaptiveMaxPool2D(output_size)
         else:

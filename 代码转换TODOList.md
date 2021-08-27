@@ -46,12 +46,12 @@
       - [x] ~~`drop_path`~~
       - [x] ~~`InvertedResidual`~~
       - [x] ~~`SqueezeExcite`~~
-    - [ ] `layers`
+    - [x] ~~`layers`~~
       - [x] ~~`activations`~~ - 完成！（19行）检验通过！
         - [x] ~~`hard_sigmoid`~~
         - [x] ~~`Swish`~~
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
-      - [ ] ~~`SelectAdaptivePool2d`~~ -完成！（88行）
+      - [x] ~~`SelectAdaptivePool2d`~~ -完成！（88行）检验通过！
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
   - [ ] `scheduler.create_scheduler`
