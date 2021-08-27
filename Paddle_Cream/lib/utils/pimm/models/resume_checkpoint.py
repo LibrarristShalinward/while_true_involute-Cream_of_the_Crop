@@ -1,21 +1,20 @@
 from os.path import isfile
 import logging
-import pickle
 from collections import OrderedDict
+import paddle
 
 # 原timm.models.helpers.resume_checkpoint
 def resume_checkpoint(model, checkpoint_path):
     other_state = {}
     resume_epoch = None
     if isfile(checkpoint_path):
-        with open(checkpoint_path, "br") as f:
-            checkpoint = pickle.load(f)
+        checkpoint = paddle.load(checkpoint_path)
         if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
             new_state_dict = OrderedDict()
             for k, v in checkpoint['state_dict'].items():
                 name = k[7:] if k.startswith('module') else k
                 new_state_dict[name] = v
-            model.load_state_dict(new_state_dict)
+            model.set_state_dict(new_state_dict)
             if 'optimizer' in checkpoint:
                 other_state['optimizer'] = checkpoint['optimizer']
             if 'amp' in checkpoint:
@@ -26,7 +25,7 @@ def resume_checkpoint(model, checkpoint_path):
                     resume_epoch += 1
             logging.info("Loaded checkpoint '{}' (epoch {})".format(checkpoint_path, checkpoint['epoch']))
         else:
-            model.load_state_dict(checkpoint)
+            model.set_state_dict(checkpoint)
             logging.info("Loaded checkpoint '{}'".format(checkpoint_path))
         return other_state, resume_epoch
     else:

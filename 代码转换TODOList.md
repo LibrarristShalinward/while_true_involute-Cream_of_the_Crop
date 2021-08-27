@@ -51,11 +51,11 @@
         - [x] ~~`hard_sigmoid`~~
         - [x] ~~`Swish`~~
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
-      - [x] ~~`SelectAdaptivePool2d`~~ -完成！（88行）检验通过！
-    - [ ] `resume_checkpoint`
+      - [x] ~~`SelectAdaptivePool2d`~~ - 完成！（88行）检验通过！
+    - [ ] ~~`resume_checkpoint`~~ - 完成！（33行）
   - [ ] `optim.create_optimizer`
   - [ ] `scheduler.create_scheduler`
-  - [ ] ~~`utils`~~完成！（186行）
+  - [ ] ~~`utils`~~ - 完成！（186行）
     - [ ] ~~`CheckpointSaver`~~
     - [ ] ~~`ModelEma`~~
     - [ ] ~~`reduce_tensor`~~
