@@ -4,7 +4,6 @@ import pickle
 from collections import OrderedDict
 
 # 原timm.models.helpers.resume_checkpoint
-# 将存储的文件类型改为了.bin，读取依赖为pickle
 def resume_checkpoint(model, checkpoint_path):
     other_state = {}
     resume_epoch = None

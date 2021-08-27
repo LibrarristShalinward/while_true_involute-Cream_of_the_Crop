@@ -167,6 +167,13 @@ class ModelEma:
                     model_v = model_v.to(device=self.device)
                 ema_v.copy_(ema_v * self.decay + (1. - self.decay) * model_v)
 
+# 原timm.utils.reduce_tensor
+def reduce_tensor(tensor, n):
+    rt = tensor.clone()
+    paddle.distributed.all_reduce(rt)
+    rt /= n
+    return rt
+
 # 原timm.utils.get_state_dict
 def get_state_dict(model):
     return unwrap_model(model).state_dict()

@@ -55,10 +55,10 @@
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
   - [ ] `scheduler.create_scheduler`
-  - [ ] `utils`
-    - [ ] `CheckpointSaver`
-    - [ ] `ModelEma`
-    - [ ] `reduce_tensor`
+  - [ ] ~~`utils`~~完成！（186行）
+    - [ ] ~~`CheckpointSaver`~~
+    - [ ] ~~`ModelEma`~~
+    - [ ] ~~`reduce_tensor`~~
 - [ ] `thop.profile`
 
 # 可以忽略差异直接进行迁移的代码文件
