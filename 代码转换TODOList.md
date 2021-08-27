@@ -51,7 +51,7 @@
         - [x] ~~`hard_sigmoid`~~
         - [x] ~~`Swish`~~
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
-      - [ ] `SelectAdaptivePool2d`
+      - [ ] ~~`SelectAdaptivePool2d`~~ -完成！（88行）
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
   - [ ] `scheduler.create_scheduler`
