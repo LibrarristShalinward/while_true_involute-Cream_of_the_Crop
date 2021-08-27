@@ -58,7 +58,7 @@
   - [ ] `utils`
     - [ ] `CheckpointSaver`
     - [ ] `ModelEma`
-      - [ ] `reduce_tensor`
+    - [ ] `reduce_tensor`
 - [ ] `thop.profile`
 
 # 可以忽略差异直接进行迁移的代码文件
