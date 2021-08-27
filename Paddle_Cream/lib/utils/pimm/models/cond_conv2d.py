@@ -6,9 +6,10 @@
 import math
 from functools import partial
 import numpy as np
+from paddle.framework import dtype
 
 from paddle.nn import Layer, initializer, functional
-from paddle import create_parameter, matmul
+from paddle import create_parameter, matmul#, ones
 
 from .helpers import tup_pair
 from .padding import get_padding_value
@@ -23,7 +24,7 @@ def get_condconv_initializer(initializer, num_experts, expert_shape):
             raise (ValueError(
                 'CondConv variables must have shape [num_experts, num_params]'))
         for i in range(num_experts):
-            initializer(weight[i].view(expert_shape))
+            initializer(weight[i].reshape(expert_shape))
     return condconv_initializer
 
 
@@ -31,7 +32,7 @@ class CondConv2D(Layer):
     __constants__ = ['bias', 'in_channels', 'out_channels', 'dynamic_padding']
 
     def __init__(self, in_channels, out_channels, kernel_size=3,
-                 stride=1, padding='', dilation=1, groups=1, bias=False, num_experts=4):
+                 stride=1, padding='', dilation=1, groups=1, bias_attr=False, num_experts=4):
         super(CondConv2D, self).__init__()
 
         self.in_channels = in_channels
@@ -54,38 +55,41 @@ class CondConv2D(Layer):
             shape = (self.num_experts, weight_num_param), 
             dtype = "float32")
 
-        if bias:
+        assert bias_attr in [None, False]
+        if bias_attr == False:
             self.bias_shape = (self.out_channels,)
             self.bias = create_parameter(
                 shape = (self.num_experts, self.out_channels), 
                 dtype = "float32"
             )
         else:
-            self.register_parameter('bias', None)
+            self.add_parameter('bias', None)
 
         self.reset_parameters()
 
     def reset_parameters(self):
         init_weight = get_condconv_initializer(
-            partial(initializer.KaimingUniform, a=math.sqrt(5)), self.num_experts, self.weight_shape)
+            # partial(initializer.KaimingUniform, a=math.sqrt(5)), self.num_experts, self.weight_shape)
+            initializer.KaimingUniform(), self.num_experts, self.weight_shape)
         init_weight(self.weight)
         if self.bias is not None:
             fan_in = np.prod(self.weight_shape[1:])
             bound = 1 / math.sqrt(fan_in)
             init_bias = get_condconv_initializer(
-                partial(initializer.Uniform, a=-bound, b=bound), self.num_experts, self.bias_shape)
+                initializer.Uniform(low = -bound, high = bound), self.num_experts, self.bias_shape)
             init_bias(self.bias)
 
     def forward(self, x, routing_weights):
         B, C, H, W = x.shape
+        # routing_weights = ones((self.weight.shape[0], 1), dtype = "float32") if routing_weights == None else routing_weights
         weight = matmul(routing_weights, self.weight)
         new_weight_shape = (B * self.out_channels, self.in_channels // self.groups) + self.kernel_size
-        weight = weight.view(new_weight_shape)
+        weight = weight.reshape(new_weight_shape)
         bias = None
         if self.bias is not None:
             bias = matmul(routing_weights, self.bias)
-            bias = bias.view(B * self.out_channels)
-        x = x.view(1, B * C, H, W)
+            bias = bias.reshape(B * self.out_channels)
+        x = x.reshape(1, B * C, H, W)
         if self.dynamic_padding:
             out = conv2d_same(
                 x, weight, bias, stride=self.stride, padding=self.padding,
@@ -94,5 +98,5 @@ class CondConv2D(Layer):
             out = functional.conv2d(
                 x, weight, bias, stride=self.stride, padding=self.padding,
                 dilation=self.dilation, groups=self.groups * B)
-        out = out.permute([1, 0, 2, 3]).view(B, self.out_channels, out.shape[-2], out.shape[-1])
+        out = out.permute([1, 0, 2, 3]).reshape(B, self.out_channels, out.shape[-2], out.shape[-1])
         return out

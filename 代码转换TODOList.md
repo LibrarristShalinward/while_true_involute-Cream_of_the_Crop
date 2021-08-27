@@ -50,7 +50,7 @@
       - [x] ~~`activations`~~ - 完成！（19行）检验通过！
         - [x] ~~`hard_sigmoid`~~
         - [x] ~~`Swish`~~
-      - [x] ~~`create_conv2d`~~
+      - [x] ~~`create_conv2d`~~ - 完成！检验通过！
       - [ ] `SelectAdaptivePool2d`
     - [ ] `resume_checkpoint`
   - [ ] `optim.create_optimizer`
