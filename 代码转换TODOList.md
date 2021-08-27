@@ -39,8 +39,8 @@
     - [x] ~~`Dataset`~~
     - [x] ~~`create_loader`~~
   - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（1+28=29行）检验通过！
-  - [ ] `models`
-    - [x] ~~`efficientnet_blocks`~~ - 完成！（1+98+40+60+246+20+55=520行）检验通过！
+  - [x] ~~`models`~~
+    - [x] ~~`efficientnet_blocks`~~ - 完成！（5+98+40+60+246+20+55=524行）检验通过！
       - [x] ~~`ConvBnAct`~~
       - [x] ~~`DepthwiseSeparableConv`~~
       - [x] ~~`drop_path`~~
@@ -52,13 +52,13 @@
         - [x] ~~`Swish`~~
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
       - [x] ~~`SelectAdaptivePool2d`~~ - 完成！（88行）检验通过！
-    - [ ] ~~`resume_checkpoint`~~ - 完成！（33行）
+    - [x] ~~`resume_checkpoint`~~ - 完成！（33行）检验通过！
   - [ ] `optim.create_optimizer`
   - [ ] `scheduler.create_scheduler`
-  - [ ] ~~`utils`~~ - 完成！（186行）
-    - [ ] ~~`CheckpointSaver`~~
-    - [ ] ~~`ModelEma`~~
-    - [ ] ~~`reduce_tensor`~~
+  - [x] ~~`utils`~~ - 完成！（190行）检验通过！
+    - [x] ~~`CheckpointSaver`~~
+    - [x] ~~`ModelEma`~~
+    - [x] ~~`reduce_tensor`~~
 - [ ] `thop.profile`
 
 # 可以忽略差异直接进行迁移的代码文件

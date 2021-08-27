@@ -159,13 +159,17 @@ class ModelEma:
         needs_module = hasattr(model, 'module') and not self.ema_has_module
         with paddle.no_grad():
             msd = model.state_dict()
-            for k, ema_v in self.ema.state_dict().items():
+            state_dict = self.ema.state_dict()
+            for k, ema_v in state_dict.items():
                 if needs_module:
                     k = 'module.' + k
                 model_v = msd[k].detach()
                 if self.device:
                     model_v = model_v.to(device=self.device)
-                ema_v.copy_(ema_v * self.decay + (1. - self.decay) * model_v)
+                # ema_v.clone(ema_v * self.decay + (1. - self.decay) * model_v)
+                state_dict[k] = ema_v * self.decay + (1. - self.decay) * model_v
+            self.ema.set_state_dict(state_dict)
+
 
 # 原timm.utils.reduce_tensor
 def reduce_tensor(tensor, n):
