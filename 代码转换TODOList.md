@@ -47,7 +47,7 @@
       - [x] ~~`InvertedResidual`~~
       - [x] ~~`SqueezeExcite`~~
     - [ ] `layers`
-      - [x] ~~`activations`~~完成！（19行）检验通过！
+      - [x] ~~`activations`~~ - 完成！（19行）检验通过！
         - [x] ~~`hard_sigmoid`~~
         - [x] ~~`Swish`~~
       - [x] ~~`create_conv2d`~~

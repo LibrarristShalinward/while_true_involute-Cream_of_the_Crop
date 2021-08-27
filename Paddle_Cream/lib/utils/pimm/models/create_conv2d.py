@@ -1,7 +1,7 @@
 from paddle import nn
 import paddle
 from .conv2d_same import create_conv2d_pad
-from .cond_conv2d import CondConv2d
+from .cond_conv2d import CondConv2D
 
 
 # 原timm.models.layers.create_conv2d.create_conv2d
@@ -9,7 +9,7 @@ def create_conv2d(in_chs, out_chs, kernel_size, **kwargs):
     assert 'groups' not in kwargs
     if isinstance(kernel_size, list):
         assert 'num_experts' not in kwargs
-        m = MixedConv2d(in_chs, out_chs, kernel_size, **kwargs)
+        m = MixedConv2D(in_chs, out_chs, kernel_size, **kwargs)
     else:
         depthwise = kwargs.pop('depthwise', False)
         groups = out_chs if depthwise else 1
@@ -20,12 +20,12 @@ def create_conv2d(in_chs, out_chs, kernel_size, **kwargs):
     return m
 
 # 原timm.models.layers.mixed_conv2d.MixedConv2d
-class MixedConv2d(nn.LayerDict):
+class MixedConv2D(nn.LayerDict):
     def __init__(
         self, in_channels, out_channels, 
         kernel_size = 3, stride = 1, padding = "", dilation = 1, 
         depthwise = False, **kwargs):
-        super(MixedConv2d, self).__init__()
+        super(MixedConv2D, self).__init__()
 
         kernel_size = kernel_size if isinstance(kernel_size, list) else [kernel_size]
         num_groups = len(kernel_size)

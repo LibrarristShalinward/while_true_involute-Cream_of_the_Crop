@@ -17,13 +17,13 @@ def conv2d_same(
     return F.conv2d(x, weight, bias, stride, (0, 0), dilation, groups)
 
 
-class Conv2dSame(Conv2D):
+class Conv2DSame(Conv2D):
     """ Tensorflow like 'SAME' convolution wrapper for 2D convolutions
     """
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
                  padding=0, dilation=1, groups=1, bias_attr = None):
-        super(Conv2dSame, self).__init__(
+        super(Conv2DSame, self).__init__(
             in_channels, out_channels, kernel_size, stride, 0, dilation, groups, bias_attr = bias_attr)
 
     def forward(self, x):
@@ -35,6 +35,6 @@ def create_conv2d_pad(in_chs, out_chs, kernel_size, **kwargs):
     kwargs.setdefault('bias_attr', False)
     padding, is_dynamic = get_padding_value(padding, kernel_size, **kwargs)
     if is_dynamic:
-        return Conv2dSame(in_chs, out_chs, kernel_size, **kwargs)
+        return Conv2DSame(in_chs, out_chs, kernel_size, **kwargs)
     else:
         return Conv2D(in_chs, out_chs, kernel_size, padding=padding, **kwargs)

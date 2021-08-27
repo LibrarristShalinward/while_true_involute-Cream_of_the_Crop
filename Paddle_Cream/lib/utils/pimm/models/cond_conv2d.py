@@ -27,12 +27,12 @@ def get_condconv_initializer(initializer, num_experts, expert_shape):
     return condconv_initializer
 
 
-class CondConv2d(Layer):
+class CondConv2D(Layer):
     __constants__ = ['bias', 'in_channels', 'out_channels', 'dynamic_padding']
 
     def __init__(self, in_channels, out_channels, kernel_size=3,
                  stride=1, padding='', dilation=1, groups=1, bias=False, num_experts=4):
-        super(CondConv2d, self).__init__()
+        super(CondConv2D, self).__init__()
 
         self.in_channels = in_channels
         self.out_channels = out_channels
