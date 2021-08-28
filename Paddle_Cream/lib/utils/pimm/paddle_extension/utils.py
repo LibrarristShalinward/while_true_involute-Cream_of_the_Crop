@@ -2,6 +2,7 @@
 本文件用于放置Cream中用到而paddle中没有对应实现的torch-API的补充实现
 '''
 from paddle.io import DistributedBatchSampler, DataLoader
+from paddle.nn import Layer
 
 
 # 对标torch.utils.data.distributed.DistributedSampler
@@ -61,3 +62,12 @@ class DataLoader(DataLoader):
             worker_init_fn=worker_init_fn)
         if sampler is not None:
             self.batch_sampler.sampler = sampler
+
+# 对标torch.nn.Identity
+# 参考来源：https://pytorch.org/docs/stable/_modules/torch/nn/modules/linear.html#Identity
+class Identity(Layer):
+    def __init__(self, *args, **kwargs):
+        super(Identity, self).__init__()
+
+    def forward(self, input):
+        return input

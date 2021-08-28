@@ -83,3 +83,35 @@ python ./tools/main.py test .\experiments\configs\test\test.yaml #斜杠方向�
 
 
 运行结果于原文基本吻合
+
+----
+
+## 关于复现：
+
+### pimm库
+
+由于原论文所附的代码强烈依赖于[tImM（Py**t**orch **Im**age **M**odels）库](https://github.com/rwightman/pytorch-image-models#introduction)，因此我们不得不另行转写了一个与之对应的[PImM（**P**addle **Im**age **M**odels）库](Paddle_Cream\lib\utils\pimm)以更加快捷地转写主程序。
+
+下表给出了原论文用到的所有重要timm库函数/方法在我们的pimm库中的对应调用方式。
+
+
+|timm对象|pimm对象|
+|:---|:---|
+|timm.data.Dataset|pimm.data.Dataset|
+|timm.data.create_loader|pimm.data.create_loader|
+|timm.loss.LabelSmoothingCrossEntropy|pimm.loss.LabelSmoothingCrossEntropy|
+|timm.models.efficientnet_blocks.ConvBnAct|pimm.models.efficientnet_blocks.ConvBnAct|
+|timm.models.efficientnet_blocks.DepthwiseSeparableConv|pimm.models.efficientnet_blocks.DepthwiseSeparableConv|
+|timm.models.efficientnet_blocks.drop_path|pimm.models.efficientnet_blocks.drop_path|
+|timm.models.efficientnet_blocks.InvertedResidual|pimm.models.efficientnet_blocks.InvertedResidual|
+|timm.models.efficientnet_blocks.SqueezeExcite|pimm.models.efficientnet_blocks.SqueezeExcite|
+|timm.models.**layers**.activations.hard_sigmoid|pimm.models.~~layers~~.activations.hard_sigmoid|
+|timm.models.**layers**.activations.Swish|pimm.models.~~layers~~.activations.Swish|
+|timm.models.**layers**.create_conv2d|pimm.models.~~layers~~.create_conv2d|
+|timm.models.**layers**.SelectAdaptivePool**2d** |pimm.models.~~layers~~.SelectAdaptivePool**2D**|
+|timm.models.resume_checkpoint|pimm.models.resume_checkpoint|
+|timm.optim.create_optimizer|pimm.optim.create_optimizer|
+|timm.scheduler.create_scheduler|pimm.scheduler.create_scheduler|
+|timm.utils.CheckpointSaver|pimm.utils.CheckpointSaver|
+|timm.utils.ModelEma|pimm.utils.ModelEma|
+|timm.utils.reduce_tensor|pimm.utils.reduce_tensor|

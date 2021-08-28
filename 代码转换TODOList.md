@@ -34,31 +34,31 @@
 
 # 需要重写的库函数/类
 
-- [ ] `timm`
-  - [x] ~~`data`~~ - 完成！（89+196+46+71+275+63=740行）检验通过！
+- [x] ~~`timm`~~
+  - [x] ~~`data`~~ - 完成！（2+89+196+46+71+275+63=742行）检验通过！
     - [x] ~~`Dataset`~~
     - [x] ~~`create_loader`~~
-  - [ ] `loss.LabelSmoothingCrossEntropy`
-  - [ ] `models`
-    - [ ] `efficientnet_blocks`
-      - [ ] `ConvBnAct`
-      - [ ] `DepthwiseSeparableConv`
-      - [ ] `drop_path`
-      - [ ] `InvertedResidual`
-      - [ ] `SqueezeExcite`
-    - [ ] `layers`
-      - [ ] `activations`
-        - [ ] `hard_sigmoid`
-        - [ ] `Swish`
-      - [ ] `create_conv2d`
-      - [ ] `SelectAdaptivePool2d`
-    - [ ] `resume_checkpoint`
-  - [ ] `optim.create_optimizer`
-  - [ ] `scheduler.create_scheduler`
-  - [ ] `utils`
-    - [ ] `CheckpointSaver`
-    - [ ] `ModelEma`
-      - [ ] `reduce_tensor`
+  - [x] ~~`loss.LabelSmoothingCrossEntropy`~~ - 完成！（1+28=29行）检验通过！
+  - [x] ~~`models`~~
+    - [x] ~~`efficientnet_blocks`~~ - 完成！（5+98+40+60+246+20+55=524行）检验通过！
+      - [x] ~~`ConvBnAct`~~
+      - [x] ~~`DepthwiseSeparableConv`~~
+      - [x] ~~`drop_path`~~
+      - [x] ~~`InvertedResidual`~~
+      - [x] ~~`SqueezeExcite`~~
+    - [x] ~~`layers`~~
+      - [x] ~~`activations`~~ - 完成！（19行）检验通过！
+        - [x] ~~`hard_sigmoid`~~
+        - [x] ~~`Swish`~~
+      - [x] ~~`create_conv2d`~~ - 完成！检验通过！
+      - [x] ~~`SelectAdaptivePool2d`~~ - 完成！（88行）检验通过！
+    - [x] ~~`resume_checkpoint`~~ - 完成！（33行）检验通过！
+  - [x] ~~`optim.create_optimizer`~~ - 完成！（87行）不作检验
+  - [x] ~~`scheduler.create_scheduler`~~ - 完成！（1+23=24行）检验通过！
+  - [x] ~~`utils`~~ - 完成！（190行）检验通过！
+    - [x] ~~`CheckpointSaver`~~
+    - [x] ~~`ModelEma`~~
+    - [x] ~~`reduce_tensor`~~
 - [ ] `thop.profile`
 
 # 可以忽略差异直接进行迁移的代码文件
