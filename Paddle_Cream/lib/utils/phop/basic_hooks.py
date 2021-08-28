@@ -10,9 +10,10 @@ from paddle.nn.layer.conv import _ConvNd
 multiply_adds = 1
 
 def count_parameters(layer, x, y):
-    total_params = 0
+    total_params = 0.
     for p in layer.parameters():
-        total_params += paddle.to_tensor([p.numel()], dtype = "float32")
+        # total_params += paddle.to_tensor([p.numel()], dtype = "float32")
+        total_params += p.numel()
     layer.total_params[0] = total_params
 
 def zero_ops(layer, x, y):

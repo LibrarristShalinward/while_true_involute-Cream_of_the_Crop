@@ -53,8 +53,10 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
         custom_ops = {}
     
     def add_hooks(layer: nn.Layer):
-        layer.register_buffer('total_ops', paddle.zeros(1, dtype = "float64"))
-        layer.register_buffer('total_params', paddle.zeros(1, dtype = "float64"))
+        # layer.register_buffer('total_ops', paddle.zeros((1, 1), dtype = "float64"))
+        # layer.register_buffer('total_params', paddle.zeros((1, 1), dtype = "float64"))
+        layer.register_buffer('total_ops', paddle.to_tensor([0.]))
+        layer.register_buffer('total_params', paddle.to_tensor([0.]))
 
         # for param in layer.parameters():
         #     layer.total_params += paddle.to_tensor([param.numel()], dtype = "float32")
@@ -66,21 +68,23 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
             fn = custom_ops[layer_type]
             if layer_type not in types_collection and verbose:
                 print("[INFO] Customize rule %s() %s." % (fn.__qualname__, layer_type))
-        elif layer_type not in types_collection and verbose:
-            print("[INFO] Register %s() for %s." % (fn.__qualname__, layer_type))
+        elif layer_type in register_hooks:
+            fn = register_hooks[layer_type]
+            if layer_type not in types_collection and verbose:
+                print("[INFO] Register %s() for %s." % (fn.__qualname__, layer_type))
         else:
             if layer_type not in types_collection and verbose:
                 prRed("[WARN] Cannot find rule for %s. Treat it as zero Macs and zero Params." % layer_type)
         
         if fn is not None:
-            handler_collection[layer] = (layer.register_forward_pre_hook(fn), layer.register_forward_pre_hook(count_parameters))
+            handler_collection[layer] = (layer.register_forward_post_hook(fn), layer.register_forward_post_hook(count_parameters))
         types_collection.add(layer_type)
     
     prev_training_status = model.training
     model.eval()
     model.apply(add_hooks)
-    with paddle.no_grad:
-        model(*input)
+    with paddle.no_grad():
+        model(inputs)
     
     def dfs_count(model: nn.Layer, prefix="\t"):
         total_ops, total_params = 0, 0
@@ -100,8 +104,8 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     for layer, (op_handler, params_handler) in handler_collection.items():
         op_handler.remove()
         params_handler.remove()
-        layer.buffers().pop("total_ops")
-        layer.buffers().pop("total_params")
+        # layer.buffers().pop("total_ops")
+        # layer.buffers().pop("total_params")
 
     return total_ops, total_params
 

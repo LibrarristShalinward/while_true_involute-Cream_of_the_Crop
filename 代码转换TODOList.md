@@ -32,7 +32,7 @@
 - [ ] `ptflops.get_model_complexity_info`
 
 
-# 需要重写的库函数/类
+# 需要重写的库函数/类 -> 完成！
 
 - [x] ~~`timm`~~
   - [x] ~~`data`~~ - 完成！（2+89+196+46+71+275+63=742行）检验通过！
@@ -59,7 +59,7 @@
     - [x] ~~`CheckpointSaver`~~
     - [x] ~~`ModelEma`~~
     - [x] ~~`reduce_tensor`~~
-- [ ] ~~`thop.profile`~~ - 完成！（1+98+110=209行）
+- [x] ~~`thop.profile`~~ - 完成！（1+98+110=209行）检验通过！
 
 # 可以忽略差异直接进行迁移的代码文件
 
