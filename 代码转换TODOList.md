@@ -53,7 +53,7 @@
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
       - [x] ~~`SelectAdaptivePool2d`~~ - 完成！（88行）检验通过！
     - [x] ~~`resume_checkpoint`~~ - 完成！（33行）检验通过！
-  - [ ] `optim.create_optimizer`
+  - [ ] ~~`optim.create_optimizer`~~ - 完成！（87行）不作检验
   - [ ] `scheduler.create_scheduler`
   - [x] ~~`utils`~~ - 完成！（190行）检验通过！
     - [x] ~~`CheckpointSaver`~~
