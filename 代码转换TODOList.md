@@ -34,7 +34,7 @@
 
 # 需要重写的库函数/类
 
-- [ ] `timm`
+- [x] ~~`timm`~~
   - [x] ~~`data`~~ - 完成！（2+89+196+46+71+275+63=742行）检验通过！
     - [x] ~~`Dataset`~~
     - [x] ~~`create_loader`~~
@@ -53,8 +53,8 @@
       - [x] ~~`create_conv2d`~~ - 完成！检验通过！
       - [x] ~~`SelectAdaptivePool2d`~~ - 完成！（88行）检验通过！
     - [x] ~~`resume_checkpoint`~~ - 完成！（33行）检验通过！
-  - [ ] ~~`optim.create_optimizer`~~ - 完成！（87行）不作检验
-  - [ ] `scheduler.create_scheduler`
+  - [x] ~~`optim.create_optimizer`~~ - 完成！（87行）不作检验
+  - [x] ~~`scheduler.create_scheduler`~~ - 完成！（1+23=24行）检验通过！
   - [x] ~~`utils`~~ - 完成！（190行）检验通过！
     - [x] ~~`CheckpointSaver`~~
     - [x] ~~`ModelEma`~~
