@@ -59,7 +59,7 @@
     - [x] ~~`CheckpointSaver`~~
     - [x] ~~`ModelEma`~~
     - [x] ~~`reduce_tensor`~~
-- [ ] `thop.profile`
+- [ ] ~~`thop.profile`~~ - 完成！（1+98+110=209行）
 
 # 可以忽略差异直接进行迁移的代码文件
 
