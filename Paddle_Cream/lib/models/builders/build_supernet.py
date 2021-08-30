@@ -7,6 +7,7 @@ from ...utils.pimm.models import round_channels
 from ...utils.pimm.models.efficientnet_blocks import InvertedResidual, DepthwiseSeparableConv, ConvBnAct
 from copy import deepcopy
 from ..blocks import get_Bottleneck
+from ...utils.builder_util import modify_block_args
 
 # SuperNet Builder definition.
 class SuperNetBuilder:

@@ -5,7 +5,7 @@
 1. - [x] ~~[Cream\lib\models\blocks\inverted_residual_block.py](Cream\lib\models\blocks\inverted_residual_block.py)~~ - 完成！（97行）检验通过！
 2. - [x] ~~[Cream\lib\models\blocks\residual_block.py](Cream\lib\models\blocks\residual_block.py)~~ - 完成！（110行）检验通过！
 3. - [ ] ~~[Cream\lib\models\builders\build_childnet.py](Cream\lib\models\builders\build_childnet.py)~~ - 完成！（191行）检验通过！
-4. - [ ] [Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)
+4. - [ ] ~~[Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)~~ - 完成！（222行）
 5. - [ ] [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
 6. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
 7. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
