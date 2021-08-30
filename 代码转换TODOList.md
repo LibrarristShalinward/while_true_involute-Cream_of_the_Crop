@@ -19,17 +19,17 @@
 
 # 需要迁移的库函数/类
 
-- [ ] `timm`
-  - [ ] `models`
-    - [ ] `efficientnet_blocks`
-      - [ ] `make_divisible`
-      - [ ] `round_channels`
-    - [ ] `layers.get_condconv_initializer`
-  - [ ] `utils`
-    - [ ] `accuracy`
-    - [ ] `AverageMeter`
-    - [ ] `update_summary`
-- [ ] `ptflops.get_model_complexity_info`
+- [x] `timm`
+  - [x] `models`
+    - [x] `efficientnet_blocks`
+      - [x] `make_divisible`
+      - [x] `round_channels`
+    - [x] `layers.get_condconv_initializer`
+  - [x] `utils`
+    - [x] `accuracy`
+    - [x] `AverageMeter`
+    - [x] `update_summary`
+- [x] `ptflops.get_model_complexity_info`
 
 
 # 需要重写的库函数/类 -> 完成！
@@ -68,6 +68,6 @@
 3. - [ ] [Cream\lib\config.py](Cream\lib\config.py)
 4. - [ ] [Cream\tools\_init_paths.py](Cream\tools\_init_paths.py)
 5. - [ ] [Cream\tools\generate_subImageNet.py](Cream\tools\generate_subImageNet.py)
-6. - [ ] Cream\tools\main.py](Cream\tools\main.py)
+6. - [ ] [Cream\tools\main.py](Cream\tools\main.py)
 
 （4、5可能无需迁移）
