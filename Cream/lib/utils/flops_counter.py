@@ -1,42 +1,44 @@
 '''
-本文件为ptflops.flops_counter的全复制修改
-由于引用过于复杂，故不对未被调用的函数进行筛除
+Copyright (C) 2019 Sovrasov V. - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ * You should have received a copy of the MIT license with
+ * this file. If not visit https://opensource.org/licenses/MIT
 '''
 
 import sys
 from functools import partial
 
 import numpy as np
-
-import paddle
-import paddle.nn as nn
+import torch
+import torch.nn as nn
 
 
 def get_model_complexity_info(model, input_res,
                               print_per_layer_stat=True,
                               as_strings=True,
                               input_constructor=None, ost=sys.stdout,
-                              verbose=False, ignore_layers=[],
-                              custom_layers_hooks={}):
+                              verbose=False, ignore_modules=[],
+                              custom_modules_hooks={}):
     assert type(input_res) is tuple
     assert len(input_res) >= 1
-    assert isinstance(model, nn.Layer)
-    global CUSTOM_LAYERS_MAPPING
-    CUSTOM_LAYERS_MAPPING = custom_layers_hooks
+    assert isinstance(model, nn.Module)
+    global CUSTOM_MODULES_MAPPING
+    CUSTOM_MODULES_MAPPING = custom_modules_hooks
     flops_model = add_flops_counting_methods(model)
     flops_model.eval()
     flops_model.start_flops_count(ost=ost, verbose=verbose,
-                                  ignore_list=ignore_layers)
+                                  ignore_list=ignore_modules)
     if input_constructor:
         input = input_constructor(input_res)
         _ = flops_model(**input)
     else:
         try:
-            batch = paddle.randn(
-                (1, *input_res), 
-                dtype=flops_model.parameters()[0].dtype)
+            batch = torch.ones(()).new_empty((1, *input_res),
+                                             dtype=next(flops_model.parameters()).dtype,
+                                             device=next(flops_model.parameters()).device)
         except StopIteration:
-            batch = paddle.randn((1, *input_res))
+            batch = torch.ones(()).new_empty((1, *input_res))
 
         _ = flops_model(batch)
 
@@ -44,7 +46,7 @@ def get_model_complexity_info(model, input_res,
     if print_per_layer_stat:
         print_model_with_flops(flops_model, flops_count, params_count, ost=ost)
     flops_model.stop_flops_count()
-    CUSTOM_LAYERS_MAPPING = {}
+    CUSTOM_MODULES_MAPPING = {}
 
     if as_strings:
         return flops_to_string(flops_count), params_to_string(params_count)
@@ -147,22 +149,22 @@ def print_model_with_flops(model, total_flops, total_params, units='GMac',
 
 
 def get_model_parameters_number(model):
-    params_num = sum(p.numel() for p in model.parameters() if not p.stop_gradient)
+    params_num = sum(p.numel() for p in model.parameters() if p.requires_grad)
     return params_num
 
 
-def add_flops_counting_methods(net_main_layer):
-    # adding additional methods to the existing layer object,
+def add_flops_counting_methods(net_main_module):
+    # adding additional methods to the existing module object,
     # this is done this way so that each function has access to self object
-    net_main_layer.start_flops_count = start_flops_count.__get__(net_main_layer)
-    net_main_layer.stop_flops_count = stop_flops_count.__get__(net_main_layer)
-    net_main_layer.reset_flops_count = reset_flops_count.__get__(net_main_layer)
-    net_main_layer.compute_average_flops_cost = compute_average_flops_cost.__get__(
-                                                    net_main_layer)
+    net_main_module.start_flops_count = start_flops_count.__get__(net_main_module)
+    net_main_module.stop_flops_count = stop_flops_count.__get__(net_main_module)
+    net_main_module.reset_flops_count = reset_flops_count.__get__(net_main_module)
+    net_main_module.compute_average_flops_cost = compute_average_flops_cost.__get__(
+                                                    net_main_module)
 
-    net_main_layer.reset_flops_count()
+    net_main_module.reset_flops_count()
 
-    return net_main_layer
+    return net_main_module
 
 
 def compute_average_flops_cost(self):
@@ -172,12 +174,12 @@ def compute_average_flops_cost(self):
     Returns current mean flops consumption per image.
     """
 
-    for m in self.sublayers(include_self = True):
+    for m in self.modules():
         m.accumulate_flops = accumulate_flops.__get__(m)
 
     flops_sum = self.accumulate_flops()
 
-    for m in self.sublayers(include_self = True):
+    for m in self.modules():
         if hasattr(m, 'accumulate_flops'):
             del m.accumulate_flops
 
@@ -196,27 +198,27 @@ def start_flops_count(self, **kwargs):
 
     seen_types = set()
 
-    def add_flops_counter_hook_function(layer, ost, verbose, ignore_list):
-        if type(layer) in ignore_list:
-            seen_types.add(type(layer))
-            if is_supported_instance(layer):
-                layer.__params__ = 0
-        elif is_supported_instance(layer):
-            if hasattr(layer, '__flops_handle__'):
+    def add_flops_counter_hook_function(module, ost, verbose, ignore_list):
+        if type(module) in ignore_list:
+            seen_types.add(type(module))
+            if is_supported_instance(module):
+                module.__params__ = 0
+        elif is_supported_instance(module):
+            if hasattr(module, '__flops_handle__'):
                 return
-            if type(layer) in CUSTOM_LAYERS_MAPPING:
-                handle = layer.register_forward_post_hook(
-                                        CUSTOM_LAYERS_MAPPING[type(layer)])
+            if type(module) in CUSTOM_MODULES_MAPPING:
+                handle = module.register_forward_hook(
+                                        CUSTOM_MODULES_MAPPING[type(module)])
             else:
-                handle = layer.register_forward_post_hook(LAYERS_MAPPING[type(layer)])
-            layer.__flops_handle__ = handle
-            seen_types.add(type(layer))
+                handle = module.register_forward_hook(MODULES_MAPPING[type(module)])
+            module.__flops_handle__ = handle
+            seen_types.add(type(module))
         else:
-            if verbose and not type(layer) in (nn.Sequential, nn.LayerList) and \
-               not type(layer) in seen_types:
-                print('Warning: layer ' + type(layer).__name__ +
+            if verbose and not type(module) in (nn.Sequential, nn.ModuleList) and \
+               not type(module) in seen_types:
+                print('Warning: module ' + type(module).__name__ +
                       ' is treated as a zero-op.', file=ost)
-            seen_types.add(type(layer))
+            seen_types.add(type(module))
 
     self.apply(partial(add_flops_counter_hook_function, **kwargs))
 
@@ -243,57 +245,57 @@ def reset_flops_count(self):
 
 
 # ---- Internal functions
-def empty_flops_counter_hook(layer, input, output):
-    layer.__flops__ += 0
+def empty_flops_counter_hook(module, input, output):
+    module.__flops__ += 0
 
 
-def upsample_flops_counter_hook(layer, input, output):
+def upsample_flops_counter_hook(module, input, output):
     output_size = output[0]
     batch_size = output_size.shape[0]
     output_elements_count = batch_size
     for val in output_size.shape[1:]:
         output_elements_count *= val
-    layer.__flops__ += int(output_elements_count)
+    module.__flops__ += int(output_elements_count)
 
 
-def relu_flops_counter_hook(layer, input, output):
+def relu_flops_counter_hook(module, input, output):
     active_elements_count = output.numel()
-    layer.__flops__ += int(active_elements_count)
+    module.__flops__ += int(active_elements_count)
 
 
-def linear_flops_counter_hook(layer, input, output):
+def linear_flops_counter_hook(module, input, output):
     input = input[0]
     # pytorch checks dimensions, so here we don't care much
     output_last_dim = output.shape[-1]
-    bias_flops = output_last_dim if layer.bias is not None else 0
-    layer.__flops__ += int(np.prod(input.shape) * output_last_dim + bias_flops)
+    bias_flops = output_last_dim if module.bias is not None else 0
+    module.__flops__ += int(np.prod(input.shape) * output_last_dim + bias_flops)
 
 
-def pool_flops_counter_hook(layer, input, output):
+def pool_flops_counter_hook(module, input, output):
     input = input[0]
-    layer.__flops__ += int(np.prod(input.shape))
+    module.__flops__ += int(np.prod(input.shape))
 
 
-def bn_flops_counter_hook(layer, input, output):
+def bn_flops_counter_hook(module, input, output):
     input = input[0]
 
     batch_flops = np.prod(input.shape)
-    if layer.affine:
+    if module.affine:
         batch_flops *= 2
-    layer.__flops__ += int(batch_flops)
+    module.__flops__ += int(batch_flops)
 
 
-def conv_flops_counter_hook(conv_layer, input, output):
+def conv_flops_counter_hook(conv_module, input, output):
     # Can have multiple inputs, getting the first one
     input = input[0]
 
     batch_size = input.shape[0]
     output_dims = list(output.shape[2:])
 
-    kernel_dims = list(conv_layer._kernel_size)
-    in_channels = conv_layer._in_channels
-    out_channels = conv_layer._out_channels
-    groups = conv_layer._groups
+    kernel_dims = list(conv_module.kernel_size)
+    in_channels = conv_module.in_channels
+    out_channels = conv_module.out_channels
+    groups = conv_module.groups
 
     filters_per_channel = out_channels // groups
     conv_per_position_flops = int(np.prod(kernel_dims)) * \
@@ -305,16 +307,16 @@ def conv_flops_counter_hook(conv_layer, input, output):
 
     bias_flops = 0
 
-    if conv_layer.bias is not None:
+    if conv_module.bias is not None:
 
         bias_flops = out_channels * active_elements_count
 
     overall_flops = overall_conv_flops + bias_flops
 
-    conv_layer.__flops__ += int(overall_flops)
+    conv_module.__flops__ += int(overall_flops)
 
 
-def batch_counter_hook(layer, input, output):
+def batch_counter_hook(module, input, output):
     batch_size = 1
     if len(input) > 0:
         # Can have multiple inputs, getting the first one
@@ -322,37 +324,37 @@ def batch_counter_hook(layer, input, output):
         batch_size = len(input)
     else:
         pass
-        print('Warning! No positional inputs found for a layer,'
+        print('Warning! No positional inputs found for a module,'
               ' assuming batch size is 1.')
-    layer.__batch_counter__ += batch_size
+    module.__batch_counter__ += batch_size
 
 
-def rnn_flops(flops, rnn_layer, w_ih, w_hh, input_size):
+def rnn_flops(flops, rnn_module, w_ih, w_hh, input_size):
     # matrix matrix mult ih state and internal state
     flops += w_ih.shape[0]*w_ih.shape[1]
     # matrix matrix mult hh state and internal state
     flops += w_hh.shape[0]*w_hh.shape[1]
-    if isinstance(rnn_layer, (nn.RNN, nn.SimpleRNNCell)):
+    if isinstance(rnn_module, (nn.RNN, nn.RNNCell)):
         # add both operations
-        flops += rnn_layer.hidden_size
-    elif isinstance(rnn_layer, (nn.GRU, nn.GRUCell)):
+        flops += rnn_module.hidden_size
+    elif isinstance(rnn_module, (nn.GRU, nn.GRUCell)):
         # hadamard of r
-        flops += rnn_layer.hidden_size
+        flops += rnn_module.hidden_size
         # adding operations from both states
-        flops += rnn_layer.hidden_size*3
+        flops += rnn_module.hidden_size*3
         # last two hadamard product and add
-        flops += rnn_layer.hidden_size*3
-    elif isinstance(rnn_layer, (nn.LSTM, nn.LSTMCell)):
+        flops += rnn_module.hidden_size*3
+    elif isinstance(rnn_module, (nn.LSTM, nn.LSTMCell)):
         # adding operations from both states
-        flops += rnn_layer.hidden_size*4
+        flops += rnn_module.hidden_size*4
         # two hadamard product and add for C state
-        flops += rnn_layer.hidden_size + rnn_layer.hidden_size + rnn_layer.hidden_size
+        flops += rnn_module.hidden_size + rnn_module.hidden_size + rnn_module.hidden_size
         # final hadamard
-        flops += rnn_layer.hidden_size + rnn_layer.hidden_size + rnn_layer.hidden_size
+        flops += rnn_module.hidden_size + rnn_module.hidden_size + rnn_module.hidden_size
     return flops
 
 
-def rnn_flops_counter_hook(rnn_layer, input, output):
+def rnn_flops_counter_hook(rnn_module, input, output):
     """
     Takes into account batch goes at first position, contrary
     to pytorch common rule (but actually it doesn't matter).
@@ -363,54 +365,54 @@ def rnn_flops_counter_hook(rnn_layer, input, output):
     inp = input[0]
     batch_size = inp.shape[0]
     seq_length = inp.shape[1]
-    num_layers = rnn_layer.num_layers
+    num_layers = rnn_module.num_layers
 
     for i in range(num_layers):
-        w_ih = rnn_layer.__getattr__('weight_ih_l' + str(i))
-        w_hh = rnn_layer.__getattr__('weight_hh_l' + str(i))
+        w_ih = rnn_module.__getattr__('weight_ih_l' + str(i))
+        w_hh = rnn_module.__getattr__('weight_hh_l' + str(i))
         if i == 0:
-            input_size = rnn_layer.input_size
+            input_size = rnn_module.input_size
         else:
-            input_size = rnn_layer.hidden_size
-        flops = rnn_flops(flops, rnn_layer, w_ih, w_hh, input_size)
-        if rnn_layer.bias:
-            b_ih = rnn_layer.__getattr__('bias_ih_l' + str(i))
-            b_hh = rnn_layer.__getattr__('bias_hh_l' + str(i))
+            input_size = rnn_module.hidden_size
+        flops = rnn_flops(flops, rnn_module, w_ih, w_hh, input_size)
+        if rnn_module.bias:
+            b_ih = rnn_module.__getattr__('bias_ih_l' + str(i))
+            b_hh = rnn_module.__getattr__('bias_hh_l' + str(i))
             flops += b_ih.shape[0] + b_hh.shape[0]
 
     flops *= batch_size
     flops *= seq_length
-    if rnn_layer.bidirectional:
+    if rnn_module.bidirectional:
         flops *= 2
-    rnn_layer.__flops__ += int(flops)
+    rnn_module.__flops__ += int(flops)
 
 
-def rnn_cell_flops_counter_hook(rnn_cell_layer, input, output):
+def rnn_cell_flops_counter_hook(rnn_cell_module, input, output):
     flops = 0
     inp = input[0]
     batch_size = inp.shape[0]
-    w_ih = rnn_cell_layer.__getattr__('weight_ih')
-    w_hh = rnn_cell_layer.__getattr__('weight_hh')
+    w_ih = rnn_cell_module.__getattr__('weight_ih')
+    w_hh = rnn_cell_module.__getattr__('weight_hh')
     input_size = inp.shape[1]
-    flops = rnn_flops(flops, rnn_cell_layer, w_ih, w_hh, input_size)
-    if rnn_cell_layer.bias:
-        b_ih = rnn_cell_layer.__getattr__('bias_ih')
-        b_hh = rnn_cell_layer.__getattr__('bias_hh')
+    flops = rnn_flops(flops, rnn_cell_module, w_ih, w_hh, input_size)
+    if rnn_cell_module.bias:
+        b_ih = rnn_cell_module.__getattr__('bias_ih')
+        b_hh = rnn_cell_module.__getattr__('bias_hh')
         flops += b_ih.shape[0] + b_hh.shape[0]
 
     flops *= batch_size
-    rnn_cell_layer.__flops__ += int(flops)
+    rnn_cell_module.__flops__ += int(flops)
 
 
-def multihead_attention_counter_hook(multihead_attention_layer, input, output):
+def multihead_attention_counter_hook(multihead_attention_module, input, output):
     flops = 0
     q, k, v = input
     batch_size = q.shape[1]
 
-    num_heads = multihead_attention_layer.num_heads
-    embed_dim = multihead_attention_layer.embed_dim
-    kdim = multihead_attention_layer.kdim
-    vdim = multihead_attention_layer.vdim
+    num_heads = multihead_attention_module.num_heads
+    embed_dim = multihead_attention_module.embed_dim
+    kdim = multihead_attention_module.kdim
+    vdim = multihead_attention_module.vdim
     if kdim is None:
         kdim = embed_dim
     if vdim is None:
@@ -420,7 +422,7 @@ def multihead_attention_counter_hook(multihead_attention_layer, input, output):
     flops = q.shape[0] * q.shape[2] * embed_dim + \
         k.shape[0] * k.shape[2] * kdim + \
         v.shape[0] * v.shape[2] * vdim
-    if multihead_attention_layer.in_proj_bias is not None:
+    if multihead_attention_module.in_proj_bias is not None:
         flops += (q.shape[0] + k.shape[0] + v.shape[0]) * embed_dim
 
     # attention heads: scale, matmul, softmax, matmul
@@ -436,45 +438,45 @@ def multihead_attention_counter_hook(multihead_attention_layer, input, output):
     flops += q.shape[0] * embed_dim * (embed_dim + 1)
 
     flops *= batch_size
-    multihead_attention_layer.__flops__ += int(flops)
+    multihead_attention_module.__flops__ += int(flops)
 
 
-def add_batch_counter_variables_or_reset(layer):
+def add_batch_counter_variables_or_reset(module):
 
-    layer.__batch_counter__ = 0
+    module.__batch_counter__ = 0
 
 
-def add_batch_counter_hook_function(layer):
-    if hasattr(layer, '__batch_counter_handle__'):
+def add_batch_counter_hook_function(module):
+    if hasattr(module, '__batch_counter_handle__'):
         return
 
-    handle = layer.register_forward_post_hook(batch_counter_hook)
-    layer.__batch_counter_handle__ = handle
+    handle = module.register_forward_hook(batch_counter_hook)
+    module.__batch_counter_handle__ = handle
 
 
-def remove_batch_counter_hook_function(layer):
-    if hasattr(layer, '__batch_counter_handle__'):
-        layer.__batch_counter_handle__.remove()
-        del layer.__batch_counter_handle__
+def remove_batch_counter_hook_function(module):
+    if hasattr(module, '__batch_counter_handle__'):
+        module.__batch_counter_handle__.remove()
+        del module.__batch_counter_handle__
 
 
-def add_flops_counter_variable_or_reset(layer):
-    if is_supported_instance(layer):
-        if hasattr(layer, '__flops__') or hasattr(layer, '__params__'):
+def add_flops_counter_variable_or_reset(module):
+    if is_supported_instance(module):
+        if hasattr(module, '__flops__') or hasattr(module, '__params__'):
             print('Warning: variables __flops__ or __params__ are already '
-                  'defined for the layer' + type(layer).__name__ +
+                  'defined for the module' + type(module).__name__ +
                   ' ptflops can affect your code!')
-        layer.__flops__ = 0
-        layer.__params__ = get_model_parameters_number(layer)
+        module.__flops__ = 0
+        module.__params__ = get_model_parameters_number(module)
 
 
-CUSTOM_LAYERS_MAPPING = {}
+CUSTOM_MODULES_MAPPING = {}
 
-LAYERS_MAPPING = {
+MODULES_MAPPING = {
     # convolutions
-    nn.Conv1D: conv_flops_counter_hook,
-    nn.Conv2D: conv_flops_counter_hook,
-    nn.Conv3D: conv_flops_counter_hook,
+    nn.Conv1d: conv_flops_counter_hook,
+    nn.Conv2d: conv_flops_counter_hook,
+    nn.Conv3d: conv_flops_counter_hook,
     # activations
     nn.ReLU: relu_flops_counter_hook,
     nn.PReLU: relu_flops_counter_hook,
@@ -482,54 +484,54 @@ LAYERS_MAPPING = {
     nn.LeakyReLU: relu_flops_counter_hook,
     nn.ReLU6: relu_flops_counter_hook,
     # poolings
-    nn.MaxPool1D: pool_flops_counter_hook,
-    nn.AvgPool1D: pool_flops_counter_hook,
-    nn.AvgPool2D: pool_flops_counter_hook,
-    nn.MaxPool2D: pool_flops_counter_hook,
-    nn.MaxPool3D: pool_flops_counter_hook,
-    nn.AvgPool3D: pool_flops_counter_hook,
-    nn.AdaptiveMaxPool1D: pool_flops_counter_hook,
-    nn.AdaptiveAvgPool1D: pool_flops_counter_hook,
-    nn.AdaptiveMaxPool2D: pool_flops_counter_hook,
-    nn.AdaptiveAvgPool2D: pool_flops_counter_hook,
-    nn.AdaptiveMaxPool3D: pool_flops_counter_hook,
-    nn.AdaptiveAvgPool3D: pool_flops_counter_hook,
+    nn.MaxPool1d: pool_flops_counter_hook,
+    nn.AvgPool1d: pool_flops_counter_hook,
+    nn.AvgPool2d: pool_flops_counter_hook,
+    nn.MaxPool2d: pool_flops_counter_hook,
+    nn.MaxPool3d: pool_flops_counter_hook,
+    nn.AvgPool3d: pool_flops_counter_hook,
+    nn.AdaptiveMaxPool1d: pool_flops_counter_hook,
+    nn.AdaptiveAvgPool1d: pool_flops_counter_hook,
+    nn.AdaptiveMaxPool2d: pool_flops_counter_hook,
+    nn.AdaptiveAvgPool2d: pool_flops_counter_hook,
+    nn.AdaptiveMaxPool3d: pool_flops_counter_hook,
+    nn.AdaptiveAvgPool3d: pool_flops_counter_hook,
     # BNs
-    nn.BatchNorm1D: bn_flops_counter_hook,
-    nn.BatchNorm2D: bn_flops_counter_hook,
-    nn.BatchNorm3D: bn_flops_counter_hook,
+    nn.BatchNorm1d: bn_flops_counter_hook,
+    nn.BatchNorm2d: bn_flops_counter_hook,
+    nn.BatchNorm3d: bn_flops_counter_hook,
 
-    nn.InstanceNorm1D: bn_flops_counter_hook,
-    nn.InstanceNorm2D: bn_flops_counter_hook,
-    nn.InstanceNorm3D: bn_flops_counter_hook,
+    nn.InstanceNorm1d: bn_flops_counter_hook,
+    nn.InstanceNorm2d: bn_flops_counter_hook,
+    nn.InstanceNorm3d: bn_flops_counter_hook,
     nn.GroupNorm: bn_flops_counter_hook,
     # FC
     nn.Linear: linear_flops_counter_hook,
     # Upscale
     nn.Upsample: upsample_flops_counter_hook,
     # Deconvolution
-    nn.Conv1DTranspose: conv_flops_counter_hook,
-    nn.Conv2DTranspose: conv_flops_counter_hook,
-    nn.Conv3DTranspose: conv_flops_counter_hook,
+    nn.ConvTranspose1d: conv_flops_counter_hook,
+    nn.ConvTranspose2d: conv_flops_counter_hook,
+    nn.ConvTranspose3d: conv_flops_counter_hook,
     # RNN
     nn.RNN: rnn_flops_counter_hook,
     nn.GRU: rnn_flops_counter_hook,
     nn.LSTM: rnn_flops_counter_hook,
-    nn.SimpleRNNCell: rnn_cell_flops_counter_hook,
+    nn.RNNCell: rnn_cell_flops_counter_hook,
     nn.LSTMCell: rnn_cell_flops_counter_hook,
     nn.GRUCell: rnn_cell_flops_counter_hook,
-    nn.MultiHeadAttention: multihead_attention_counter_hook
+    nn.MultiheadAttention: multihead_attention_counter_hook
 }
 
 
-def is_supported_instance(layer):
-    if type(layer) in LAYERS_MAPPING or type(layer) in CUSTOM_LAYERS_MAPPING:
+def is_supported_instance(module):
+    if type(module) in MODULES_MAPPING or type(module) in CUSTOM_MODULES_MAPPING:
         return True
     return False
 
 
-def remove_flops_counter_hook_function(layer):
-    if is_supported_instance(layer):
-        if hasattr(layer, '__flops_handle__'):
-            layer.__flops_handle__.remove()
-            del layer.__flops_handle__
+def remove_flops_counter_hook_function(module):
+    if is_supported_instance(module):
+        if hasattr(module, '__flops_handle__'):
+            module.__flops_handle__.remove()
+            del module.__flops_handle__
