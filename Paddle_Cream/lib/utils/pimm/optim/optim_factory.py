@@ -4,6 +4,7 @@
 
 from paddle import optimizer as optim
 
+
 def add_weight_decay(model, weight_decay=1e-5, skip_list=()):
     decay = []
     no_decay = []

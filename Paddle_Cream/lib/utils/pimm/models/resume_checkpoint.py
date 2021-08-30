@@ -1,7 +1,9 @@
-from os.path import isfile
 import logging
 from collections import OrderedDict
+from os.path import isfile
+
 import paddle
+
 
 # 原timm.models.helpers.resume_checkpoint
 def resume_checkpoint(model, checkpoint_path):

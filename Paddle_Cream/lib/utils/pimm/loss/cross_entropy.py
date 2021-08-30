@@ -1,8 +1,7 @@
-import warnings
 import paddle
 from paddle.framework import dtype
 from paddle.nn import Layer, functional
-import paddle
+
 
 # 原timm.loss.LabelSmoothingCrossEntropy
 class LabelSmoothingCrossEntropy(Layer):

@@ -1,4 +1,4 @@
-from paddle.optimizer.lr import StepDecay, LinearWarmup
+from paddle.optimizer.lr import LinearWarmup, StepDecay
 
 '受paddle与torch的optimizer中state_dict架构差异所限，pimm不再像timm一样自行定义Scheduler类，而是直接使用paddle自带的LRScheduler'
 

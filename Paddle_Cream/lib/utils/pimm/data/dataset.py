@@ -1,6 +1,7 @@
-import paddle
 import os
 import re
+
+import paddle
 from PIL import Image
 
 IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg']

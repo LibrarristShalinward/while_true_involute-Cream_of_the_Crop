@@ -1,5 +1,5 @@
-from paddle import nn
 import paddle.nn.functional as F
+from paddle import nn
 
 
 # 原timm.models.layers.activations.hard_sigmoid

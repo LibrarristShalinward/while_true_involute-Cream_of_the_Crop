@@ -1,16 +1,20 @@
-import re
-from PIL import Image
-from paddle.framework import dtype
-from paddle.vision.transforms import crop, resize, RandomHorizontalFlip, ColorJitter, Normalize, Compose, Resize, CenterCrop
-import warnings
-import random
 import math
+import random
+import re
+import warnings
 
-from paddle.vision.transforms.transforms import Resize
-from .auto_augment import rand_augment_transform, augment_and_mix_transform, auto_augment_transform
-from .random_erasing import RandomErasing
 import numpy as np
 import paddle
+from paddle.framework import dtype
+from paddle.vision.transforms import (CenterCrop, ColorJitter, Compose,
+                                      Normalize, RandomHorizontalFlip, Resize,
+                                      crop, resize)
+from paddle.vision.transforms.transforms import Resize
+from PIL import Image
+
+from .auto_augment import (augment_and_mix_transform, auto_augment_transform,
+                           rand_augment_transform)
+from .random_erasing import RandomErasing
 
 # 原timm.data.constants变量
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)

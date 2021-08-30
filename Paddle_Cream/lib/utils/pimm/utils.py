@@ -1,11 +1,12 @@
+import csv
+import glob
+import logging
 import operator
 import os
-import logging
-from copy import deepcopy
-import paddle
-import glob
 from collections import OrderedDict
-import csv
+from copy import deepcopy
+
+import paddle
 
 
 # 原timm.utils.CheckpointSaver

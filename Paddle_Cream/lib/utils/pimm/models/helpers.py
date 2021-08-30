@@ -5,6 +5,7 @@
 
 from itertools import repeat
 
+
 # From PyTorch internals
 def _ntuple(n):
     def parse(x):

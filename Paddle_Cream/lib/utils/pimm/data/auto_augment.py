@@ -3,13 +3,13 @@
 由于引用过于复杂，故不对未被调用的函数进行筛除
 '''
 
-import random
 import math
+import random
 import re
-from PIL import Image, ImageOps, ImageEnhance, ImageChops
-import PIL
-import numpy as np
 
+import numpy as np
+import PIL
+from PIL import Image, ImageEnhance, ImageOps
 
 _PIL_VER = tuple([int(x) for x in PIL.__version__.split('.')[:2]])
 

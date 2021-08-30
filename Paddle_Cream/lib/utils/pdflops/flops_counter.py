@@ -7,7 +7,6 @@ import sys
 from functools import partial
 
 import numpy as np
-
 import paddle
 import paddle.nn as nn
 

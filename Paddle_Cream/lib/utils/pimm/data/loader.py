@@ -1,13 +1,11 @@
-from paddle.framework import dtype
-from .transforms import create_transform
-from ..paddle_extension import DistributedSampler, DataLoader
-import paddle
 import numpy as np
-from .random_erasing import RandomErasing
+import paddle
+from paddle.framework import dtype
+
+from ..paddle_extension import DataLoader, DistributedSampler
 from .mixup import FastCollateMixup
-
-
-
+from .random_erasing import RandomErasing
+from .transforms import create_transform
 
 # 原timm.data.constants变量
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)

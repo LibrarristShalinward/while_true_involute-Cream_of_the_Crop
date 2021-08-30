@@ -1,7 +1,7 @@
 '''
 本文件用于放置Cream中用到而paddle中没有对应实现的torch-API的补充实现
 '''
-from paddle.io import DistributedBatchSampler, DataLoader
+from paddle.io import DataLoader, DistributedBatchSampler
 from paddle.nn import Layer
 
 

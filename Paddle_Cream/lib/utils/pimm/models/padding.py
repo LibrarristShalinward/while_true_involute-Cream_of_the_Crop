@@ -5,7 +5,9 @@
 
 import math
 from typing import List, Tuple
+
 import paddle.nn.functional as F
+
 
 # Calculate symmetric padding for a convolution
 def get_padding(kernel_size: int, stride: int = 1, dilation: int = 1, **_) -> int:

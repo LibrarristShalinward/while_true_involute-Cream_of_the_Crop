@@ -1,7 +1,8 @@
 import paddle
 from paddle import nn
-from .create_conv2d import create_conv2d
+
 from ..paddle_extension import Identity
+from .create_conv2d import create_conv2d
 
 # 原timm.models.effcientnet_blocks中的参数
 _SE_ARGS_DEFAULT = dict(
