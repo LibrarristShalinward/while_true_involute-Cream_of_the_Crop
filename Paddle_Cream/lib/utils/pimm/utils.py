@@ -1,10 +1,12 @@
+import csv
+import glob
+import logging
 import operator
 import os
-import logging
-from copy import deepcopy
-import paddle
-import glob
 from collections import OrderedDict
+from copy import deepcopy
+
+import paddle
 
 
 # 原timm.utils.CheckpointSaver
@@ -177,6 +179,45 @@ def reduce_tensor(tensor, n):
     paddle.distributed.all_reduce(rt)
     rt /= n
     return rt
+
+# 原timm.utils.accuracy
+def accuracy(output, target, topk=(1,)):
+    """Computes the precision@k for the specified values of k"""
+    maxk = max(topk)
+    batch_size = target.size(0)
+
+    _, pred = output.topk(maxk, 1, True, True)
+    pred = pred.t()
+    correct = pred.eq(target.view(1, -1).expand_as(pred))
+    return [correct[:k].reshape((-1)).float().sum(0) * 100. / batch_size for k in topk]
+
+# 原timm.utils.AverageMeter
+class AverageMeter:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
+# 原timm.utils.update_summary
+def update_summary(epoch, train_metrics, eval_metrics, filename, write_header=False):
+    rowd = OrderedDict(epoch=epoch)
+    rowd.update([('train_' + k, v) for k, v in train_metrics.items()])
+    rowd.update([('eval_' + k, v) for k, v in eval_metrics.items()])
+    with open(filename, mode='a') as cf:
+        dw = csv.DictWriter(cf, fieldnames=rowd.keys())
+        if write_header:
+            dw.writeheader()
+        dw.writerow(rowd)
 
 # 原timm.utils.get_state_dict
 def get_state_dict(model):

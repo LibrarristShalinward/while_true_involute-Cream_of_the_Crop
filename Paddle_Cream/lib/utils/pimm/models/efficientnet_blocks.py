@@ -1,7 +1,8 @@
 import paddle
 from paddle import nn
-from .create_conv2d import create_conv2d
+
 from ..paddle_extension import Identity
+from .create_conv2d import create_conv2d
 
 # 原timm.models.effcientnet_blocks中的参数
 _SE_ARGS_DEFAULT = dict(
@@ -107,7 +108,7 @@ def drop_path(x, drop_prob: float = 0., training: bool = False):
     output = x / keep_prob * random_tensor
     return output
 
-# 原timm.models.layers.drop.InvertedResidual
+# 原timm.models.effcientnet_blocks.InvertedResidual
 class InvertedResidual(nn.Layer):
     def __init__(self, in_chs, out_chs, dw_kernel_size=3,
                  stride=1, dilation=1, pad_type='', act_layer=nn.ReLU, noskip=False,
@@ -179,7 +180,7 @@ class InvertedResidual(nn.Layer):
 
         return x
 
-# 原timm.models.layers.drop.SqueezeExcite
+# 原timm.models.effcientnet_blocks.SqueezeExcite
 
 class SqueezeExcite(nn.Layer):
     def __init__(self, in_chs, se_ratio=0.25, reduced_base_chs=None,
@@ -199,6 +200,13 @@ class SqueezeExcite(nn.Layer):
         x_se = self.conv_expand(x_se)
         x = x * self.gate_fn(x_se)
         return x
+
+# 原timm.models.layers.effcientnet_blocks.round_channels
+def round_channels(channels, multiplier=1.0, divisor=8, channel_min=None):
+    if not multiplier:
+        return channels
+    channels *= multiplier
+    return make_divisible(channels, divisor, channel_min)
 
 # 原timm.models.effcientnet_blocks.resolve_se_args
 def resolve_se_args(kwargs, in_chs, act_layer=None):

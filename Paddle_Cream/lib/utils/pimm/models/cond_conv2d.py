@@ -5,15 +5,16 @@
 
 import math
 from functools import partial
+
 import numpy as np
+from paddle import create_parameter, matmul  # , ones
 from paddle.framework import dtype
+from paddle.nn import Layer, functional, initializer
 
-from paddle.nn import Layer, initializer, functional
-from paddle import create_parameter, matmul#, ones
-
+from .conv2d_same import conv2d_same
 from .helpers import tup_pair
 from .padding import get_padding_value
-from .conv2d_same import conv2d_same
+
 
 def get_condconv_initializer(initializer, num_experts, expert_shape):
     def condconv_initializer(weight):

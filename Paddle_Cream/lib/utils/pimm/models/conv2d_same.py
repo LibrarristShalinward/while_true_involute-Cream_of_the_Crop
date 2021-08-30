@@ -3,11 +3,13 @@
 由于引用过于复杂，故不对未被调用的函数进行筛除
 '''
 
+from typing import Optional, Tuple
+
 import paddle
-from typing import Tuple, Optional
-from .padding import pad_same, get_padding_value
-from paddle.nn import Conv2D
 import paddle.nn.functional as F
+from paddle.nn import Conv2D
+
+from .padding import get_padding_value, pad_same
 
 
 def conv2d_same(

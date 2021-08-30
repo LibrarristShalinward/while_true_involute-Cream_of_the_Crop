@@ -1,7 +1,10 @@
 import paddle
 from paddle import nn
 from paddle.nn import layer
-from .basic_hooks import count_adap_avgpool, count_avgpool, count_bn, count_convNd, count_linear, count_parameters, count_relu, count_upsample, zero_ops
+
+from .basic_hooks import (count_adap_avgpool, count_avgpool, count_bn,
+                          count_convNd, count_linear, count_parameters,
+                          count_relu, count_upsample, zero_ops)
 
 # 原thop.profile参数
 register_hooks = {

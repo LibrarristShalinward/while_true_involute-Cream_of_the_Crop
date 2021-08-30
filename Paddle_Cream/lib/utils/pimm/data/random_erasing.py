@@ -2,8 +2,9 @@
 本文件为timm.data.random_erasing的全复制
 由于引用过于复杂，故不对未被调用的函数进行筛除
 '''
-import random
 import math
+import random
+
 import paddle
 
 
