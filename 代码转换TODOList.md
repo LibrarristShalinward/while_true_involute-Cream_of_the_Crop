@@ -2,8 +2,8 @@
 
 # 需要转换的代码文件
 
-1. - [ ] [Cream\lib\models\blocks\inverted_residual_block.py](Cream\lib\models\blocks\inverted_residual_block.py)
-2. - [ ] [Cream\lib\models\blocks\residual_block.py](Cream\lib\models\blocks\residual_block.py)
+1. - [x] ~~[Cream\lib\models\blocks\inverted_residual_block.py](Cream\lib\models\blocks\inverted_residual_block.py)~~ - 完成！（97行）检验通过！
+2. - [x] ~~[Cream\lib\models\blocks\residual_block.py](Cream\lib\models\blocks\residual_block.py)~~ - 完成！（110行）检验通过！
 3. - [ ] [Cream\lib\models\builders\build_childnet.py](Cream\lib\models\builders\build_childnet.py)
 4. - [ ] [Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)
 5. - [ ] [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
