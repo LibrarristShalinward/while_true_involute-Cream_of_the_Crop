@@ -7,15 +7,16 @@
 3. - [x] ~~[Cream\lib\models\builders\build_childnet.py](Cream\lib\models\builders\build_childnet.py)~~ - 完成！（191行）检验通过！
 4. - [x] ~~[Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)~~ - 完成！（222行）检验通过！
 5. - [ ] [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
-6. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
-7. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
-8. - [ ] [Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)
-9. - [ ] [Cream\lib\utils\flops_table.py](Cream\lib\utils\flops_table.py)
-10. - [ ] [Cream\lib\utils\util.py](Cream\lib\utils\util.py)
-11. - [ ] [Cream\lib\core\train.py](Cream\lib\core\train.py)
-12. - [ ] [Cream\lib\core\retrain.py](Cream\lib\core\retrain.py)
-13. - [ ] [Cream\lib\core\test.py](Cream\lib\core\test.py)
-14. - [ ] [Cream\tools\retrain.py](Cream\tools\retrain.py)
+6. - [ ] [Cream\lib\models\structures\supernet.py](Cream\lib\models\structures\supernet.py)
+7. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
+8. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
+9. - [x] ~~[Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)~~ - 完成！（317行）检验通过！
+10. - [ ] [Cream\lib\utils\flops_table.py](Cream\lib\utils\flops_table.py)
+11. - [ ] [Cream\lib\utils\util.py](Cream\lib\utils\util.py)
+12. - [ ] [Cream\lib\core\train.py](Cream\lib\core\train.py)
+13. - [ ] [Cream\lib\core\retrain.py](Cream\lib\core\retrain.py)
+14. - [ ] [Cream\lib\core\test.py](Cream\lib\core\test.py)
+15. - [ ] [Cream\tools\retrain.py](Cream\tools\retrain.py)
 
 # 需要迁移的库函数/类
 
@@ -63,8 +64,8 @@
 
 # 可以忽略差异直接进行迁移的代码文件
 
-1. - [ ] [Cream\lib\utils\op_by_layer_dict.py](Cream\lib\utils\op_by_layer_dict.py)
-2. - [ ] [Cream\lib\utils\search_structure_supernet.py](Cream\lib\utils\search_structure_supernet.py)
+1. - [x] [Cream\lib\utils\op_by_layer_dict.py](Cream\lib\utils\op_by_layer_dict.py)
+2. - [x] [Cream\lib\utils\search_structure_supernet.py](Cream\lib\utils\search_structure_supernet.py)
 3. - [ ] [Cream\lib\config.py](Cream\lib\config.py)
 4. - [ ] [Cream\tools\_init_paths.py](Cream\tools\_init_paths.py)
 5. - [ ] [Cream\tools\generate_subImageNet.py](Cream\tools\generate_subImageNet.py)
