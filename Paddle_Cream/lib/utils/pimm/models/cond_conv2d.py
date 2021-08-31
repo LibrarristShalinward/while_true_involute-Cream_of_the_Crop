@@ -8,7 +8,7 @@ from functools import partial
 
 import numpy as np
 from paddle import create_parameter, matmul  # , ones
-from paddle.framework import dtype
+from paddle.framework import ParamAttr
 from paddle.nn import Layer, functional, initializer
 
 from .conv2d_same import conv2d_same
@@ -16,7 +16,7 @@ from .helpers import tup_pair
 from .padding import get_padding_value
 
 
-def get_condconv_initializer(initializer, num_experts, expert_shape):
+def get_condconv_initializer(initializer, num_experts, expert_shape, is_bias = False):
     def condconv_initializer(weight):
         """CondConv initializer function."""
         num_params = np.prod(expert_shape)
@@ -24,8 +24,15 @@ def get_condconv_initializer(initializer, num_experts, expert_shape):
                 weight.shape[1] != num_params):
             raise (ValueError(
                 'CondConv variables must have shape [num_experts, num_params]'))
-        for i in range(num_experts):
-            initializer(weight[i].reshape(expert_shape))
+        # for i in range(num_experts):
+        #     initializer(weight[i].reshape(expert_shape))
+        weight = create_parameter(
+            (num_experts, num_params), 
+            weight.dtype, 
+            weight.name, 
+            ParamAttr(None, initializer), 
+            is_bias)
+        return weight
     return condconv_initializer
 
 
@@ -72,13 +79,13 @@ class CondConv2D(Layer):
         init_weight = get_condconv_initializer(
             # partial(initializer.KaimingUniform, a=math.sqrt(5)), self.num_experts, self.weight_shape)
             initializer.KaimingUniform(), self.num_experts, self.weight_shape)
-        init_weight(self.weight)
+        self.weight = init_weight(self.weight)
         if self.bias is not None:
             fan_in = np.prod(self.weight_shape[1:])
             bound = 1 / math.sqrt(fan_in)
             init_bias = get_condconv_initializer(
-                initializer.Uniform(low = -bound, high = bound), self.num_experts, self.bias_shape)
-            init_bias(self.bias)
+                initializer.Uniform(low = -bound, high = bound), self.num_experts, self.bias_shape, True)
+            self.bias = init_bias(self.bias)
 
     def forward(self, x, routing_weights):
         B, C, H, W = x.shape
