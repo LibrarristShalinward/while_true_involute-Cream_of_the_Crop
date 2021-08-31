@@ -9,7 +9,7 @@
 5. - [ ] [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
 6. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
 7. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
-8. - [ ] [Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)
+8. - [x] ~~[Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)~~ - 完成！（317行）检验通过！
 9. - [ ] [Cream\lib\utils\flops_table.py](Cream\lib\utils\flops_table.py)
 10. - [ ] [Cream\lib\utils\util.py](Cream\lib\utils\util.py)
 11. - [ ] [Cream\lib\core\train.py](Cream\lib\core\train.py)
