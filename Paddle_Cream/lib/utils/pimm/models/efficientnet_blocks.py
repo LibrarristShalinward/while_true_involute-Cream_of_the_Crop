@@ -10,6 +10,11 @@ _SE_ARGS_DEFAULT = dict(
     act_layer=None,
     reduce_mid=False,
     divisor=1)
+BN_MOMENTUM_TF_DEFAULT = 1 - 0.99
+BN_EPS_TF_DEFAULT = 1e-3
+_BN_ARGS_TF = dict(
+    momentum = BN_MOMENTUM_TF_DEFAULT, 
+    eps = BN_EPS_TF_DEFAULT)
 
 # 原timm.models.effcientnet_blocks.ConvBnAct
 class ConvBnAct(nn.Layer):
@@ -208,6 +213,17 @@ def round_channels(channels, multiplier=1.0, divisor=8, channel_min=None):
     channels *= multiplier
     return make_divisible(channels, divisor, channel_min)
 
+# 原timm.models.layers.effcientnet_blocks.resolve_bn_args
+def resolve_bn_args(kwargs):
+    bn_args = get_bn_args_tf() if kwargs.pop('bn_tf', False) else {}
+    bn_momentum = kwargs.pop('bn_momentum', None)
+    if bn_momentum is not None:
+        bn_args['momentum'] = bn_momentum
+    bn_eps = kwargs.pop('bn_eps', None)
+    if bn_eps is not None:
+        bn_args['eps'] = bn_eps
+    return bn_args
+
 # 原timm.models.effcientnet_blocks.resolve_se_args
 def resolve_se_args(kwargs, in_chs, act_layer=None):
     se_kwargs = kwargs.copy() if kwargs is not None else {}
@@ -251,3 +267,7 @@ def make_divisible(v, divisor=8, min_value=None):
     if new_v < 0.9 * v:
         new_v += divisor
     return new_v
+
+# 原timm.models.layers.effcientnet_blocks.get_bn_args_tf
+def get_bn_args_tf():
+    return _BN_ARGS_TF.copy()

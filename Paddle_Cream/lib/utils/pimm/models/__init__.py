@@ -1,4 +1,5 @@
-from .efficientnet_blocks import ConvBnAct, DepthwiseSeparableConv, drop_path, InvertedResidual, SqueezeExcite, make_divisible, round_channels
+from timm.models.efficientnet_blocks import resolve_bn_args
+from .efficientnet_blocks import ConvBnAct, DepthwiseSeparableConv, drop_path, InvertedResidual, SqueezeExcite, make_divisible, round_channels, resolve_bn_args
 from .create_conv2d import create_conv2d
 from .activations import hard_sigmoid, Swish
 from .adaptive_avgmax_pool import SelectAdaptivePool2D

@@ -6,8 +6,8 @@
 2. - [x] ~~[Cream\lib\models\blocks\residual_block.py](Cream\lib\models\blocks\residual_block.py)~~ - 完成！（110行）检验通过！
 3. - [x] ~~[Cream\lib\models\builders\build_childnet.py](Cream\lib\models\builders\build_childnet.py)~~ - 完成！（191行）检验通过！
 4. - [x] ~~[Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)~~ - 完成！（222行）检验通过！
-5. - [ ] [Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)
-6. - [ ] [Cream\lib\models\structures\supernet.py](Cream\lib\models\structures\supernet.py)
+5. - [x] ~~[Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)~~ - 完成！（158行）检验通过！
+6. - [x] ~~[Cream\lib\models\structures\supernet.py](Cream\lib\models\structures\supernet.py)~~ - 完成！（206行）检验通过！
 7. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
 8. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
 9. - [x] ~~[Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)~~ - 完成！（317行）检验通过！
