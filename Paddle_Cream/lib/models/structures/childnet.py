@@ -71,8 +71,8 @@ class ChildNet(nn.Layer):
             self.num_features,
             1,
             padding = pad_type,
-            bias = head_bias)
-        self.act2 = act_layer(inplace = True)
+            bias_attr = None if head_bias else False)
+        self.act2 = act_layer()
 
         # Classifier
         self.classifier = nn.Linear(
@@ -125,13 +125,13 @@ def gen_childnet(arch_list, arch_def, **kwargs):
 
     new_arch = []
     # change to child arch_def
-    for i, (layer_choice, layer_arch) in enumerate(zip(arch_list, arch_def)):
+    for _, (layer_choice, layer_arch) in enumerate(zip(arch_list, arch_def)):
         if len(layer_arch) == 1:
             new_arch.append(layer_arch)
             continue
         else:
             new_layer = []
-            for j, (block_choice, block_arch) in enumerate(
+            for _, (block_choice, block_arch) in enumerate(
                     zip(layer_choice, layer_arch)):
                 kernel_size, exp_ratio = choices_list[block_choice]
                 elements = block_arch.split('_')

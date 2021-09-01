@@ -51,7 +51,7 @@ class SuperNet(nn.Layer):
         stem_size = round_channels(stem_size, channel_multiplier)
         self.conv_stem = create_conv2d(
             self._in_chs, stem_size, 
-            3, stride=2, padding=pad_type)
+            3, stride = 2, padding = pad_type)
         self.bn1 = norm_layer(stem_size, **norm_kwargs)
         self.act1 = act_layer()
         self._in_chs = stem_size
@@ -83,7 +83,7 @@ class SuperNet(nn.Layer):
             self.num_features,
             1,
             padding = pad_type,
-            bias = head_bias)
+            bias_attr = None if head_bias else False)
         self.act2 = act_layer()
 
         # Classifier
