@@ -1,1 +1,1 @@
-from .profile import profile
+from .profile import profile, clever_format

@@ -1,6 +1,6 @@
 import paddle
 from paddle import nn
-from paddle.nn import layer
+from collections import Iterable
 
 from .basic_hooks import (count_adap_avgpool, count_avgpool, count_bn,
                           count_convNd, count_linear, count_parameters,
@@ -111,6 +111,28 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
         # layer.buffers().pop("total_params")
 
     return total_ops, total_params
+
+# 原thop.utils.clever_format
+def clever_format(nums, format="%.2f"):
+    if not isinstance(nums, Iterable):
+        nums = [nums]
+    clever_nums = []
+
+    for num in nums:
+        if num > 1e12:
+            clever_nums.append(format % (num / 1e12) + "T")
+        elif num > 1e9:
+            clever_nums.append(format % (num / 1e9) + "G")
+        elif num > 1e6:
+            clever_nums.append(format % (num / 1e6) + "M")
+        elif num > 1e3:
+            clever_nums.append(format % (num / 1e3) + "K")
+        else:
+            clever_nums.append(format % num + "B")
+
+    clever_nums = clever_nums[0] if len(clever_nums) == 1 else (*clever_nums, )
+
+    return clever_nums
 
 # 原thop.profile.prRed
 def prRed(skk): 
