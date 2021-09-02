@@ -20,6 +20,34 @@ One-shot weight sharing methods have recently drawn great attention in neural ar
 
 ----
 
+## **While Cream: 卷 大事记**
+
+<font size = 5>
+<br>
+
+- 21-08-30-14-06
+  - 
+  - 完成了tImM到pImM库的转写（以及其他依赖库转写）
+
+<br>
+<br>
+
+- 21-09-03-00-29
+  - 
+  - 完成了所有代码的转写及到训练部分前的测试
+
+<br>
+<br>
+
+- 。。。。。。
+  - 
+
+<br>
+<br>
+</font>
+
+----
+
 ## 关于源码：
 <br>
 我们已经完成了源论文验证集的运行，以下简要介绍运行情况：
