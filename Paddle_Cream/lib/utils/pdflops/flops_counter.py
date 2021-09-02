@@ -36,6 +36,8 @@ def get_model_complexity_info(model, input_res,
                 dtype=flops_model.parameters()[0].dtype)
         except StopIteration:
             batch = paddle.randn((1, *input_res))
+        except IndexError:
+            batch = paddle.randn((1, *input_res))
 
         _ = flops_model(batch)
 
