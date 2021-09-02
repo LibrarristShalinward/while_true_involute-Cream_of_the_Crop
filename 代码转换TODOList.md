@@ -13,10 +13,10 @@
 9. - [x] ~~[Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)~~ - 完成！（317行）检验通过！
 10. - [x] ~~[Cream\lib\utils\flops_table.py](Cream\lib\utils\flops_table.py)~~ - 完成！（97行）检验通过！
 11. - [ ] ~~[Cream\lib\utils\util.py](Cream\lib\utils\util.py)~~ - 完成！（174行）不作检验
-12. - [ ] [Cream\lib\core\train.py](Cream\lib\core\train.py)
+12. - [ ] ~~[Cream\lib\core\train.py](Cream\lib\core\train.py)~~ - 完成！（234行）
 13. - [ ] [Cream\lib\core\retrain.py](Cream\lib\core\retrain.py)
 14. - [ ] [Cream\lib\core\test.py](Cream\lib\core\test.py)
-15. - [ ] [Cream\tools\retrain.py](Cream\tools\retrain.py)
+15. - [ ] ~~[Cream\tools\retrain.py](Cream\tools\train.py)~~ - 完成！（228行）
 
 # 需要迁移的库函数/类
 
