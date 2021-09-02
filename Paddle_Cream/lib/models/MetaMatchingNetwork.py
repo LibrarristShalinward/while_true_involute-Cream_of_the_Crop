@@ -41,6 +41,8 @@ class MetaMatchingNetwork():
         #     grad_teacher):
         #     weight.grad = grad_item
 
+        assert [param for param in model.rand_parameters(teacher_cand, True)][0].grad.max() > 0.
+
         past_params = optimizer._parameter_list
         optimizer._parameter_list = [param for param in model.rand_parameters(teacher_cand, self.cfg.SUPERNET.PICK_METHOD == 'meta')]
         optimizer.step()
@@ -83,7 +85,8 @@ class MetaMatchingNetwork():
         backward(students_weight[0], retain_graph = True)
 
         grad_teacher = []
-        for param in model.rand_parameters(teacher_cand):
+        for param in model.rand_parameters(teacher_cand, 
+            self.cfg.SUPERNET.PICK_METHOD == 'meta'):
             grad_teacher.append(param.grad)
         return grad_teacher
 

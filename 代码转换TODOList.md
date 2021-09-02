@@ -8,8 +8,8 @@
 4. - [x] ~~[Cream\lib\models\builders\build_supernet.py](Cream\lib\models\builders\build_supernet.py)~~ - 完成！（222行）检验通过！
 5. - [x] ~~[Cream\lib\models\structures\childnet.py](Cream\lib\models\structures\childnet.py)~~ - 完成！（158行）检验通过！
 6. - [x] ~~[Cream\lib\models\structures\supernet.py](Cream\lib\models\structures\supernet.py)~~ - 完成！（206行）检验通过！
-7. - [ ] [Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)
-8. - [ ] [Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)
+7. - [x] ~~[Cream\lib\models\MetaMatchingNetwork.py](Cream\lib\models\MetaMatchingNetwork.py)~~ - 完成！（161行）检验通过！
+8. - [x] ~~[Cream\lib\models\PrioritizedBoard.py](Cream\lib\models\PrioritizedBoard.py)~~ - 完成！（126行）检验通过！
 9. - [x] ~~[Cream\lib\utils\builder_util.py](Cream\lib\utils\builder_util.py)~~ - 完成！（317行）检验通过！
 10. - [x] ~~[Cream\lib\utils\flops_table.py](Cream\lib\utils\flops_table.py)~~ - 完成！（97行）检验通过！
 11. - [ ] ~~[Cream\lib\utils\util.py](Cream\lib\utils\util.py)~~ - 完成！（174行）不作检验
