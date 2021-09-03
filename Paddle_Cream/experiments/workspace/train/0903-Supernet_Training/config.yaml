@@ -19,7 +19,7 @@ DATASET:
   NUM_CLASSES: 1000
   IMAGE_SIZE: 224 # image patch size
   INTERPOLATION: 'bilinear' # Image resize interpolation type
-  BATCH_SIZE: 128 # batch size
+  BATCH_SIZE: 16 # batch size
 
 NET:
   GP: 'avg'
@@ -39,7 +39,7 @@ BATCHNORM:
   SYNC_BN: False
 
 SUPERNET:
-  UPDATE_ITER: 200
+  UPDATE_ITER: 5
   SLICE: 4
   POOL_SIZE: 10
   RESUNIT: False

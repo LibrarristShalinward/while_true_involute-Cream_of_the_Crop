@@ -2,12 +2,12 @@
 本文件为原lib/models/core/train.py的转写
 '''
 
-from ...utils.pimm import AverageMeter
+from lib.utils.pimm import AverageMeter
 import time
 import paddle
-from ...utils.util import cross_entropy_loss_with_soft_target
+from lib.utils.util import cross_entropy_loss_with_soft_target
 from paddle.nn.functional import softmax
-from ...utils.pimm.utils import accuracy, reduce_tensor
+from lib.utils.pimm.utils import accuracy, reduce_tensor
 import os
 from PIL import Image
 from collections import OrderedDict
@@ -79,15 +79,15 @@ def train_epoch(
 
             loss = (meta_value * kd_loss + (2 - meta_value) * valid_loss) / 2
 
-        optimizer.zero_grad()
+        optimizer.clear_grad()
         loss.backward()
         optimizer.step()
 
         prec1, prec5 = accuracy(output, target, topk=(1, 5))
-        if cfg.NUM_GPU == 1:
-            reduced_loss = loss.data
+        if cfg.NUM_GPU == 1 or cfg.NUM_GPU == 0:
+            reduced_loss = loss
         else:
-            reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
+            reduced_loss = reduce_tensor(loss, cfg.NUM_GPU)
             prec1 = reduce_tensor(prec1, cfg.NUM_GPU)
             prec5 = reduce_tensor(prec5, cfg.NUM_GPU)
 
@@ -97,18 +97,19 @@ def train_epoch(
         # torch.cuda.synchronize()
 
         if kd_loss is not None:
-            kd_losses_m.update(kd_loss.item(), input.size(0))
-        losses_m.update(reduced_loss.item(), input.size(0))
-        prec1_m.update(prec1.item(), output.size(0))
-        prec5_m.update(prec5.item(), output.size(0))
+            kd_losses_m.update(kd_loss.item(), input.shape[0])
+        losses_m.update(reduced_loss.item(), input.shape[0])
+        prec1_m.update(prec1, output.shape[0])
+        prec5_m.update(prec5, output.shape[0])
         batch_time_m.update(time.time() - end)
 
         if lr_scheduler is not None:
             lr_scheduler.step()
 
         if last_batch or batch_idx % cfg.LOG_INTERVAL == 0:
-            lrl = [param_group['lr'] for param_group in optimizer.param_groups]
-            lr = sum(lrl) / len(lrl)
+            # lrl = [param_group['lr'] for param_group in optimizer.param_groups]
+            # lr = sum(lrl) / len(lrl)
+            lr = optimizer.get_lr()
 
             if local_rank == 0:
                 logger.info(
@@ -129,8 +130,8 @@ def train_epoch(
                         top1=prec1_m,
                         top5=prec5_m,
                         batch_time=batch_time_m,
-                        rate=input.size(0) * cfg.NUM_GPU / batch_time_m.val,
-                        rate_avg=input.size(0) * cfg.NUM_GPU / batch_time_m.avg,
+                        rate=input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
+                        rate_avg=input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
                         lr=lr,
                         data_time=data_time_m))
 
@@ -194,7 +195,7 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
                     reduce_factor,
                     reduce_factor).mean(
                     dim=2)
-                target = target[0:target.size(0):reduce_factor]
+                target = target[0:target.shape[0]:reduce_factor]
 
             loss = loss_fn(output, target)
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
@@ -208,9 +209,9 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
 
             # torch.cuda.synchronize()
 
-            losses_m.update(reduced_loss.item(), input.size(0))
-            prec1_m.update(prec1.item(), output.size(0))
-            prec5_m.update(prec5.item(), output.size(0))
+            losses_m.update(reduced_loss.item(), input.shape[0])
+            prec1_m.update(prec1.item(), output.shape[0])
+            prec5_m.update(prec5.item(), output.shape[0])
 
             batch_time_m.update(time.time() - end)
             end = time.time()

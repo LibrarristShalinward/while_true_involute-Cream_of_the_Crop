@@ -30,11 +30,11 @@ def main():
     os.system("copy {} {}".format(args.cfg, os.path.join(save_path, 'config.yaml')))
 
     if args.mode == 'train':
-        os.system("python -m "
-                  "torch.distributed.launch "
-                  "--nproc_per_node={} "
+        os.system("python "
+                #   " -m torch.distributed.launch "
+                #   "--nproc_per_node={} "
                   "tools/train.py "
-                  "--cfg {}".format(cfg.NUM_GPU, args.cfg))
+                  "--cfg {}".format(args.cfg))
     # elif args.mode == 'retrain':
     #     os.system("python -m "
     #               "torch.distributed.launch "

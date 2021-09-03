@@ -3,25 +3,29 @@
 本文件为训练交互文件
 '''
 
-from ..lib.utils.util import parse_config_args, get_logger
 import datetime
 import os
-import paddle
-import numpy as np
-from ..lib.models.structures.supernet import gen_supernet
-from ..lib.models.MetaMatchingNetwork import MetaMatchingNetwork
-from ..lib.models.PrioritizedBoard import PrioritizedBoard
-from ..lib.utils.flops_table import FlopsEst
-from ..lib.utils.pimm.models import resume_checkpoint
-from ..lib.utils.util import create_optimizer_supernet, create_supernet_scheduler
-from paddle.nn import SyncBatchNorm, CrossEntropyLoss
 import sys
-from ..lib.utils.pimm.data import Dataset, create_loader
-from ..lib.config import DEFAULT_CROP_PCT, IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..lib.utils.pimm.loss import LabelSmoothingCrossEntropy
-from ..lib.utils.pimm.utils import CheckpointSaver, update_summary
-from ..lib.core.train import train_epoch, validate
 
+import numpy as np
+import paddle
+
+import _init_paths
+from lib.config import (DEFAULT_CROP_PCT, IMAGENET_DEFAULT_MEAN,
+                        IMAGENET_DEFAULT_STD)
+from lib.core.train import train_epoch, validate
+from lib.models.MetaMatchingNetwork import MetaMatchingNetwork
+from lib.models.PrioritizedBoard import PrioritizedBoard
+from lib.models.structures.supernet import gen_supernet
+from lib.utils.flops_table import FlopsEst
+from lib.utils.pimm.data import Dataset, create_loader
+from lib.utils.pimm.loss import LabelSmoothingCrossEntropy
+from lib.utils.pimm.models import resume_checkpoint
+from lib.utils.pimm.utils import CheckpointSaver, update_summary
+from lib.utils.util import (create_optimizer_supernet,
+                            create_supernet_scheduler, get_logger,
+                            parse_config_args)
+from paddle.nn import CrossEntropyLoss, SyncBatchNorm
 
 USE_APEX = False
 
@@ -30,9 +34,10 @@ def main():
     args, cfg = parse_config_args('super net training')
 
     # resolve logging
-    output_dir = os.path.join(cfg.SAVE_PATH,
-                              "{}-{}".format(datetime.date.today().strftime('%m%d'),
-                                             cfg.MODEL))
+    output_dir = os.path.join(
+        cfg.SAVE_PATH, "{}-{}".format(
+            datetime.date.today().strftime('%m%d'), 
+            cfg.MODEL))
 
     if args.local_rank == 0:
         logger = get_logger(os.path.join(output_dir, "train.log"))
@@ -92,10 +97,10 @@ def main():
             model, cfg.RESUME_PATH)
 
     # create optimizer and resume from checkpoint
-    optimizer = create_optimizer_supernet(cfg, model, USE_APEX)
+    optimizer = create_optimizer_supernet(cfg, model)
     if optimizer_state is not None:
         optimizer.load_state_dict(optimizer_state['optimizer'])
-    model = model.cuda()
+    # model = model.cuda()
 
     # convert model to distributed mode
     if cfg.BATCHNORM.SYNC_BN:
@@ -122,7 +127,7 @@ def main():
         # model = DDP(model, device_ids=[args.local_rank])
 
     # create learning rate scheduler
-    lr_scheduler, num_epochs = create_supernet_scheduler(cfg, optimizer)
+    lr_scheduler, num_epochs = create_supernet_scheduler(cfg)
 
     start_epoch = resume_epoch if resume_epoch is not None else 0
     if start_epoch > 0:
@@ -132,7 +137,7 @@ def main():
         logger.info('Scheduled epochs: %d', num_epochs)
 
     # imagenet train dataset
-    train_dir = os.path.join(cfg.DATA_DIR, 'train')
+    train_dir = os.path.join(cfg.DATA_DIR, 'val')
     if not os.path.exists(train_dir):
         logger.info('Training folder does not exist at: %s', train_dir)
         sys.exit()
@@ -179,10 +184,10 @@ def main():
     # whether to use label smoothing
     if cfg.AUGMENTATION.SMOOTHING > 0.:
         train_loss_fn = LabelSmoothingCrossEntropy(
-            smoothing=cfg.AUGMENTATION.SMOOTHING).cuda()
-        validate_loss_fn = CrossEntropyLoss().cuda()
+            smoothing=cfg.AUGMENTATION.SMOOTHING)
+        validate_loss_fn = CrossEntropyLoss()
     else:
-        train_loss_fn = CrossEntropyLoss().cuda()
+        train_loss_fn = CrossEntropyLoss()
         validate_loss_fn = train_loss_fn
 
     # initialize training parameters

@@ -1,0 +1,251 @@
+09/03 10:01:26 AM | Training on Process 0 with 8 GPUs.
+09/03 10:01:27 AM | Supernet created, param count: 4931897
+09/03 10:01:27 AM | resolution: 96
+09/03 10:01:27 AM | choice number: 6
+09/03 10:03:44 AM | Training on Process 0 with 8 GPUs.
+09/03 10:03:45 AM | Supernet created, param count: 4931897
+09/03 10:03:45 AM | resolution: 96
+09/03 10:03:45 AM | choice number: 6
+09/03 10:08:05 AM | Training on Process 0 with 8 GPUs.
+09/03 10:08:06 AM | Supernet created, param count: 4931897
+09/03 10:08:06 AM | resolution: 96
+09/03 10:08:06 AM | choice number: 6
+09/03 10:15:39 AM | Training on Process 0 with 8 GPUs.
+09/03 10:15:40 AM | Supernet created, param count: 4931897
+09/03 10:15:40 AM | resolution: 96
+09/03 10:15:40 AM | choice number: 6
+09/03 10:16:06 AM | Training on Process 0 with 8 GPUs.
+09/03 10:16:07 AM | Supernet created, param count: 4931897
+09/03 10:16:07 AM | resolution: 96
+09/03 10:16:07 AM | choice number: 6
+09/03 10:16:08 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:17:24 AM | Training on Process 0 with 8 GPUs.
+09/03 10:17:25 AM | Supernet created, param count: 4931897
+09/03 10:17:25 AM | resolution: 96
+09/03 10:17:25 AM | choice number: 6
+09/03 10:17:26 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:17:26 AM | Scheduled epochs: 120
+09/03 10:17:26 AM | Training folder does not exist at: ./data/imagenet\train
+09/03 10:31:45 AM | Training on Process 0 with 8 GPUs.
+09/03 10:31:46 AM | Supernet created, param count: 4931897
+09/03 10:31:46 AM | resolution: 96
+09/03 10:31:46 AM | choice number: 6
+09/03 10:31:46 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:31:46 AM | Scheduled epochs: 120
+09/03 10:34:22 AM | Training on Process 0 with 8 GPUs.
+09/03 10:34:23 AM | Supernet created, param count: 4931897
+09/03 10:34:23 AM | resolution: 96
+09/03 10:34:23 AM | choice number: 6
+09/03 10:34:24 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:34:24 AM | Scheduled epochs: 120
+09/03 10:35:36 AM | Training on Process 0 with 8 GPUs.
+09/03 10:35:37 AM | Supernet created, param count: 4931897
+09/03 10:35:37 AM | resolution: 96
+09/03 10:35:37 AM | choice number: 6
+09/03 10:35:38 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:35:38 AM | Scheduled epochs: 120
+09/03 10:45:02 AM | Training on Process 0 with 8 GPUs.
+09/03 10:45:03 AM | Supernet created, param count: 4931897
+09/03 10:45:03 AM | resolution: 96
+09/03 10:45:03 AM | choice number: 6
+09/03 10:45:03 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:45:03 AM | Scheduled epochs: 120
+09/03 10:45:30 AM | Training on Process 0 with 8 GPUs.
+09/03 10:45:31 AM | Supernet created, param count: 4931897
+09/03 10:45:31 AM | resolution: 96
+09/03 10:45:31 AM | choice number: 6
+09/03 10:45:32 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:45:32 AM | Scheduled epochs: 120
+09/03 10:50:05 AM | Training on Process 0 with 8 GPUs.
+09/03 10:50:06 AM | Supernet created, param count: 4931897
+09/03 10:50:06 AM | resolution: 96
+09/03 10:50:06 AM | choice number: 6
+09/03 10:50:07 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:50:07 AM | Scheduled epochs: 120
+09/03 10:53:40 AM | Training on Process 0 with 8 GPUs.
+09/03 10:53:41 AM | Supernet created, param count: 4931897
+09/03 10:53:41 AM | resolution: 96
+09/03 10:53:41 AM | choice number: 6
+09/03 10:53:42 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:53:42 AM | Scheduled epochs: 120
+09/03 10:53:44 AM | DataLoader reader thread raised an exception.
+09/03 10:59:47 AM | Training on Process 0 with 8 GPUs.
+09/03 10:59:48 AM | Supernet created, param count: 4931897
+09/03 10:59:48 AM | resolution: 96
+09/03 10:59:48 AM | choice number: 6
+09/03 10:59:49 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 10:59:49 AM | Scheduled epochs: 120
+09/03 10:59:51 AM | DataLoader reader thread raised an exception.
+09/03 11:03:52 AM | Training on Process 0 with 8 GPUs.
+09/03 11:03:53 AM | Supernet created, param count: 4931897
+09/03 11:03:53 AM | resolution: 96
+09/03 11:03:53 AM | choice number: 6
+09/03 11:03:54 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:03:54 AM | Scheduled epochs: 120
+09/03 11:03:56 AM | DataLoader reader thread raised an exception.
+09/03 11:09:12 AM | Training on Process 0 with 8 GPUs.
+09/03 11:09:13 AM | Supernet created, param count: 4931897
+09/03 11:09:13 AM | resolution: 96
+09/03 11:09:13 AM | choice number: 6
+09/03 11:09:14 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:09:14 AM | Scheduled epochs: 120
+09/03 11:09:16 AM | DataLoader reader thread raised an exception.
+09/03 11:25:17 AM | Training on Process 0 with 8 GPUs.
+09/03 11:25:18 AM | Supernet created, param count: 4931897
+09/03 11:25:18 AM | resolution: 96
+09/03 11:25:18 AM | choice number: 6
+09/03 11:25:18 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:25:18 AM | Scheduled epochs: 120
+09/03 11:26:10 AM | Training on Process 0 with 8 GPUs.
+09/03 11:26:11 AM | Supernet created, param count: 4931897
+09/03 11:26:11 AM | resolution: 96
+09/03 11:26:11 AM | choice number: 6
+09/03 11:26:12 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:26:12 AM | Scheduled epochs: 120
+09/03 11:28:15 AM | Training on Process 0 with 8 GPUs.
+09/03 11:28:16 AM | Supernet created, param count: 4931897
+09/03 11:28:16 AM | resolution: 96
+09/03 11:28:16 AM | choice number: 6
+09/03 11:28:17 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:28:17 AM | Scheduled epochs: 120
+09/03 11:28:42 AM | Training on Process 0 with 8 GPUs.
+09/03 11:28:43 AM | Supernet created, param count: 4931897
+09/03 11:28:43 AM | resolution: 96
+09/03 11:28:43 AM | choice number: 6
+09/03 11:28:44 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:28:44 AM | Scheduled epochs: 120
+09/03 11:30:32 AM | Training on Process 0 with 8 GPUs.
+09/03 11:30:33 AM | Supernet created, param count: 4931897
+09/03 11:30:33 AM | resolution: 96
+09/03 11:30:33 AM | choice number: 6
+09/03 11:30:33 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:30:33 AM | Scheduled epochs: 120
+09/03 11:31:39 AM | Training on Process 0 with 8 GPUs.
+09/03 11:31:40 AM | Supernet created, param count: 4931897
+09/03 11:31:40 AM | resolution: 96
+09/03 11:31:40 AM | choice number: 6
+09/03 11:31:41 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:31:41 AM | Scheduled epochs: 120
+09/03 11:33:19 AM | Training on Process 0 with 8 GPUs.
+09/03 11:33:20 AM | Supernet created, param count: 4931897
+09/03 11:33:20 AM | resolution: 96
+09/03 11:33:20 AM | choice number: 6
+09/03 11:33:21 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:33:21 AM | Scheduled epochs: 120
+09/03 11:34:44 AM | Training on Process 0 with 8 GPUs.
+09/03 11:34:45 AM | Supernet created, param count: 4931897
+09/03 11:34:45 AM | resolution: 96
+09/03 11:34:45 AM | choice number: 6
+09/03 11:34:46 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:34:46 AM | Scheduled epochs: 120
+09/03 11:36:26 AM | Training on Process 0 with 8 GPUs.
+09/03 11:36:27 AM | Supernet created, param count: 4931897
+09/03 11:36:27 AM | resolution: 96
+09/03 11:36:27 AM | choice number: 6
+09/03 11:36:28 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:36:28 AM | Scheduled epochs: 120
+09/03 11:41:17 AM | Training on Process 0 with 8 GPUs.
+09/03 11:41:18 AM | Supernet created, param count: 4931897
+09/03 11:41:18 AM | resolution: 96
+09/03 11:41:18 AM | choice number: 6
+09/03 11:41:19 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:41:19 AM | Scheduled epochs: 120
+09/03 11:44:50 AM | Training on Process 0 with 8 GPUs.
+09/03 11:44:51 AM | Supernet created, param count: 4931897
+09/03 11:44:51 AM | resolution: 96
+09/03 11:44:51 AM | choice number: 6
+09/03 11:44:52 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:44:52 AM | Scheduled epochs: 120
+09/03 11:58:03 AM | Training on Process 0 with 8 GPUs.
+09/03 11:58:04 AM | Supernet created, param count: 4931897
+09/03 11:58:04 AM | resolution: 96
+09/03 11:58:04 AM | choice number: 6
+09/03 11:58:05 AM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 11:58:05 AM | Scheduled epochs: 120
+09/03 12:00:00 PM | Training on Process 0 with 8 GPUs.
+09/03 12:00:01 PM | Supernet created, param count: 4931897
+09/03 12:00:01 PM | resolution: 96
+09/03 12:00:01 PM | choice number: 6
+09/03 12:00:02 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:00:02 PM | Scheduled epochs: 120
+09/03 12:03:39 PM | Training on Process 0 with 8 GPUs.
+09/03 12:03:40 PM | Supernet created, param count: 4931897
+09/03 12:03:40 PM | resolution: 96
+09/03 12:03:40 PM | choice number: 6
+09/03 12:03:41 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:03:41 PM | Scheduled epochs: 120
+09/03 12:03:53 PM | Training on Process 0 with 8 GPUs.
+09/03 12:03:54 PM | Supernet created, param count: 4931897
+09/03 12:03:54 PM | resolution: 96
+09/03 12:03:54 PM | choice number: 6
+09/03 12:03:55 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:03:55 PM | Scheduled epochs: 120
+09/03 12:05:24 PM | Training on Process 0 with 0 GPUs.
+09/03 12:05:25 PM | Supernet created, param count: 4931897
+09/03 12:05:25 PM | resolution: 96
+09/03 12:05:25 PM | choice number: 6
+09/03 12:05:26 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:05:43 PM | Training on Process 0 with 1 GPUs.
+09/03 12:05:44 PM | Supernet created, param count: 4931897
+09/03 12:05:44 PM | resolution: 96
+09/03 12:05:44 PM | choice number: 6
+09/03 12:05:45 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:05:45 PM | Scheduled epochs: 120
+09/03 12:07:25 PM | Training on Process 0 with 1 GPUs.
+09/03 12:07:26 PM | Supernet created, param count: 4931897
+09/03 12:07:26 PM | resolution: 96
+09/03 12:07:26 PM | choice number: 6
+09/03 12:07:26 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:07:26 PM | Scheduled epochs: 120
+09/03 12:08:57 PM | Training on Process 0 with 1 GPUs.
+09/03 12:08:58 PM | Supernet created, param count: 4931897
+09/03 12:08:58 PM | resolution: 96
+09/03 12:08:58 PM | choice number: 6
+09/03 12:08:58 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:08:58 PM | Scheduled epochs: 120
+09/03 12:10:55 PM | Training on Process 0 with 1 GPUs.
+09/03 12:10:56 PM | Supernet created, param count: 4931897
+09/03 12:10:56 PM | resolution: 96
+09/03 12:10:56 PM | choice number: 6
+09/03 12:10:57 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:10:57 PM | Scheduled epochs: 120
+09/03 12:11:40 PM | Train: 0 [   0/390 (  0%)]  Loss:  6.912962 (6.9130)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0000)  Prec@5:  0.0000 ( 0.0000)  Time: 40.905s,    3.13/s  (40.905s,    3.13/s)  LR: 1.000e-03  Data: 12.660 (12.660)
+09/03 12:15:43 PM | Training on Process 0 with 1 GPUs.
+09/03 12:15:44 PM | Supernet created, param count: 4931897
+09/03 12:15:44 PM | resolution: 96
+09/03 12:15:44 PM | choice number: 6
+09/03 12:15:45 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:15:45 PM | Scheduled epochs: 120
+09/03 12:16:41 PM | Train: 0 [   0/390 (  0%)]  Loss:  6.904977 (6.9050)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.7812 ( 0.7812)  Prec@5:  0.7812 ( 0.7812)  Time: 42.459s,    3.01/s  (42.459s,    3.01/s)  LR: 1.000e-03  Data: 16.429 (16.429)
+09/03 12:18:27 PM | Training on Process 0 with 1 GPUs.
+09/03 12:18:28 PM | Supernet created, param count: 4931897
+09/03 12:18:28 PM | resolution: 96
+09/03 12:18:28 PM | choice number: 6
+09/03 12:18:29 PM | Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.
+09/03 12:18:29 PM | Scheduled epochs: 120
+09/03 12:18:34 PM | Train: 0 [   0/3125 (  0%)]  Loss:  6.904374 (6.9044)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0000)  Prec@5:  0.0000 ( 0.0000)  Time: 3.356s,    4.77/s  (3.356s,    4.77/s)  LR: 1.000e-03  Data: 0.618 (0.618)
+09/03 12:20:31 PM | Train: 0 [  50/3125 (  2%)]  Loss:  6.904300 (6.9099)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0000)  Prec@5:  0.0000 ( 0.4902)  Time: 2.260s,    7.08/s  (2.366s,    6.76/s)  LR: 1.000e-03  Data: 0.043 (0.054)
+09/03 12:22:27 PM | Train: 0 [ 100/3125 (  3%)]  Loss:  6.901330 (6.9090)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0000)  Prec@5:  0.0000 ( 0.3713)  Time: 2.232s,    7.17/s  (2.338s,    6.84/s)  LR: 1.000e-03  Data: 0.038 (0.049)
+09/03 12:24:22 PM | Train: 0 [ 150/3125 (  5%)]  Loss:  6.913039 (6.9103)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0414)  Prec@5:  0.0000 ( 0.4967)  Time: 2.270s,    7.05/s  (2.326s,    6.88/s)  LR: 1.000e-03  Data: 0.048 (0.047)
+09/03 12:26:23 PM | Train: 0 [ 200/3125 (  6%)]  Loss:  6.898282 (6.9101)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0622)  Prec@5:  0.0000 ( 0.7774)  Time: 3.762s,    4.25/s  (2.350s,    6.81/s)  LR: 1.000e-03  Data: 0.052 (0.046)
+09/03 12:28:22 PM | Train: 0 [ 250/3125 (  8%)]  Loss:  6.926360 (6.9104)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0498)  Prec@5:  0.0000 ( 0.6972)  Time: 1.595s,   10.03/s  (2.358s,    6.79/s)  LR: 1.000e-03  Data: 0.038 (0.046)
+09/03 12:30:13 PM | Train: 0 [ 300/3125 ( 10%)]  Loss:  6.923818 (6.9105)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0831)  Prec@5:  0.0000 ( 0.6852)  Time: 3.024s,    5.29/s  (2.335s,    6.85/s)  LR: 1.000e-03  Data: 0.051 (0.045)
+09/03 12:32:04 PM | Train: 0 [ 350/3125 ( 11%)]  Loss:  6.908556 (6.9097)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.1068)  Prec@5:  0.0000 ( 0.6588)  Time: 1.482s,   10.80/s  (2.317s,    6.91/s)  LR: 1.000e-03  Data: 0.043 (0.045)
+09/03 12:33:59 PM | Train: 0 [ 400/3125 ( 13%)]  Loss:  6.907859 (6.9095)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0935)  Prec@5:  0.0000 ( 0.7170)  Time: 2.530s,    6.32/s  (2.314s,    6.91/s)  LR: 1.000e-03  Data: 0.036 (0.044)
+09/03 12:35:56 PM | Train: 0 [ 450/3125 ( 14%)]  Loss:  6.924712 (6.9097)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0831)  Prec@5:  0.0000 ( 0.6652)  Time: 1.870s,    8.56/s  (2.317s,    6.90/s)  LR: 1.000e-03  Data: 0.041 (0.044)
+09/03 12:37:49 PM | Train: 0 [ 500/3125 ( 16%)]  Loss:  6.906253 (6.9096)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0873)  Prec@5:  0.0000 ( 0.6362)  Time: 1.772s,    9.03/s  (2.311s,    6.92/s)  LR: 1.000e-03  Data: 0.040 (0.044)
+09/03 12:39:50 PM | Train: 0 [ 550/3125 ( 18%)]  Loss:  6.922817 (6.9096)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0907)  Prec@5:  0.0000 ( 0.6352)  Time: 1.866s,    8.57/s  (2.321s,    6.89/s)  LR: 1.000e-03  Data: 0.042 (0.044)
+09/03 12:41:48 PM | Train: 0 [ 600/3125 ( 19%)]  Loss:  6.920310 (6.9096)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0832)  Prec@5:  0.0000 ( 0.6136)  Time: 1.875s,    8.53/s  (2.325s,    6.88/s)  LR: 1.000e-03  Data: 0.042 (0.043)
+09/03 12:43:44 PM | Train: 0 [ 650/3125 ( 21%)]  Loss:  6.911402 (6.9098)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0864)  Prec@5:  0.0000 ( 0.5952)  Time: 2.517s,    6.36/s  (2.325s,    6.88/s)  LR: 1.000e-03  Data: 0.035 (0.043)
+09/03 12:45:43 PM | Train: 0 [ 700/3125 ( 22%)]  Loss:  6.897003 (6.9097)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0802)  Prec@5:  0.0000 ( 0.5706)  Time: 2.255s,    7.10/s  (2.329s,    6.87/s)  LR: 1.000e-03  Data: 0.039 (0.043)
+09/03 12:47:42 PM | Train: 0 [ 750/3125 ( 24%)]  Loss:  6.912948 (6.9096)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0915)  Prec@5:  0.0000 ( 0.5659)  Time: 2.662s,    6.01/s  (2.332s,    6.86/s)  LR: 1.000e-03  Data: 0.049 (0.043)
+09/03 12:49:37 PM | Train: 0 [ 800/3125 ( 26%)]  Loss:  6.893737 (6.9096)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0858)  Prec@5:  0.0000 ( 0.5696)  Time: 2.511s,    6.37/s  (2.330s,    6.87/s)  LR: 1.000e-03  Data: 0.043 (0.043)
+09/03 12:51:33 PM | Train: 0 [ 850/3125 ( 27%)]  Loss:  6.908532 (6.9095)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0881)  Prec@5:  0.0000 ( 0.5508)  Time: 2.277s,    7.03/s  (2.329s,    6.87/s)  LR: 1.000e-03  Data: 0.042 (0.043)
+09/03 12:53:23 PM | Train: 0 [ 900/3125 ( 29%)]  Loss:  6.932354 (6.9093)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0902)  Prec@5:  6.2500 ( 0.5688)  Time: 1.529s,   10.47/s  (2.323s,    6.89/s)  LR: 1.000e-03  Data: 0.036 (0.043)
+09/03 12:55:14 PM | Train: 0 [ 950/3125 ( 30%)]  Loss:  6.927856 (6.9091)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0854)  Prec@5:  0.0000 ( 0.5652)  Time: 2.127s,    7.52/s  (2.317s,    6.91/s)  LR: 1.000e-03  Data: 0.043 (0.043)
+09/03 12:57:11 PM | Train: 0 [1000/3125 ( 32%)]  Loss:  6.939619 (6.9092)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0812)  Prec@5:  0.0000 ( 0.5744)  Time: 2.289s,    6.99/s  (2.318s,    6.90/s)  LR: 1.000e-03  Data: 0.043 (0.043)
+09/03 12:59:12 PM | Train: 0 [1050/3125 ( 34%)]  Loss:  6.903338 (6.9091)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0892)  Prec@5:  0.0000 ( 0.5768)  Time: 2.966s,    5.39/s  (2.322s,    6.89/s)  LR: 1.000e-03  Data: 0.044 (0.043)
+09/03 01:01:12 PM | Train: 0 [1100/3125 ( 35%)]  Loss:  6.887568 (6.9090)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0851)  Prec@5:  0.0000 ( 0.5677)  Time: 2.339s,    6.84/s  (2.326s,    6.88/s)  LR: 1.000e-03  Data: 0.048 (0.043)
+09/03 01:03:09 PM | Train: 0 [1150/3125 ( 37%)]  Loss:  6.901909 (6.9090)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0815)  Prec@5:  0.0000 ( 0.5539)  Time: 2.742s,    5.84/s  (2.327s,    6.87/s)  LR: 1.000e-03  Data: 0.047 (0.043)
+09/03 01:05:11 PM | Train: 0 [1200/3125 ( 38%)]  Loss:  6.909279 (6.9089)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0781)  Prec@5:  6.2500 ( 0.5568)  Time: 3.136s,    5.10/s  (2.332s,    6.86/s)  LR: 1.000e-03  Data: 0.036 (0.043)
+09/03 01:07:12 PM | Train: 0 [1250/3125 ( 40%)]  Loss:  6.923077 (6.9090)  KD-Loss:  0.000000 (0.0000)  Prec@1:  0.0000 ( 0.0799)  Prec@5:  0.0000 ( 0.5596)  Time: 2.440s,    6.56/s  (2.335s,    6.85/s)  LR: 1.000e-03  Data: 0.043 (0.043)
