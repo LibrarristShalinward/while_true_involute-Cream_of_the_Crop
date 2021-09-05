@@ -1,5 +1,5 @@
 /Cream/data/imagenet/
-/Paddle_Cream/data/imagenet/
+/Paddle_Cream/data/
 *.pyc
 test.ipynb
 /test/
