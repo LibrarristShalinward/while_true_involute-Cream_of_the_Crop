@@ -140,22 +140,23 @@ class MetaMatchingNetwork():
             grad_1st = self.calculate_1st_gradient(kd_loss, model, random_cand, optimizer)
 
             # simulate updated student weights
-            students_weight = [
-                self.simulate_sgd_update(
-                    p, grad_item, optimizer) for p, grad_item in zip(
-                    model.module.rand_parameters(random_cand), grad_1st)]
+            # students_weight = [
+            #     self.simulate_sgd_update(
+            #         p, grad_item, optimizer) for p, grad_item in zip(
+            #         model.rand_parameters(random_cand), grad_1st)]
 
             # update student weights
             self.update_student_weights_only(random_cand, optimizer, model)
             # optimizer.step()
 
-            validation_loss = self.forward_validation(input, target, random_cand, model, loss_fn)
+            # validation_loss = self.forward_validation(input, target, random_cand, model, loss_fn)
 
-            # calculate 2nd gradient
-            grad_teacher = self.calculate_2nd_gradient(validation_loss, model, optimizer, teacher_cand, students_weight)
+            # # calculate 2nd gradient
+            # grad_teacher = self.calculate_2nd_gradient(validation_loss, model, optimizer, teacher_cand, students_weight)
 
-            # update meta matching networks
-            self.update_meta_weights_only(random_cand, teacher_cand, model, optimizer)
+            # # update meta matching networks
+            # # self.update_meta_weights_only(random_cand, teacher_cand, model, optimizer)
+            # self.update_meta_weights_only(teacher_cand, model, optimizer)
 
-            # delete internal variants
-            del grad_teacher, grad_1st, x, validation_loss, kd_loss, students_weight
+            # # delete internal variants
+            # del grad_teacher, grad_1st, x, validation_loss, kd_loss, students_weight

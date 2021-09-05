@@ -80,7 +80,7 @@ class CheckpointSaver:
             'arch': args.model,
             'state_dict': get_state_dict(model),
             'optimizer': optimizer.state_dict(),
-            'args': args,
+            # 'args': args,
             'version': 2,
         }
         if model_ema is not None:
@@ -184,12 +184,12 @@ def reduce_tensor(tensor, n):
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
     maxk = max(topk)
-    batch_size = target.size(0)
+    batch_size = target.shape[0]
 
     _, pred = output.topk(maxk, 1, True, True)
     pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
-    return [correct[:k].reshape((-1)).float().sum(0) * 100. / batch_size for k in topk]
+    correct = pred.equal(target.reshape([-1]).expand_as(pred))
+    return [sum(1. for i in correct.numpy()[:k].reshape([-1]) if i) * 100. / batch_size for k in topk]
 
 # 原timm.utils.AverageMeter
 class AverageMeter:

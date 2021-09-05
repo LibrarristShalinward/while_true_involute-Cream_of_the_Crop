@@ -38,14 +38,14 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
                     reduce_factor,
                     reduce_factor).mean(
                     dim=2)
-                target = target[0:target.size(0):reduce_factor]
+                target = target[0:target.shape[0]:reduce_factor]
 
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
 
             # torch.cuda.synchronize()
 
-            prec1_m.update(prec1.item(), output.size(0))
-            prec5_m.update(prec5.item(), output.size(0))
+            prec1_m.update(prec1.item(), output.shape[0])
+            prec5_m.update(prec5.item(), output.shape[0])
 
     return (prec1_m.avg, prec5_m.avg)
 
@@ -72,7 +72,7 @@ def add_weight_decay_supernet(model, args, weight_decay = 1e-5, skip_list = ()):
     meta_layer_no_decay = []
     meta_layer_decay = []
     for name, param in model.named_parameters():
-        if not param.requires_grad:
+        if param.stop_gradient:
             continue  # frozen weights
         if len(param.shape) == 1 or name.endswith(
                 ".bias") or name in skip_list:
@@ -93,16 +93,16 @@ def add_weight_decay_supernet(model, args, weight_decay = 1e-5, skip_list = ()):
     ]
 
 
-def create_optimizer_supernet(args, model, has_apex, filter_bias_and_bn = True):
+def create_optimizer_supernet(args, model, filter_bias_and_bn = True):
     opt_lower = args.opt.lower()
     weight_decay = args.weight_decay
     if 'adamw' in opt_lower or 'radam' in opt_lower:
         weight_decay /= args.lr
-    if weight_decay and filter_bias_and_bn:
-        parameters = add_weight_decay_supernet(model, args, weight_decay)
-        weight_decay = 0.
-    else:
-        parameters = model.parameters()
+    # if weight_decay and filter_bias_and_bn:
+    #     parameters = add_weight_decay_supernet(model, args, weight_decay)
+    #     weight_decay = 0.
+    # else:
+    parameters = model.parameters()
 
     if 'fused' in opt_lower:
         # assert has_apex and torch.cuda.is_available(), 'APEX and CUDA required for fused optimizers'
@@ -112,6 +112,7 @@ def create_optimizer_supernet(args, model, has_apex, filter_bias_and_bn = True):
     opt_lower = opt_split[-1]
     if opt_lower == 'sgd' or opt_lower == 'nesterov' or opt_lower == 'momentum':
         optimizer = Momentum(
+            learning_rate = 1e-2, 
             parameters = parameters,
             momentum = args.momentum,
             weight_decay = weight_decay)

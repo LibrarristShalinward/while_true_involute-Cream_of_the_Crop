@@ -1,8 +1,10 @@
+import warnings as w
+
 import numpy as np
 import paddle
-from paddle.framework import dtype
 
-from ..paddle_extension import DataLoader, DistributedSampler
+# from ..paddle_extension import DataLoader, DistributedSampler
+from paddle.io import DataLoader, DistributedBatchSampler
 from .mixup import FastCollateMixup
 from .random_erasing import RandomErasing
 from .transforms import create_transform
@@ -57,25 +59,25 @@ def create_loader(
         separate=num_aug_splits > 0,
     )
 
-    sampler = None
+    batch_sampler = None
     if distributed:
-        if is_training:
-            sampler = DistributedSampler(dataset)
-        else:
-            assert False, "无法在预测模型下启动分布式计算"
+        if not is_training:
+            w.warn("无法在预测模型下启动分布式计算")
+        batch_sampler = DistributedBatchSampler(
+            dataset, 
+            batch_size, 
+            shuffle = batch_sampler is None and is_training, 
+            drop_last = is_training)
+            # assert False, "无法在预测模型下启动分布式计算"
 
     if collate_fn is None and use_prefetcher:
         collate_fn = fast_collate
 
     loader = DataLoader(
         dataset,
-        batch_size=batch_size,
-        shuffle=sampler is None and is_training,
         num_workers=num_workers,
-        sampler=sampler,
-        collate_fn=collate_fn,
-        drop_last=is_training,
-    )
+        batch_sampler=batch_sampler,
+        collate_fn=collate_fn)
     if use_prefetcher:
         loader = PrefetchLoader(
             loader,
@@ -105,12 +107,14 @@ class PrefetchLoader:
                  re_num_splits=0, 
                  no_cuda = True):
         self.loader = loader
-        if no_cuda:
-            self.mean = paddle.to_tensor([x * 255 for x in mean]).reshape((1, 3, 1, 1))
-            self.std = paddle.to_tensor([x * 255 for x in std]).reshape((1, 3, 1, 1))
-        else:
-            self.mean = paddle.to_tensor([x * 255 for x in mean]).cuda().reshape((1, 3, 1, 1))
-            self.std = paddle.to_tensor([x * 255 for x in std]).cuda().reshape((1, 3, 1, 1))
+        if not no_cuda:
+            w.warn("cuda is not available!!!")
+
+        self.mean = paddle.to_tensor([x * 255 for x in mean]).reshape((1, 3, 1, 1))
+        self.std = paddle.to_tensor([x * 255 for x in std]).reshape((1, 3, 1, 1))
+        # else:
+        #     self.mean = paddle.to_tensor([x * 255 for x in mean]).cuda().reshape((1, 3, 1, 1))
+        #     self.std = paddle.to_tensor([x * 255 for x in std]).cuda().reshape((1, 3, 1, 1))
         
         self.fp16 = fp16
         if fp16:
@@ -128,9 +132,9 @@ class PrefetchLoader:
         first = True
 
         for next_input, next_target in self.loader:
-            if not self.no_cuda:
-                next_input = next_input.cuda(non_blocking=True)
-                next_target = next_target.cuda(non_blocking=True)
+            # if not self.no_cuda:
+            #     next_input = next_input.cuda(non_blocking=True)
+            #     next_target = next_target.cuda(non_blocking=True)
             if self.fp16:
                 next_input = (paddle.to_tensor(next_input, dtype = "float16") - self.mean) / (self.std)
             else:
@@ -153,7 +157,7 @@ class PrefetchLoader:
 
     @property
     def sampler(self):
-        return self.loader.sampler
+        return self.loader.batch_sampler
 
     @property
     def dataset(self):

@@ -20,12 +20,12 @@ class PrioritizedBoard():
     def select_teacher(self, model, random_cand):
         if self.cfg.SUPERNET.PICK_METHOD == 'top1':
             meta_value, teacher_cand = 0.5, sorted(
-                self.prioritized_board, reverse=True)[0][3]
+                self.prioritized_board, key = lambda path: path[0], reverse=True)[0][3]
         elif self.cfg.SUPERNET.PICK_METHOD == 'meta':
             meta_value, cand_idx, teacher_cand = -1000000000, -1, None
             for now_idx, item in enumerate(self.prioritized_board):
                 inputx = item[4]
-                output = softmax(model(inputx, random_cand), dim=1)
+                output = softmax(model(inputx, random_cand), axis=1)
                 weight = model.forward_meta(output - item[5])
                 if weight > meta_value:
                     meta_value = weight
@@ -118,10 +118,10 @@ class PrioritizedBoard():
                  training_data,
                  softmax(
                      features,
-                     dim=1)))
-            self.prioritized_board = sorted(self.prioritized_board, reverse=True)
+                     axis=1)))
+            self.prioritized_board = sorted(self.prioritized_board, key = lambda path: path[0] - path[2] / 100., reverse=True)
 
         if len(self.prioritized_board) > self.cfg.SUPERNET.POOL_SIZE:
-            self.prioritized_board = sorted(self.prioritized_board, reverse=True)
+            self.prioritized_board = sorted(self.prioritized_board, key = lambda path: path[0] - path[2] / 100., reverse=True)
             del self.prioritized_board[-1]
 

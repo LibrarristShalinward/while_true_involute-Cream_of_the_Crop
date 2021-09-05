@@ -1,5 +1,5 @@
 '''
-本文件为timm.data.random_erasing的全复制
+本文件为timm.data.random_erasing的全复制修改
 由于引用过于复杂，故不对未被调用的函数进行筛除
 '''
 import math
@@ -10,11 +10,11 @@ import paddle
 
 def _get_pixels(per_pixel, rand_color, patch_size, dtype="float32"):
     if per_pixel:
-        return paddle.empty(patch_size, dtype=dtype).normal_()
+        return paddle.normal(shape = patch_size)
     elif rand_color:
-        return paddle.empty((patch_size[0], 1, 1), dtype=dtype).normal_()
+        return paddle.normal(shape = (patch_size[0], 1, 1))
     else:
-        return paddle.zeros((patch_size[0], 1, 1), dtype=dtype)
+        return paddle.zeros((patch_size[0], 1, 1))
 
 
 class RandomErasing:
@@ -61,10 +61,10 @@ class RandomErasing:
                     break
 
     def __call__(self, input):
-        if len(input.size()) == 3:
-            self._erase(input, *input.size(), input.dtype)
+        if len(input.shape) == 3:
+            self._erase(input, *input.shape, input.dtype)
         else:
-            batch_size, chan, img_h, img_w = input.size()
+            batch_size, chan, img_h, img_w = input.shape
             # skip first slice of batch if num_splits is set (for clean portion of samples)
             batch_start = batch_size // self.num_splits if self.num_splits > 1 else 0
             for i in range(batch_start, batch_size):
