@@ -137,7 +137,7 @@ def main():
         logger.info('Scheduled epochs: %d', num_epochs)
 
     # imagenet train dataset
-    train_dir = os.path.join(cfg.DATA_DIR, 'val')
+    train_dir = os.path.join(cfg.DATA_DIR, 'train')
     if not os.path.exists(train_dir):
         logger.info('Training folder does not exist at: %s', train_dir)
         sys.exit()
