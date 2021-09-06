@@ -93,7 +93,7 @@ def add_weight_decay_supernet(model, args, weight_decay = 1e-5, skip_list = ()):
     ]
 
 
-def create_optimizer_supernet(args, model, filter_bias_and_bn = True):
+def create_optimizer_supernet(args, model, scheduler = None, filter_bias_and_bn = True):
     opt_lower = args.opt.lower()
     weight_decay = args.weight_decay
     if 'adamw' in opt_lower or 'radam' in opt_lower:
@@ -103,6 +103,7 @@ def create_optimizer_supernet(args, model, filter_bias_and_bn = True):
     #     weight_decay = 0.
     # else:
     parameters = model.parameters()
+    sched = 1e-3 if type(scheduler) == type(None) else scheduler
 
     if 'fused' in opt_lower:
         # assert has_apex and torch.cuda.is_available(), 'APEX and CUDA required for fused optimizers'
@@ -112,12 +113,13 @@ def create_optimizer_supernet(args, model, filter_bias_and_bn = True):
     opt_lower = opt_split[-1]
     if opt_lower == 'sgd' or opt_lower == 'nesterov' or opt_lower == 'momentum':
         optimizer = Momentum(
-            learning_rate = 1e-2, 
+            learning_rate = sched, 
             parameters = parameters,
             momentum = args.momentum,
             weight_decay = weight_decay)
     elif opt_lower == 'adam':
         optimizer = Adam(
+            learning_rate = sched, 
             parameters = parameters, 
             weight_decay = weight_decay, 
             epsilons = args.opt_eps)

@@ -34,6 +34,7 @@ def main():
     args, cfg = parse_config_args('super net training')
 
     # resolve logging
+    cfg.SUPERNET.PICK_METHOD = "top1"
     output_dir = os.path.join(
         cfg.SAVE_PATH, "{}-{}".format(
             datetime.date.today().strftime('%m%d'), 
@@ -96,8 +97,18 @@ def main():
         optimizer_state, resume_epoch = resume_checkpoint(
             model, cfg.RESUME_PATH)
 
+    # create learning rate scheduler
+    lr_scheduler, num_epochs = create_supernet_scheduler(cfg)
+
+    start_epoch = resume_epoch if resume_epoch is not None else 0
+    if start_epoch > 0:
+        lr_scheduler.step(start_epoch)
+
+    if args.local_rank == 0:
+        logger.info('Scheduled epochs: %d', num_epochs)
+
     # create optimizer and resume from checkpoint
-    optimizer = create_optimizer_supernet(cfg, model)
+    optimizer = create_optimizer_supernet(cfg, model, lr_scheduler)
     if optimizer_state is not None:
         optimizer.load_state_dict(optimizer_state['optimizer'])
     # model = model.cuda()
@@ -125,16 +136,6 @@ def main():
                 "Using paddle DistributedDataParallel. NVIDIA? Not available.")
         # can use device str in Torch >= 1.1
         # model = DDP(model, device_ids=[args.local_rank])
-
-    # create learning rate scheduler
-    lr_scheduler, num_epochs = create_supernet_scheduler(cfg)
-
-    start_epoch = resume_epoch if resume_epoch is not None else 0
-    if start_epoch > 0:
-        lr_scheduler.step(start_epoch)
-
-    if args.local_rank == 0:
-        logger.info('Scheduled epochs: %d', num_epochs)
 
     # imagenet train dataset
     train_dir = os.path.join(cfg.DATA_DIR, 'train')
