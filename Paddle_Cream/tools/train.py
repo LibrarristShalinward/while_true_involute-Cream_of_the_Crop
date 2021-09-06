@@ -34,6 +34,7 @@ def main():
     args, cfg = parse_config_args('super net training')
 
     # resolve logging
+    cfg.SUPERNET.PICK_METHOD = "top1"
     output_dir = os.path.join(
         cfg.SAVE_PATH, "{}-{}".format(
             datetime.date.today().strftime('%m%d'), 

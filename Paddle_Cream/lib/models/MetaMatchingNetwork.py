@@ -18,12 +18,6 @@ class MetaMatchingNetwork():
         random_cand, 
         optimizer, 
         model):
-        # for weight, grad_item in zip(model.rand_parameters(random_cand), grad_1):
-        #     weight.grad = grad_item
-        # # torch.nn.utils.clip_grad_norm_(model.module.rand_parameters(random_cand), 1)
-        # optimizer.step()
-        # for weight, grad_item in zip(model.module.rand_parameters(random_cand), grad_1):
-        #     del weight.grad
         past_params = optimizer._parameter_list
         optimizer._parameter_list = [param for param in model.rand_parameters(random_cand)]
         optimizer.step()
@@ -34,12 +28,6 @@ class MetaMatchingNetwork():
         teacher_cand, 
         model, 
         optimizer):
-        # for weight, grad_item in zip(
-        #     model.module.rand_parameters(
-        #         teacher_cand, 
-        #         self.cfg.SUPERNET.PICK_METHOD == 'meta'), 
-        #     grad_teacher):
-        #     weight.grad = grad_item
 
         assert [param for param in model.rand_parameters(teacher_cand, True)][0].grad.max() > 0.
 
@@ -48,17 +36,6 @@ class MetaMatchingNetwork():
         optimizer.step()
         optimizer._parameter_list = past_params
 
-        # clip gradients
-        # torch.nn.utils.clip_grad_norm_(
-        #     model.module.rand_parameters(
-        # #         teacher_cand, self.cfg.SUPERNET.PICK_METHOD == 'meta'), 1)
-
-        # optimizer.step()
-        # for weight, grad_item in zip(model.module.rand_parameters(
-        #         teacher_cand, self.cfg.SUPERNET.PICK_METHOD == 'meta'), grad_teacher):
-        #     del weight.grad
-
-    # simulate sgd updating
     def simulate_sgd_update(self, w, g, optimizer):
         if type(g) == type(None):
             return 0.
@@ -89,17 +66,6 @@ class MetaMatchingNetwork():
             self.cfg.SUPERNET.PICK_METHOD == 'meta'):
             grad_teacher.append(param.grad)
         return grad_teacher
-
-        # grad_student_val = torch.autograd.grad(
-        #     validation_loss, model.module.rand_parameters(random_cand), retain_graph=True)
-
-        # grad_teacher = torch.autograd.grad(
-        #     students_weight[0],
-        #     model.module.rand_parameters(
-        #         teacher_cand,
-        #         self.cfg.SUPERNET.PICK_METHOD == 'meta'),
-        #     grad_outputs=grad_student_val)
-        # return grad_teacher
 
     # forward training data
     def forward_training(self, x, model, random_cand, teacher_cand, meta_value):
@@ -139,24 +105,26 @@ class MetaMatchingNetwork():
             # calculate 1st gradient
             grad_1st = self.calculate_1st_gradient(kd_loss, model, random_cand, optimizer)
 
-            # simulate updated student weights
-            # students_weight = [
-            #     self.simulate_sgd_update(
-            #         p, grad_item, optimizer) for p, grad_item in zip(
-            #         model.rand_parameters(random_cand), grad_1st)]
-
             # update student weights
             self.update_student_weights_only(random_cand, optimizer, model)
             # optimizer.step()
+            
+            if self.cfg.SUPERNET.PICK_METHOD == "meta":
+                # simulate updated student weights
+                students_weight = [
+                    self.simulate_sgd_update(
+                        p, grad_item, optimizer) for p, grad_item in zip(
+                        model.rand_parameters(random_cand), grad_1st)]
 
-            # validation_loss = self.forward_validation(input, target, random_cand, model, loss_fn)
+                
 
-            # # calculate 2nd gradient
-            # grad_teacher = self.calculate_2nd_gradient(validation_loss, model, optimizer, teacher_cand, students_weight)
+                validation_loss = self.forward_validation(input, target, random_cand, model, loss_fn)
 
-            # # update meta matching networks
-            # # self.update_meta_weights_only(random_cand, teacher_cand, model, optimizer)
-            # self.update_meta_weights_only(teacher_cand, model, optimizer)
+                # # calculate 2nd gradient
+                grad_teacher = self.calculate_2nd_gradient(validation_loss, model, optimizer, teacher_cand, students_weight)
 
-            # # delete internal variants
-            # del grad_teacher, grad_1st, x, validation_loss, kd_loss, students_weight
+                # # update meta matching networks
+                self.update_meta_weights_only(random_cand, teacher_cand, model, optimizer)
+
+                # # delete internal variants
+                del grad_teacher, grad_1st, x, validation_loss, kd_loss, students_weight
