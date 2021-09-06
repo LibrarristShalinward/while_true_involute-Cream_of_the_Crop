@@ -9,7 +9,7 @@ def add_weight_decay(model, weight_decay=1e-5, skip_list=()):
     decay = []
     no_decay = []
     for name, param in model.named_parameters():
-        if not param.requires_grad:
+        if param.stop_gradient:
             continue  # frozen weights
         if len(param.shape) == 1 or name.endswith(".bias") or name in skip_list:
             no_decay.append(param)
@@ -20,7 +20,7 @@ def add_weight_decay(model, weight_decay=1e-5, skip_list=()):
         {'params': decay, 'weight_decay': weight_decay}]
 
 
-def create_optimizer(args, model, filter_bias_and_bn=True):
+def create_optimizer(args, model, scheduler, filter_bias_and_bn=True):
     opt_lower = args.opt.lower()
     weight_decay = args.weight_decay
     if 'adamw' in opt_lower or 'radam' in opt_lower:
@@ -34,36 +34,38 @@ def create_optimizer(args, model, filter_bias_and_bn=True):
     if 'fused' in opt_lower:
         assert False, "fused is not available"
 
+    lr = args.lr if type(scheduler) == type(None) else scheduler
+
     opt_split = opt_lower.split('_')
     opt_lower = opt_split[-1]
     if opt_lower == 'sgd':
         optimizer = optim.Momentum(
-            learning_rate = args.lr, 
+            learning_rate = lr, 
             momentum = args.momentum, 
             parameters = parameters, 
             use_nesterov = True, 
             weight_decay = weight_decay)
     elif opt_lower == 'adam':
         optimizer = optim.Adam(
-            learning_rate = args.lr, 
+            learning_rate = lr, 
             epsilon = args.opt_eps, 
             parameters = parameters, 
             weight_decay = weight_decay)
     elif opt_lower == 'adamw':
         optimizer = optim.AdamW(
-            learning_rate = args.lr, 
+            learning_rate = lr, 
             epsilon = args.opt_eps, 
             parameters = parameters, 
             weight_decay = weight_decay)
     elif opt_lower == 'adadelta':
         optimizer = optim.Adadelta(
-            learning_rate = args.ls, 
+            learning_rate = lr, 
             epsilon = args.opt_eps, 
             parameters = parameters, 
             weight_decay = weight_decay)
     elif opt_lower == 'rmsprop':
         optimizer = optim.RMSProp(
-            learning_rate = args.lr, 
+            learning_rate = lr, 
             rho = .9, 
             epsilon = args.opt_eps, 
             momentum = args.momentum, 
@@ -71,7 +73,7 @@ def create_optimizer(args, model, filter_bias_and_bn=True):
             weight_decay = weight_decay)
     elif opt_lower == 'rmsproptf':
         optimizer = optim.RMSProp(
-            learning_rate = args.lr, 
+            learning_rate = lr, 
             rho = .9, 
             epsilon = args.opt_eps, 
             momentum = args.momentum, 
