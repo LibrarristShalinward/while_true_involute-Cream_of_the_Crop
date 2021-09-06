@@ -25,7 +25,7 @@ DATASET:
 NET:
   GP: 'avg'
   DROPOUT_RATE: 0.0
-  SELECTION: 42
+  SELECTION: 14
 
   EMA:
     USE: True
