@@ -84,18 +84,9 @@ def main():
     model = gen_childnet(
         arch_list,
         arch_def,
-        num_classes=cfg.DATASET.NUM_CLASSES,
-        drop_rate=cfg.NET.DROPOUT_RATE,
-        global_pool=cfg.NET.GP)
-
-    checkpoint = paddle.load("F:/origin_weight.pdparams")
-    new_dict = model.state_dict()
-    for name, weight in zip(new_dict.keys(), checkpoint.values()):
-        shape = new_dict[name].shape
-        trans = weight
-        trans = trans.reshape(shape)
-        new_dict[name] = trans
-    model.set_state_dict(new_dict)
+        num_classes = cfg.DATASET.NUM_CLASSES,
+        drop_rate = cfg.NET.DROPOUT_RATE,
+        global_pool = cfg.NET.GP)
 
     # initialize training parameters
     eval_metric = cfg.EVAL_METRICS
@@ -103,8 +94,8 @@ def main():
     if args.local_rank == 0:
         decreasing = True if eval_metric == 'loss' else False
         saver = CheckpointSaver(
-            checkpoint_dir=output_dir,
-            decreasing=decreasing)
+            checkpoint_dir = output_dir,
+            decreasing = decreasing)
 
     # initialize distributed parameters
     distributed = cfg.NUM_GPU > 1
@@ -119,7 +110,7 @@ def main():
 
     # get parameters and FLOPs of model
     if args.local_rank == 0:
-        macs, params = get_model_flops_params(model, input_size=(
+        macs, params = get_model_flops_params(model, input_size = (
             1, 3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE))
         logger.info(
             '[Model-{}] Flops: {} Params: {}'.format(cfg.NET.SELECTION, macs, params))
@@ -147,38 +138,36 @@ def main():
     if cfg.NET.EMA.USE:
         model_ema = ModelEma(
             model,
-            decay=cfg.NET.EMA.DECAY,
-            device='cpu' if cfg.NET.EMA.FORCE_CPU else '',
-            resume=cfg.RESUME_PATH if cfg.AUTO_RESUME else None)
+            decay = cfg.NET.EMA.DECAY,
+            device = 'cpu' if cfg.NET.EMA.FORCE_CPU else '',
+            resume = cfg.RESUME_PATH if cfg.AUTO_RESUME else None)
 
     if distributed:
         assert False, "Distributed not available! GPU num: " + str(cfg.NUM_GPU)
 
     # imagenet train dataset
-    train_dir = os.path.join(cfg.DATA_DIR, 'val')
+    train_dir = os.path.join(cfg.DATA_DIR, 'train')
     if not os.path.exists(train_dir) and args.local_rank == 0:
         logger.error('Training folder does not exist at: {}'.format(train_dir))
         exit(1)
     dataset_train = Dataset(train_dir)
     loader_train = create_loader(
         dataset_train,
-        input_size=(3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
-        batch_size=cfg.DATASET.BATCH_SIZE,
-        is_training=True,
-        color_jitter=cfg.AUGMENTATION.COLOR_JITTER,
-        auto_augment=cfg.AUGMENTATION.AA,
-        num_aug_splits=0,
-        crop_pct=DEFAULT_CROP_PCT,
-        mean=IMAGENET_DEFAULT_MEAN,
-        std=IMAGENET_DEFAULT_STD,
-        num_workers=cfg.WORKERS,
-        distributed=True,
-        collate_fn=None,
-        # pin_memory=cfg.DATASET.PIN_MEM,
-        interpolation='random',
-        re_mode=cfg.AUGMENTATION.RE_MODE,
-        re_prob=cfg.AUGMENTATION.RE_PROB
-    )
+        input_size = (3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
+        batch_size = cfg.DATASET.BATCH_SIZE,
+        is_training = True,
+        color_jitter = cfg.AUGMENTATION.COLOR_JITTER,
+        auto_augment = cfg.AUGMENTATION.AA,
+        num_aug_splits = 0,
+        crop_pct = DEFAULT_CROP_PCT,
+        mean = IMAGENET_DEFAULT_MEAN,
+        std = IMAGENET_DEFAULT_STD,
+        num_workers = cfg.WORKERS,
+        distributed = True,
+        collate_fn = None,
+        interpolation = 'random',
+        re_mode = cfg.AUGMENTATION.RE_MODE,
+        re_prob = cfg.AUGMENTATION.RE_PROB)
 
     # imagenet validation dataset
     eval_dir = os.path.join(cfg.DATA_DIR, 'val')
@@ -189,20 +178,20 @@ def main():
     dataset_eval = Dataset(eval_dir)
     loader_eval = create_loader(
         dataset_eval,
-        input_size=(3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
-        batch_size=cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
-        is_training=False,
-        interpolation='bicubic',
-        crop_pct=DEFAULT_CROP_PCT,
-        mean=IMAGENET_DEFAULT_MEAN,
-        std=IMAGENET_DEFAULT_STD,
-        num_workers=cfg.WORKERS,
-        distributed=True)
+        input_size = (3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
+        batch_size = cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
+        is_training = False,
+        interpolation = 'bicubic',
+        crop_pct = DEFAULT_CROP_PCT,
+        mean = IMAGENET_DEFAULT_MEAN,
+        std = IMAGENET_DEFAULT_STD,
+        num_workers = cfg.WORKERS,
+        distributed = True)
 
     # whether to use label smoothing
     if cfg.AUGMENTATION.SMOOTHING > 0.:
         train_loss_fn = LabelSmoothingCrossEntropy(
-            smoothing=cfg.AUGMENTATION.SMOOTHING)
+            smoothing = cfg.AUGMENTATION.SMOOTHING)
         validate_loss_fn = CrossEntropyLoss()
     else:
         train_loss_fn = CrossEntropyLoss()
@@ -223,13 +212,13 @@ def main():
                 optimizer,
                 train_loss_fn,
                 cfg,
-                lr_scheduler=lr_scheduler,
-                saver=saver,
-                output_dir=output_dir,
-                model_ema=model_ema,
-                logger=logger,
-                writer=writer,
-                local_rank=args.local_rank)
+                lr_scheduler = lr_scheduler,
+                saver = saver,
+                output_dir = output_dir,
+                model_ema = model_ema,
+                logger = logger,
+                writer = writer,
+                local_rank = args.local_rank)
 
             eval_metrics = validate(
                 epoch,
@@ -237,9 +226,9 @@ def main():
                 loader_eval,
                 validate_loss_fn,
                 cfg,
-                logger=logger,
-                writer=writer,
-                local_rank=args.local_rank)
+                logger = logger,
+                writer = writer,
+                local_rank = args.local_rank)
 
             if model_ema is not None and not cfg.NET.EMA.FORCE_CPU:
                 ema_eval_metrics = validate(
@@ -248,24 +237,24 @@ def main():
                     loader_eval,
                     validate_loss_fn,
                     cfg,
-                    log_suffix='_EMA',
-                    logger=logger,
-                    writer=writer,
-                    local_rank=args.local_rank)
+                    log_suffix = '_EMA',
+                    logger = logger,
+                    writer = writer,
+                    local_rank = args.local_rank)
                 eval_metrics = ema_eval_metrics
 
             if lr_scheduler is not None:
                 lr_scheduler.step(epoch + 1)
 
             update_summary(epoch, train_metrics, eval_metrics, os.path.join(
-                output_dir, 'summary.csv'), write_header=best_metric is None)
+                output_dir, 'summary.csv'), write_header = best_metric is None)
 
             if saver is not None:
                 # save proper checkpoint with eval metric
                 save_metric = eval_metrics[eval_metric]
                 best_metric, best_epoch = saver.save_checkpoint(
                     model, optimizer, cfg,
-                    epoch=epoch, model_ema=model_ema, metric=save_metric)
+                    epoch = epoch, model_ema = model_ema, metric = save_metric)
 
             if best_record < eval_metrics[eval_metric]:
                 best_record = eval_metrics[eval_metric]

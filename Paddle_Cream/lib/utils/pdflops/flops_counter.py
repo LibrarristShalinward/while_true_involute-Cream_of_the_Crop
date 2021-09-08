@@ -12,11 +12,11 @@ import paddle.nn as nn
 
 
 def get_model_complexity_info(model, input_res,
-                              print_per_layer_stat=True,
-                              as_strings=True,
-                              input_constructor=None, ost=sys.stdout,
-                              verbose=False, ignore_layers=[],
-                              custom_layers_hooks={}):
+                              print_per_layer_stat = True,
+                              as_strings = True,
+                              input_constructor = None, ost = sys.stdout,
+                              verbose = False, ignore_layers = [],
+                              custom_layers_hooks = {}):
     assert type(input_res) is tuple
     assert len(input_res) >= 1
     assert isinstance(model, nn.Layer)
@@ -24,8 +24,8 @@ def get_model_complexity_info(model, input_res,
     CUSTOM_LAYERS_MAPPING = custom_layers_hooks
     flops_model = add_flops_counting_methods(model)
     flops_model.eval()
-    flops_model.start_flops_count(ost=ost, verbose=verbose,
-                                  ignore_list=ignore_layers)
+    flops_model.start_flops_count(ost = ost, verbose = verbose,
+        ignore_list = ignore_layers)
     if input_constructor:
         input = input_constructor(input_res)
         _ = flops_model(**input)
@@ -33,7 +33,7 @@ def get_model_complexity_info(model, input_res,
         try:
             batch = paddle.randn(
                 (1, *input_res), 
-                dtype=flops_model.parameters()[0].dtype)
+                dtype = flops_model.parameters()[0].dtype)
         except StopIteration:
             batch = paddle.randn((1, *input_res))
         except IndexError:
@@ -43,7 +43,7 @@ def get_model_complexity_info(model, input_res,
 
     flops_count, params_count = flops_model.compute_average_flops_cost()
     if print_per_layer_stat:
-        print_model_with_flops(flops_model, flops_count, params_count, ost=ost)
+        print_model_with_flops(flops_model, flops_count, params_count, ost = ost)
     flops_model.stop_flops_count()
     CUSTOM_LAYERS_MAPPING = {}
 
@@ -53,7 +53,7 @@ def get_model_complexity_info(model, input_res,
     return flops_count, params_count
 
 
-def flops_to_string(flops, units='GMac', precision=2):
+def flops_to_string(flops, units = 'GMac', precision = 2):
     if units is None:
         if flops // 10**9 > 0:
             return str(round(flops / 10.**9, precision)) + ' GMac'
@@ -74,7 +74,7 @@ def flops_to_string(flops, units='GMac', precision=2):
             return str(flops) + ' Mac'
 
 
-def params_to_string(params_num, units=None, precision=2):
+def params_to_string(params_num, units = None, precision = 2):
     if units is None:
         if params_num // 10 ** 6 > 0:
             return str(round(params_num / 10 ** 6, 2)) + ' M'
@@ -101,8 +101,8 @@ def accumulate_flops(self):
         return sum
 
 
-def print_model_with_flops(model, total_flops, total_params, units='GMac',
-                           precision=3, ost=sys.stdout):
+def print_model_with_flops(model, total_flops, total_params, units = 'GMac',
+                           precision = 3, ost = sys.stdout):
     if total_flops < 1:
         total_flops = 1
 
@@ -118,13 +118,14 @@ def print_model_with_flops(model, total_flops, total_params, units='GMac',
     def flops_repr(self):
         accumulated_params_num = self.accumulate_params()
         accumulated_flops_cost = self.accumulate_flops() / model.__batch_counter__
-        return ', '.join([params_to_string(accumulated_params_num,
-                                           units='M', precision=precision),
-                          '{:.3%} Params'.format(accumulated_params_num / total_params),
-                          flops_to_string(accumulated_flops_cost,
-                                          units=units, precision=precision),
-                          '{:.3%} MACs'.format(accumulated_flops_cost / total_flops),
-                          self.original_extra_repr()])
+        return ', '.join([
+            params_to_string(accumulated_params_num, 
+                units = 'M', precision = precision),
+            '{:.3%} Params'.format(accumulated_params_num / total_params),
+            flops_to_string(accumulated_flops_cost, 
+                units = units, precision = precision),
+            '{:.3%} MACs'.format(accumulated_flops_cost / total_flops),
+            self.original_extra_repr()])
 
     def add_extra_repr(m):
         m.accumulate_flops = accumulate_flops.__get__(m)
@@ -143,7 +144,7 @@ def print_model_with_flops(model, total_flops, total_params, units='GMac',
             del m.accumulate_flops
 
     model.apply(add_extra_repr)
-    print(repr(model), file=ost)
+    print(repr(model), file = ost)
     model.apply(del_extra_repr)
 
 

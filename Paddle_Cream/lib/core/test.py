@@ -43,7 +43,7 @@ def validate(
                 target = target[0:target.shape[0]:reduce_factor]
 
             loss = loss_fn(output, target)
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             if cfg.NUM_GPU > 1:
                 reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
@@ -66,9 +66,13 @@ def validate(
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
                     'Prec@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
                     'Prec@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
-                        log_name, batch_idx, last_idx,
-                        batch_time=batch_time_m, loss=losses_m,
-                        top1=prec1_m, top5=prec5_m))
+                        log_name, 
+                        batch_idx, 
+                        last_idx,
+                        batch_time = batch_time_m, 
+                        loss = losses_m,
+                        top1 = prec1_m, 
+                        top5 = prec5_m))
 
                 if type(writer) != type(None):
                     writer.add_scalar(
@@ -76,15 +80,13 @@ def validate(
                         prec1_m.avg,
                         epoch * len(loader) + batch_idx)
                     writer.add_scalar(
-                        'Accuracy' +
-                        log_suffix +
-                        '/vaild',
+                        'Accuracy' + log_suffix + '/vaild',
                         prec1_m.avg,
-                        epoch *
-                        len(loader) +
-                        batch_idx)
+                        epoch * len(loader) + batch_idx)
 
     metrics = OrderedDict(
-        [('loss', losses_m.avg), ('prec1', prec1_m.avg), ('prec5', prec5_m.avg)])
+        [('loss', losses_m.avg), 
+            ('prec1', prec1_m.avg), 
+            ('prec5', prec5_m.avg)])
 
     return metrics

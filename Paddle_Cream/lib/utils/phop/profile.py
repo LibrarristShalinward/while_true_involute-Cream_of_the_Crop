@@ -49,7 +49,7 @@ register_hooks = {
 }
 
 # 原thop.profile.profile
-def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
+def profile(model: nn.Layer, inputs, custom_ops = None, verbose = True):
     handler_collection = {}
     types_collection = set()
     if custom_ops is None:
@@ -84,7 +84,7 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     with paddle.no_grad():
         model(inputs)
     
-    def dfs_count(model: nn.Layer, prefix="\t"):
+    def dfs_count(model: nn.Layer, prefix = "\t"):
         total_ops, total_params = 0, 0
         for layer in model.sublayers():
             if layer in handler_collection and not isinstance(layer, (nn.Sequential, nn.LayerList)):
@@ -106,7 +106,7 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     return total_ops, total_params
 
 # 原thop.utils.clever_format
-def clever_format(nums, format="%.2f"):
+def clever_format(nums, format = "%.2f"):
     if not isinstance(nums, Iterable):
         nums = [nums]
     clever_nums = []

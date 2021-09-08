@@ -69,8 +69,8 @@ class SuperNetBuilder:
             choice_idx,
             block_idx,
             block_count,
-            resunit=False,
-            dil_conv=False):
+            resunit = False,
+            dil_conv = False):
         drop_path_rate = self.drop_path_rate * block_idx / block_count
 
         bt = ba.pop('block_type')
@@ -192,8 +192,8 @@ class SuperNetBuilder:
                             self.choice_num - 2,
                             total_block_idx,
                             total_block_count,
-                            resunit=self.resunit,
-                            dil_conv=self.dil_conv)
+                            resunit = self.resunit,
+                            dil_conv = self.dil_conv)
                         choice_blocks.append(block)
 
                         block_args = deepcopy(block_args_copy)
@@ -203,8 +203,8 @@ class SuperNetBuilder:
                             self.choice_num - 1,
                             total_block_idx,
                             total_block_count,
-                            resunit=self.resunit,
-                            dil_conv=self.dil_conv)
+                            resunit = self.resunit,
+                            dil_conv = self.dil_conv)
                         choice_blocks.append(block)
 
                     if self.resunit:

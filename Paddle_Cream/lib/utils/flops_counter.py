@@ -43,7 +43,7 @@ def get_model_complexity_info(
 
     flops_count, params_count = flops_model.compute_average_flops_cost()
     if print_per_layer_stat:
-        print_model_with_flops(flops_model, flops_count, params_count, ost=ost)
+        print_model_with_flops(flops_model, flops_count, params_count, ost = ost)
     flops_model.stop_flops_count()
     CUSTOM_MODULES_MAPPING = {}
 
@@ -226,7 +226,7 @@ def start_flops_count(self, **kwargs):
             if verbose and not type(module) in (nn.Sequential, nn.ModuleList) and \
                not type(module) in seen_types:
                 print('Warning: module ' + type(module).__name__ +
-                      ' is treated as a zero-op.', file=ost)
+                      ' is treated as a zero-op.', file = ost)
             seen_types.add(type(module))
 
     self.apply(partial(add_flops_counter_hook_function, **kwargs))

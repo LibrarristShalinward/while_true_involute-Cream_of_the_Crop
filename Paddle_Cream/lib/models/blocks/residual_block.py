@@ -4,7 +4,7 @@
 
 import paddle.nn as nn
 
-def conv3x3(in_planes, out_planes, stride=1):
+def conv3x3(in_planes, out_planes, stride = 1):
     "3x3 convolution with padding"
     return nn.Conv2D(
         in_planes, out_planes, 
@@ -62,7 +62,7 @@ class Bottleneck(nn.Layer):
         self.conv3 = nn.Conv2D(
             planes,
             planes * expansion,
-            kernel_size=1,
+            kernel_size = 1,
             bias_attr = None)
         self.bn3 = nn.BatchNorm2D(planes * expansion)
         self.relu = nn.ReLU()
@@ -102,8 +102,8 @@ class Bottleneck(nn.Layer):
 
 
 def get_Bottleneck(in_c, out_c, stride):
-    return Bottleneck(in_c, out_c, stride=stride)
+    return Bottleneck(in_c, out_c, stride =stride)
 
 
 def get_BasicBlock(in_c, out_c, stride):
-    return BasicBlock(in_c, out_c, stride=stride)
+    return BasicBlock(in_c, out_c, stride =stride)

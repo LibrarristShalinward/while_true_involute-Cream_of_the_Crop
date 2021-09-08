@@ -42,7 +42,8 @@ class ChildNet(nn.Layer):
         # Stem
         stem_size = round_channels(stem_size, channel_multiplier)
         self.conv_stem = create_conv2d(
-            self._in_chs, stem_size, 3, stride=2, padding=pad_type)
+            self._in_chs, stem_size, 
+            3, stride = 2, padding = pad_type)
         self.bn1 = norm_layer(stem_size, **norm_kwargs)
         self.act1 = act_layer()
         self._in_chs = stem_size
@@ -85,8 +86,8 @@ class ChildNet(nn.Layer):
     def get_classifier(self):
         return self.classifier
 
-    def reset_classifier(self, num_classes, global_pool='avg'):
-        self.global_pool = SelectAdaptivePool2D(pool_type=global_pool)
+    def reset_classifier(self, num_classes, global_pool = 'avg'):
+        self.global_pool = SelectAdaptivePool2D(pool_type = global_pool)
         self.num_classes = num_classes
         self.classifier = nn.Linear(
             self.num_features * self.global_pool.feat_mult(),
@@ -106,7 +107,9 @@ class ChildNet(nn.Layer):
         x = self.forward_features(x)
         x = x.flatten(1)
         if self.drop_rate > 0.:
-            x = nn.functional.dropout(x, p=self.drop_rate, training=self.training)
+            x = nn.functional.dropout(x, 
+                p = self.drop_rate, 
+                training = self.training)
         x = self.classifier(x)
         return x
 
@@ -148,7 +151,7 @@ def gen_childnet(arch_list, arch_def, **kwargs):
         se_kwargs = dict(
             act_layer = nn.ReLU,
             gate_fn = hard_sigmoid,
-            reduce_mid=True,
+            reduce_mid = True,
             divisor = 8),
         **kwargs,)
     model = ChildNet(**model_kwargs)

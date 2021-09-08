@@ -8,7 +8,11 @@ from copy import deepcopy
 
 # Prioritized Path Board
 class PrioritizedBoard():
-    def __init__(self, cfg, CHOICE_NUM=6, sta_num=(4, 4, 4, 4, 4), acc_gap=5):
+    def __init__(self, 
+        cfg, 
+        CHOICE_NUM = 6, 
+        sta_num = (4, 4, 4, 4, 4), 
+        acc_gap = 5):
         self.cfg = cfg
         self.prioritized_board = []
         self.choice_num = CHOICE_NUM
@@ -20,12 +24,12 @@ class PrioritizedBoard():
     def select_teacher(self, model, random_cand):
         if self.cfg.SUPERNET.PICK_METHOD == 'top1':
             meta_value, teacher_cand = 0.5, sorted(
-                self.prioritized_board, key = lambda path: path[0], reverse=True)[0][3]
+                self.prioritized_board, key = lambda path: path[0], reverse = True)[0][3]
         elif self.cfg.SUPERNET.PICK_METHOD == 'meta':
             meta_value, cand_idx, teacher_cand = -1000000000, -1, None
             for now_idx, item in enumerate(self.prioritized_board):
                 inputx = item[4]
-                output = softmax(model(inputx, random_cand), axis=1)
+                output = softmax(model(inputx, random_cand), axis = 1)
                 weight = model.forward_meta(output - item[5])
                 if weight > meta_value:
                     meta_value = weight
@@ -70,7 +74,7 @@ class PrioritizedBoard():
 
 
     # sample random architecture
-    def get_cand_with_prob(self, prob=None):
+    def get_cand_with_prob(self, prob = None):
         if prob is None:
             get_random_cand = [
                 np.random.choice(
@@ -118,10 +122,16 @@ class PrioritizedBoard():
                  training_data,
                  softmax(
                      features,
-                     axis=1)))
-            self.prioritized_board = sorted(self.prioritized_board, key = lambda path: path[0] - path[2] / 100., reverse=True)
+                     axis = 1)))
+            self.prioritized_board = sorted(
+                self.prioritized_board, 
+                key = lambda path: path[0] - path[2] / 100., 
+                reverse = True)
 
         if len(self.prioritized_board) > self.cfg.SUPERNET.POOL_SIZE:
-            self.prioritized_board = sorted(self.prioritized_board, key = lambda path: path[0] - path[2] / 100., reverse=True)
+            self.prioritized_board = sorted(
+                self.prioritized_board, 
+                key = lambda path: path[0] - path[2] / 100., 
+                reverse = True)
             del self.prioritized_board[-1]
 

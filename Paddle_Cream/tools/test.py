@@ -72,12 +72,12 @@ def main():
     model = gen_childnet(
         arch_list,
         arch_def,
-        num_classes=cfg.DATASET.NUM_CLASSES,
-        drop_rate=cfg.NET.DROPOUT_RATE,
-        global_pool=cfg.NET.GP)
+        num_classes = cfg.DATASET.NUM_CLASSES,
+        drop_rate = cfg.NET.DROPOUT_RATE,
+        global_pool = cfg.NET.GP)
 
     if args.local_rank == 0:
-        macs, params = get_model_flops_params(model, input_size=(
+        macs, params = get_model_flops_params(model, input_size = (
             1, 3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE))
         logger.info(
             '[Model-{}] Flops: {} Params: {}'.format(cfg.NET.SELECTION, macs, params))
@@ -98,9 +98,9 @@ def main():
         # before SyncBN and DDP wrapper
         model_ema = ModelEma(
             model,
-            decay=cfg.NET.EMA.DECAY,
-            device='cpu' if cfg.NET.EMA.FORCE_CPU else '',
-            resume=cfg.RESUME_PATH)
+            decay = cfg.NET.EMA.DECAY,
+            device = 'cpu' if cfg.NET.EMA.FORCE_CPU else '',
+            resume = cfg.RESUME_PATH)
 
     # imagenet validation dataset
     eval_dir = os.path.join(cfg.DATA_DIR, 'val')
@@ -112,22 +112,21 @@ def main():
     dataset_eval = Dataset(eval_dir)
     loader_eval = create_loader(
         dataset_eval,
-        input_size=(3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
-        batch_size=cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
-        is_training=False,
-        num_workers=cfg.WORKERS,
-        distributed=True,
-        interpolation='bicubic',
-        crop_pct=DEFAULT_CROP_PCT,
-        mean=IMAGENET_DEFAULT_MEAN,
-        std=IMAGENET_DEFAULT_STD, 
-    )
+        input_size = (3, cfg.DATASET.IMAGE_SIZE, cfg.DATASET.IMAGE_SIZE),
+        batch_size = cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
+        is_training = False,
+        num_workers = cfg.WORKERS,
+        distributed = True,
+        interpolation = 'bicubic',
+        crop_pct = DEFAULT_CROP_PCT,
+        mean = IMAGENET_DEFAULT_MEAN,
+        std = IMAGENET_DEFAULT_STD)
 
     # only test accuracy of model-EMA
     validate_loss_fn = CrossEntropyLoss()
     validate(0, model_ema.ema, loader_eval, validate_loss_fn, cfg,
-             log_suffix='_EMA', logger=logger,
-             writer=writer, local_rank=args.local_rank)
+             log_suffix = '_EMA', logger = logger,
+             writer = writer, local_rank = args.local_rank)
 
 
 if __name__ == '__main__':

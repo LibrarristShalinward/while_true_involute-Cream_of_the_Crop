@@ -44,7 +44,7 @@ def train_epoch(
 
         loss = loss_fn(output, target)
 
-        prec1, prec5 = accuracy(output, target, topk=(1, 5))
+        prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
         if cfg.NUM_GPU > 1:
             reduced_loss = reduce_tensor(loss, cfg.NUM_GPU)
@@ -82,32 +82,24 @@ def train_epoch(
                         epoch,
                         batch_idx,
                         len(loader),
-                        loss=losses_m,
-                        top1=prec1_m,
-                        top5=prec5_m,
-                        batch_time=batch_time_m,
-                        rate=input.shape[0] *
-                        cfg.NUM_GPU /
-                        batch_time_m.val,
-                        rate_avg=input.shape[0] *
-                        cfg.NUM_GPU /
-                        batch_time_m.avg,
-                        lr=lr,
-                        data_time=data_time_m))
+                        loss = losses_m,
+                        top1 = prec1_m,
+                        top5 = prec5_m,
+                        batch_time = batch_time_m,
+                        rate = input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
+                        rate_avg = input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
+                        lr = lr,
+                        data_time = data_time_m))
                 
                 if type(writer) != type(None):
                     writer.add_scalar(
                         'Loss/train',
                         prec1_m.avg,
-                        epoch *
-                        len(loader) +
-                        batch_idx)
+                        epoch * len(loader) + batch_idx)
                     writer.add_scalar(
                         'Accuracy/train',
                         prec1_m.avg,
-                        epoch *
-                        len(loader) +
-                        batch_idx)
+                        epoch * len(loader) + batch_idx)
                     writer.add_scalar(
                         'Learning_Rate',
                         optimizer.param_groups[0]['lr'],
@@ -128,9 +120,9 @@ def train_epoch(
                 optimizer,
                 cfg,
                 epoch,
-                model_ema=model_ema,
-                use_amp=use_amp,
-                batch_idx=batch_idx)
+                model_ema = model_ema,
+                use_amp = use_amp,
+                batch_idx = batch_idx)
 
         end = time.time()
 

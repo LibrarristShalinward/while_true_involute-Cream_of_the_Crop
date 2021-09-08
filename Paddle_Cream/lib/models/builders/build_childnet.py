@@ -180,9 +180,8 @@ class ChildNetBuilder:
                             stage_idx, block_idx) + feature_module
                     feature_channels = block.feature_channels(extract_features)
                     self.features[feature_idx] = dict(
-                        name=feature_module,
-                        num_chs=feature_channels
-                    )
+                        name = feature_module,
+                        num_chs = feature_channels)
                     feature_idx += 1
 
                 # incr global block idx (across all stacks)

@@ -37,10 +37,10 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
                     0,
                     reduce_factor,
                     reduce_factor).mean(
-                    dim=2)
+                        dim = 2)
                 target = target[0:target.shape[0]:reduce_factor]
 
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             prec1_m.update(prec1.item(), output.shape[0])
             prec5_m.update(prec5.item(), output.shape[0])
@@ -51,11 +51,11 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
 def get_logger(file_path):
     """ Make python logger """
     log_format = '%(asctime)s | %(message)s'
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
-                        format=log_format, datefmt='%m/%d %I:%M:%S %p')
+    logging.basicConfig(stream = sys.stdout, level = logging.INFO,
+        format = log_format, datefmt = '%m/%d %I:%M:%S %p')
     logger = logging.getLogger('')
 
-    formatter = logging.Formatter(log_format, datefmt='%m/%d %I:%M:%S %p')
+    formatter = logging.Formatter(log_format, datefmt = '%m/%d %I:%M:%S %p')
     file_handler = logging.FileHandler(file_path)
     file_handler.setFormatter(formatter)
 
@@ -134,12 +134,14 @@ def convert_lowercase(cfg):
 
 
 def parse_config_args(exp_name):
-    parser = argparse.ArgumentParser(description=exp_name)
-    parser.add_argument('--cfg', type=str,
-                        default='../experiments/workspace/retrain/retrain.yaml',
-                        help='configuration of cream')
-    parser.add_argument('--local_rank', type=int, default=0,
-                        help='local_rank')
+    parser = argparse.ArgumentParser(description = exp_name)
+    parser.add_argument('--cfg', type = str,
+                        default = '../experiments/workspace/retrain/retrain.yaml',
+                        help = 'configuration of cream')
+    parser.add_argument('--local_rank', 
+        type = int, 
+        default = 0,
+        help = 'local_rank')
     args = parser.parse_args()
 
     cfg.merge_from_file(args.cfg)
@@ -148,9 +150,9 @@ def parse_config_args(exp_name):
     return args, converted_cfg
 
 
-def get_model_flops_params(model, input_size=(1, 3, 224, 224)):
+def get_model_flops_params(model, input_size = (1, 3, 224, 224)):
     input = paddle.randn(input_size)
-    macs, params = profile(deepcopy(model), inputs=input, verbose=False)
+    macs, params = profile(deepcopy(model), inputs = input, verbose = False)
     macs, params = clever_format([macs, params], "%.3f")
     return macs, params
 

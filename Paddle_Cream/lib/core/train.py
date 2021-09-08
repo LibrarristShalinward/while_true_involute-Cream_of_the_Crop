@@ -74,7 +74,7 @@ def train_epoch(
             # get soft label from teacher cand
             with paddle.no_grad():
                 teacher_output = model(input, teacher_cand).detach()
-                soft_label = softmax(teacher_output, axis=1)
+                soft_label = softmax(teacher_output, axis = 1)
             kd_loss = cross_entropy_loss_with_soft_target(output, soft_label)
 
             loss = (meta_value * kd_loss + (2 - meta_value) * valid_loss) / 2
@@ -83,7 +83,7 @@ def train_epoch(
         loss.backward()
         optimizer.step()
 
-        prec1, prec5 = accuracy(output, target, topk=(1, 5))
+        prec1, prec5 = accuracy(output, target, topk = (1, 5))
         if cfg.NUM_GPU == 1 or cfg.NUM_GPU == 0:
             reduced_loss = loss
         else:
@@ -92,7 +92,14 @@ def train_epoch(
             prec5 = reduce_tensor(prec5, cfg.NUM_GPU)
 
 
-        prioritized_board.update_prioritized_board(input, teacher_output, output, epoch, prec1, cand_flops, random_cand)
+        prioritized_board.update_prioritized_board(
+            input, 
+            teacher_output, 
+            output, 
+            epoch, 
+            prec1, 
+            cand_flops, 
+            random_cand)
 
         if kd_loss is not None:
             kd_losses_m.update(kd_loss.item(), input.shape[0])
@@ -121,15 +128,15 @@ def train_epoch(
                         epoch,
                         batch_idx, len(loader),
                         100. * batch_idx / last_idx,
-                        loss=losses_m,
-                        kd_loss=kd_losses_m,
-                        top1=prec1_m,
-                        top5=prec5_m,
-                        batch_time=batch_time_m,
-                        rate=input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
-                        rate_avg=input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
-                        lr=lr,
-                        data_time=data_time_m))
+                        loss = losses_m,
+                        kd_loss = kd_losses_m,
+                        top1 = prec1_m,
+                        top5 = prec5_m,
+                        batch_time = batch_time_m,
+                        rate = input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
+                        rate_avg = input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
+                        lr = lr,
+                        data_time = data_time_m))
 
                 if cfg.SAVE_IMAGES and output_dir:
                     image = Image.fromarray(input.numpy())
@@ -142,7 +149,7 @@ def train_epoch(
         if saver is not None and cfg.RECOVERY_INTERVAL and (
                 last_batch or (batch_idx + 1) % cfg.RECOVERY_INTERVAL == 0):
             saver.save_recovery(model, optimizer, cfg, epoch,
-                                model_ema=model_ema, batch_idx=batch_idx)
+                model_ema = model_ema, batch_idx = batch_idx)
 
         end = time.time()
 
@@ -153,7 +160,7 @@ def train_epoch(
     return OrderedDict([('loss', losses_m.avg)])
 
 
-def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', local_rank=0, logger=None):
+def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix = '', local_rank = 0, logger = None):
     batch_time_m = AverageMeter()
     losses_m = AverageMeter()
     prec1_m = AverageMeter()
@@ -184,11 +191,11 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
                     0,
                     reduce_factor,
                     reduce_factor).mean(
-                   axis=2)
+                   axis = 2)
                 target = target[0:target.shape[0]:reduce_factor]
 
             loss = loss_fn(output, target)
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             if cfg.NUM_GPU > 1:
                 reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
@@ -213,11 +220,17 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
                     'Prec@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
                     'Prec@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
-                        log_name, batch_idx, last_idx,
-                        batch_time=batch_time_m, loss=losses_m,
-                        top1=prec1_m, top5=prec5_m))
+                        log_name, 
+                        batch_idx, 
+                        last_idx,
+                        batch_time = batch_time_m, 
+                        loss = losses_m,
+                        top1 = prec1_m, 
+                        top5 = prec5_m))
 
     metrics = OrderedDict(
-        [('loss', losses_m.avg), ('prec1', prec1_m.avg), ('prec5', prec5_m.avg)])
+        [('loss', losses_m.avg), 
+            ('prec1', prec1_m.avg), 
+            ('prec5', prec5_m.avg)])
 
     return metrics

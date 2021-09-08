@@ -11,9 +11,9 @@ import _init_paths
 
 from lib.config import cfg
 
-parser = argparse.ArgumentParser(description='Cream of the Crop')
-parser.add_argument('mode', type=str, default='train', help='Mode in ["train", "retrain", "test"]')
-parser.add_argument('cfg', type=str, default='../experiments/configs/baseline.yaml', help='configuration of cream')
+parser = argparse.ArgumentParser(description = 'Cream of the Crop')
+parser.add_argument('mode', type = str, default = 'train', help = 'Mode in ["train", "retrain", "test"]')
+parser.add_argument('cfg', type = str, default = '../experiments/configs/baseline.yaml', help = 'configuration of cream')
 args = parser.parse_args()
 cfg.merge_from_file(args.cfg)
 
