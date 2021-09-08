@@ -7,7 +7,8 @@ import time
 import paddle
 
 from collections import OrderedDict
-from lib.utils.util import AverageMeter, reduce_tensor, accuracy
+from lib.utils.util import AverageMeter
+from lib.utils.pimm.utils import accuracy, reduce_tensor
 from warnings import warn
 
 # validate function
@@ -55,18 +56,18 @@ def validate(
                 prec1 = reduce_tensor(prec1, cfg.NUM_GPU)
                 prec5 = reduce_tensor(prec5, cfg.NUM_GPU)
             else:
-                reduced_loss = loss.data
+                reduced_loss = loss
 
             # torch.cuda.synchronize()
 
             losses_m.update(reduced_loss.item(), input.shape[0])
-            prec1_m.update(prec1.item(), output.shape[0])
-            prec5_m.update(prec5.item(), output.shape[0])
+            prec1_m.update(prec1, output.shape[0])
+            prec5_m.update(prec5, output.shape[0])
 
             batch_time_m.update(time.time() - end)
             end = time.time()
             # if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
-            if local_rank == 0:
+            if local_rank == 0 and (batch_idx % 10 == 0 or last_batch):
                 log_name = 'Test' + log_suffix
                 logger.info(
                     '{0}: [{1:>4d}/{2}]  '
@@ -78,18 +79,19 @@ def validate(
                         batch_time=batch_time_m, loss=losses_m,
                         top1=prec1_m, top5=prec5_m))
 
-                writer.add_scalar(
-                    'Loss' + log_suffix + '/vaild',
-                    prec1_m.avg,
-                    epoch * len(loader) + batch_idx)
-                writer.add_scalar(
-                    'Accuracy' +
-                    log_suffix +
-                    '/vaild',
-                    prec1_m.avg,
-                    epoch *
-                    len(loader) +
-                    batch_idx)
+                if type(writer) != type(None):
+                    writer.add_scalar(
+                        'Loss' + log_suffix + '/vaild',
+                        prec1_m.avg,
+                        epoch * len(loader) + batch_idx)
+                    writer.add_scalar(
+                        'Accuracy' +
+                        log_suffix +
+                        '/vaild',
+                        prec1_m.avg,
+                        epoch *
+                        len(loader) +
+                        batch_idx)
 
     metrics = OrderedDict(
         [('loss', losses_m.avg), ('prec1', prec1_m.avg), ('prec5', prec5_m.avg)])

@@ -7,11 +7,11 @@ import os
 import datetime
 import numpy as np
 import paddle
-from timm import scheduler
 import _init_paths
 from paddle.nn import CrossEntropyLoss
 
-# import timm packages
+# import pimm packages
+from lib.utils.pimm import scheduler
 from lib.utils.pimm.optim import create_optimizer
 from lib.utils.pimm.models import resume_checkpoint
 from lib.utils.pimm.scheduler import create_scheduler
@@ -137,7 +137,7 @@ def main():
 
     # create optimizer
     # model = model.cuda()
-    optimizer = create_optimizer(cfg, model, scheduler)
+    optimizer = create_optimizer(cfg, model, lr_scheduler, False)
     if cfg.AUTO_RESUME:
         optimizer.load_state_dict(resume_state['optimizer'])
         del resume_state
@@ -151,7 +151,7 @@ def main():
             resume=cfg.RESUME_PATH if cfg.AUTO_RESUME else None)
 
     if distributed:
-        assert False, "Distributed not available!"
+        assert False, "Distributed not available! GPU num: " + str(cfg.NUM_GPU)
         # if cfg.BATCHNORM.SYNC_BN:
         #     try:
         #         if HAS_APEX:
@@ -176,7 +176,7 @@ def main():
         #     model = DDP(model, device_ids=[args.local_rank])
 
     # imagenet train dataset
-    train_dir = os.path.join(cfg.DATA_DIR, 'train')
+    train_dir = os.path.join(cfg.DATA_DIR, 'val')
     if not os.path.exists(train_dir) and args.local_rank == 0:
         logger.error('Training folder does not exist at: {}'.format(train_dir))
         exit(1)
@@ -193,9 +193,9 @@ def main():
         mean=IMAGENET_DEFAULT_MEAN,
         std=IMAGENET_DEFAULT_STD,
         num_workers=cfg.WORKERS,
-        distributed=distributed,
+        distributed=True,
         collate_fn=None,
-        pin_memory=cfg.DATASET.PIN_MEM,
+        # pin_memory=cfg.DATASET.PIN_MEM,
         interpolation='random',
         re_mode=cfg.AUGMENTATION.RE_MODE,
         re_prob=cfg.AUGMENTATION.RE_PROB
@@ -218,8 +218,8 @@ def main():
         mean=IMAGENET_DEFAULT_MEAN,
         std=IMAGENET_DEFAULT_STD,
         num_workers=cfg.WORKERS,
-        distributed=distributed,
-        pin_memory=cfg.DATASET.PIN_MEM
+        distributed=True,
+        # pin_memory=cfg.DATASET.PIN_MEM
     )
 
     # whether to use label smoothing
@@ -278,7 +278,7 @@ def main():
                 eval_metrics = ema_eval_metrics
 
             if lr_scheduler is not None:
-                lr_scheduler.step(epoch + 1, eval_metrics[eval_metric])
+                lr_scheduler.step(epoch + 1)
 
             update_summary(epoch, train_metrics, eval_metrics, os.path.join(
                 output_dir, 'summary.csv'), write_header=best_metric is None)

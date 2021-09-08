@@ -4,7 +4,8 @@ import time
 
 from collections import OrderedDict
 
-from lib.utils.util import AverageMeter, accuracy, reduce_tensor
+from lib.utils.util import AverageMeter
+from lib.utils.pimm.utils import accuracy, reduce_tensor
 from PIL import Image
 
 # retrain function
@@ -48,11 +49,11 @@ def train_epoch(
         prec1, prec5 = accuracy(output, target, topk=(1, 5))
 
         if cfg.NUM_GPU > 1:
-            reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
+            reduced_loss = reduce_tensor(loss, cfg.NUM_GPU)
             prec1 = reduce_tensor(prec1, cfg.NUM_GPU)
             prec5 = reduce_tensor(prec5, cfg.NUM_GPU)
         else:
-            reduced_loss = loss.data
+            reduced_loss = loss
 
         optimizer.clear_grad()
         loss.backward()
@@ -60,7 +61,7 @@ def train_epoch(
 
         # torch.cuda.synchronize()
 
-        losses_m.update(reduced_loss, input.shape[0])
+        losses_m.update(reduced_loss.item(), input.shape[0])
         prec1_m.update(prec1, output.shape[0])
         prec5_m.update(prec5, output.shape[0])
 
@@ -70,8 +71,9 @@ def train_epoch(
 
         batch_time_m.update(time.time() - end)
         if last_batch or batch_idx % cfg.LOG_INTERVAL == 0:
-            lrl = [param_group['lr'] for param_group in optimizer.param_groups]
-            lr = sum(lrl) / len(lrl)
+        #     lrl = [param_group['lr'] for param_group in optimizer.param_groups]
+        #     lr = sum(lrl) / len(lrl)
+            lr = optimizer.get_lr()
 
             if local_rank == 0:
                 logger.info(
@@ -98,23 +100,24 @@ def train_epoch(
                         batch_time_m.avg,
                         lr=lr,
                         data_time=data_time_m))
-
-                writer.add_scalar(
-                    'Loss/train',
-                    prec1_m.avg,
-                    epoch *
-                    len(loader) +
-                    batch_idx)
-                writer.add_scalar(
-                    'Accuracy/train',
-                    prec1_m.avg,
-                    epoch *
-                    len(loader) +
-                    batch_idx)
-                writer.add_scalar(
-                    'Learning_Rate',
-                    optimizer.param_groups[0]['lr'],
-                    epoch * len(loader) + batch_idx)
+                
+                if type(writer) != type(None):
+                    writer.add_scalar(
+                        'Loss/train',
+                        prec1_m.avg,
+                        epoch *
+                        len(loader) +
+                        batch_idx)
+                    writer.add_scalar(
+                        'Accuracy/train',
+                        prec1_m.avg,
+                        epoch *
+                        len(loader) +
+                        batch_idx)
+                    writer.add_scalar(
+                        'Learning_Rate',
+                        optimizer.param_groups[0]['lr'],
+                        epoch * len(loader) + batch_idx)
 
                 if cfg.SAVE_IMAGES and output_dir:
                     image = Image.fromarray(input.numpy())
@@ -135,10 +138,10 @@ def train_epoch(
                 use_amp=use_amp,
                 batch_idx=batch_idx)
 
-        if lr_scheduler is not None:
-            lr_scheduler.step_update(
-                num_updates=num_updates,
-                metric=losses_m.avg)
+        # if lr_scheduler is not None:
+        #     lr_scheduler.step_update(
+        #         num_updates=num_updates,
+        #         metric=losses_m.avg)
 
         end = time.time()
         # end for

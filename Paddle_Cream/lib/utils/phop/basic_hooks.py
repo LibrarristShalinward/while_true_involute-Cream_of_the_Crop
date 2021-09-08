@@ -58,8 +58,8 @@ def count_avgpool(layer, x, y):
 
 def count_adap_avgpool(layer, x, y):
     kernel = paddle.to_tensor([*(x[0].shape[2:])], dtype = "float32")
-    kernel = kernel// paddle.to_tensor(list((layer.output_size,)), dtype = "float32").squeeze()
-    total_add = paddle.prod(kernel)
+    kernel = kernel / paddle.to_tensor([layer._output_size], dtype = "float32")
+    total_add = paddle.prod(kernel.floor())
     total_div = 1
     kernel_ops = total_add + total_div
     num_elements = y.numel()

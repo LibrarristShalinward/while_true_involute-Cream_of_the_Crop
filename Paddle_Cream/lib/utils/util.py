@@ -156,7 +156,7 @@ def parse_config_args(exp_name):
 
 def get_model_flops_params(model, input_size=(1, 3, 224, 224)):
     input = paddle.randn(input_size)
-    macs, params = profile(deepcopy(model), inputs=(input,), verbose=False)
+    macs, params = profile(deepcopy(model), inputs=input, verbose=False)
     macs, params = clever_format([macs, params], "%.3f")
     return macs, params
 

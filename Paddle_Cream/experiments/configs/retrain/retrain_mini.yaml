@@ -1,12 +1,12 @@
 AUTO_RESUME: False
-DATA_DIR: './data/imagenet'
+DATA_DIR: './data/imagemini'
 MODEL: '14m_retrain'
 RESUME_PATH: './experiments/workspace/retrain/resume.pth.tar'
 SAVE_PATH: '.\experiments\workspace\retrain'
 SEED: 42
 LOG_INTERVAL: 50
 RECOVERY_INTERVAL: 0
-WORKERS: 1
+WORKERS: 4
 NUM_GPU: 1
 SAVE_IMAGES: False
 AMP: False
@@ -16,36 +16,36 @@ TTA: 0
 LOCAL_RANK: 0
 
 DATASET:
-  NUM_CLASSES: 1000
-  IMAGE_SIZE: 64 # image patch size
+  NUM_CLASSES: 5
+  IMAGE_SIZE: 32 # image patch size
   INTERPOLATION: 'random' # Image resize interpolation type
-  BATCH_SIZE: 128 # batch size
+  BATCH_SIZE: 8 # batch size
   NO_PREFECHTER: False
 
 NET:
   GP: 'avg'
-  DROPOUT_RATE: 0.2
+  DROPOUT_RATE: 0.0
   SELECTION: 14
 
   EMA:
     USE: True
     FORCE_CPU: False # force model ema to be tracked on CPU
-    DECAY: 0.9999
+    DECAY: 0.9998
 
-
-LR: 0.064
-EPOCHS: 500
-OPT_EPS: 1e-3
-SCHED: 'step'
 OPT: 'rmsproptf'
-WARMUP_LR: 1e-6
-DECAY_EPOCHS: 3
-DECAY_RATE: 0.973
-WARMUP_EPOCHS: 3
-WEIGHT_DECAY: 1e-5
+OPT_EPS: 1e-2
+MOMENTUM: 0.9
+DECAY_RATE: 0.01
 
-AUGMENTATION:
-  AA: 'rand-m9-mstd0.5'
-  RE_PROB: 0.2  # random erase prob
-  RE_MODE: 'pixel'  # random erase mode
-
+SCHED: 'step'
+LR_NOISE_PCT: 0.67
+LR_NOISE_STD: 1.0
+WARMUP_LR: 1e-4
+MIN_LR: 1e-5
+EPOCHS: 50
+START_EPOCH: None
+DECAY_EPOCHS: 7
+WARMUP_EPOCHS: 2
+COOLDOWN_EPOCHS: 5
+PATIENCE_EPOCHS: 5
+LR: 1e-2
