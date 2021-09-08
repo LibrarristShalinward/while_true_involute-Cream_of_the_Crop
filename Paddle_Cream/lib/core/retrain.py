@@ -40,8 +40,6 @@ def train_epoch(
         last_batch = batch_idx == last_idx
         data_time_m.update(time.time() - end)
 
-        # input = input.cuda()
-        # target = target.cuda()
         output = model(input)
 
         loss = loss_fn(output, target)
@@ -59,8 +57,6 @@ def train_epoch(
         loss.backward()
         optimizer.step()
 
-        # torch.cuda.synchronize()
-
         losses_m.update(reduced_loss.item(), input.shape[0])
         prec1_m.update(prec1, output.shape[0])
         prec5_m.update(prec5, output.shape[0])
@@ -71,8 +67,6 @@ def train_epoch(
 
         batch_time_m.update(time.time() - end)
         if last_batch or batch_idx % cfg.LOG_INTERVAL == 0:
-        #     lrl = [param_group['lr'] for param_group in optimizer.param_groups]
-        #     lr = sum(lrl) / len(lrl)
             lr = optimizer.get_lr()
 
             if local_rank == 0:
@@ -138,13 +132,7 @@ def train_epoch(
                 use_amp=use_amp,
                 batch_idx=batch_idx)
 
-        # if lr_scheduler is not None:
-        #     lr_scheduler.step_update(
-        #         num_updates=num_updates,
-        #         metric=losses_m.avg)
-
         end = time.time()
-        # end for
 
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()

@@ -42,8 +42,6 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
 
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
 
-            # torch.cuda.synchronize()
-
             prec1_m.update(prec1.item(), output.shape[0])
             prec5_m.update(prec5.item(), output.shape[0])
 
@@ -98,10 +96,6 @@ def create_optimizer_supernet(args, model, scheduler = None, filter_bias_and_bn 
     weight_decay = args.weight_decay
     if 'adamw' in opt_lower or 'radam' in opt_lower:
         weight_decay /= args.lr
-    # if weight_decay and filter_bias_and_bn:
-    #     parameters = add_weight_decay_supernet(model, args, weight_decay)
-    #     weight_decay = 0.
-    # else:
     parameters = model.parameters()
     sched = 1e-3 if type(scheduler) == type(None) else scheduler
 

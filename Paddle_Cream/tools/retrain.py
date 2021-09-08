@@ -1,8 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-# Written by Hao Du and Houwen Peng
-# email: haodu8-c@my.cityu.edu.hk and houwen.peng@microsoft.com
-
 import os
 import datetime
 import numpy as np
@@ -11,7 +6,6 @@ import _init_paths
 from paddle.nn import CrossEntropyLoss
 
 # import pimm packages
-from lib.utils.pimm import scheduler
 from lib.utils.pimm.optim import create_optimizer
 from lib.utils.pimm.models import resume_checkpoint
 from lib.utils.pimm.scheduler import create_scheduler
@@ -114,8 +108,6 @@ def main():
 
     # initialize distributed parameters
     distributed = cfg.NUM_GPU > 1
-    # torch.cuda.set_device(args.local_rank)
-    # torch.distributed.init_process_group(backend='nccl', init_method='env://')
     if args.local_rank == 0:
         logger.info(
             'Training on Process {} with {} GPUs.'.format(
@@ -123,11 +115,7 @@ def main():
 
     # fix random seeds
     paddle.seed(cfg.SEED)
-    # torch.manual_seed(cfg.SEED)
-    # torch.cuda.manual_seed_all(cfg.SEED)
     np.random.seed(cfg.SEED)
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
 
     # get parameters and FLOPs of model
     if args.local_rank == 0:
@@ -150,7 +138,6 @@ def main():
         logger.info('Scheduled epochs: {}'.format(num_epochs))
 
     # create optimizer
-    # model = model.cuda()
     optimizer = create_optimizer(cfg, model, lr_scheduler, False)
     if cfg.AUTO_RESUME:
         optimizer.load_state_dict(resume_state['optimizer'])
@@ -166,28 +153,6 @@ def main():
 
     if distributed:
         assert False, "Distributed not available! GPU num: " + str(cfg.NUM_GPU)
-        # if cfg.BATCHNORM.SYNC_BN:
-        #     try:
-        #         if HAS_APEX:
-        #             model = convert_syncbn_model(model)
-        #         else:
-        #             model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(
-        #                 model)
-        #         if args.local_rank == 0:
-        #             logger.info(
-        #                 'Converted model to use Synchronized BatchNorm.')
-        #     except Exception as e:
-        #         if args.local_rank == 0:
-        #             logger.error(
-        #                 'Failed to enable Synchronized BatchNorm. Install Apex or Torch >= 1.1 with exception {}'.format(e))
-        # if HAS_APEX:
-        #     model = DDP(model, delay_allreduce=True)
-        # else:
-        #     if args.local_rank == 0:
-        #         logger.info(
-        #             "Using torch DistributedDataParallel. Install NVIDIA Apex for Apex DDP.")
-        #     # can use device str in Torch >= 1.1
-        #     model = DDP(model, device_ids=[args.local_rank])
 
     # imagenet train dataset
     train_dir = os.path.join(cfg.DATA_DIR, 'val')
@@ -232,9 +197,7 @@ def main():
         mean=IMAGENET_DEFAULT_MEAN,
         std=IMAGENET_DEFAULT_STD,
         num_workers=cfg.WORKERS,
-        distributed=True,
-        # pin_memory=cfg.DATASET.PIN_MEM
-    )
+        distributed=True)
 
     # whether to use label smoothing
     if cfg.AUGMENTATION.SMOOTHING > 0.:

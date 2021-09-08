@@ -17,11 +17,6 @@ class FlopsEst(object):
         self.flops_dict = {}
         self.params_dict = {}
 
-        # if device == 'cpu':
-        #     model = model.cpu()
-        # else:
-        #     model = model.cuda()
-
         self.params_fixed = 0
         self.flops_fixed = 0
 

@@ -161,7 +161,6 @@ def gen_supernet(flops_minimum=0, flops_maximum=600, **kwargs):
 
     num_features = 1280
 
-    # act_layer = HardSwish
     act_layer = Swish
     arch_def = [
         # stage 0, 112x112 in

@@ -93,7 +93,6 @@ class ChildNet(nn.Layer):
             num_classes) if self.num_classes else None
 
     def forward_features(self, x):
-        # architecture = [[0], [], [], [], [], [0]]
         x = self.conv_stem(x)
         x = self.bn1(x)
         x = self.act1(x)
@@ -113,14 +112,12 @@ class ChildNet(nn.Layer):
 
 
 def gen_childnet(arch_list, arch_def, **kwargs):
-    # arch_list = [[0], [], [], [], [], [0]]
     choices = {'kernel_size': [3, 5, 7], 'exp_ratio': [4, 6]}
     choices_list = [[x, y] for x in choices['kernel_size']
                     for y in choices['exp_ratio']]
 
     num_features = 1280
 
-    # act_layer = HardSwish
     act_layer = Swish
 
     new_arch = []

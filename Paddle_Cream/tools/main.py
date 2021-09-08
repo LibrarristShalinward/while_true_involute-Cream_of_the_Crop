@@ -12,11 +12,8 @@ import _init_paths
 from lib.config import cfg
 
 parser = argparse.ArgumentParser(description='Cream of the Crop')
-parser.add_argument('mode', type=str, default='train',
-                    help='Mode in ["train", "retrain", "test"]')
-parser.add_argument('cfg', type=str,
-                    default='../experiments/configs/baseline.yaml',
-                    help='configuration of cream')
+parser.add_argument('mode', type=str, default='train', help='Mode in ["train", "retrain", "test"]')
+parser.add_argument('cfg', type=str, default='../experiments/configs/baseline.yaml', help='configuration of cream')
 args = parser.parse_args()
 cfg.merge_from_file(args.cfg)
 
@@ -31,20 +28,17 @@ def main():
 
     if args.mode == 'train':
         os.system("python "
-                  " -m paddle.distributed.launch "
-                #   "--nproc_per_node={} "
+                  # " -m paddle.distributed.launch "
                   "tools/train.py "
                   "--cfg {}".format(args.cfg))
     elif args.mode == 'retrain':
-        os.system("python -m "
-                  "paddle.distributed.launch "
-                #   "--nproc_per_node={} "
+        os.system("python "
+                  # "-m paddle.distributed.launch "
                   "tools/retrain.py "
                   "--cfg {}".format(args.cfg))
     elif args.mode == 'test':
         os.system("python "
                   # "-m paddle.distributed.launch "
-                #   "--nproc_per_node={} "
                   "tools/test.py "
                   "--cfg {}".format(args.cfg))
     else:

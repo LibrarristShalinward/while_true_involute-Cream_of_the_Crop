@@ -1,15 +1,9 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-# Written by Hao Du and Houwen Peng
-# email: haodu8-c@my.cityu.edu.hk and houwen.peng@microsoft.com
-
 import time
 import paddle
 
 from collections import OrderedDict
 from lib.utils.util import AverageMeter
 from lib.utils.pimm.utils import accuracy, reduce_tensor
-from warnings import warn
 
 # validate function
 def validate(
@@ -58,15 +52,12 @@ def validate(
             else:
                 reduced_loss = loss
 
-            # torch.cuda.synchronize()
-
             losses_m.update(reduced_loss.item(), input.shape[0])
             prec1_m.update(prec1, output.shape[0])
             prec5_m.update(prec5, output.shape[0])
 
             batch_time_m.update(time.time() - end)
             end = time.time()
-            # if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
             if local_rank == 0 and (batch_idx % 10 == 0 or last_batch):
                 log_name = 'Test' + log_suffix
                 logger.info(

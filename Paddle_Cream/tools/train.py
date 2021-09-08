@@ -46,8 +46,6 @@ def main():
         logger = None
 
     # initialize distributed parameters
-    # torch.cuda.set_device(args.local_rank)
-    # torch.distributed.init_process_group(backend='nccl', init_method='env://')
     if args.local_rank == 0:
         logger.info(
             'Training on Process %d with %d GPUs.',
@@ -55,10 +53,7 @@ def main():
 
     # fix random seeds
     paddle.seed(cfg.SEED)
-    # torch.cuda.manual_seed_all(cfg.SEED)
     np.random.seed(cfg.SEED)
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
 
     # generate supernet
     model, sta_num, resolution = gen_supernet(
@@ -117,7 +112,6 @@ def main():
     if cfg.BATCHNORM.SYNC_BN:
         try:
             if USE_APEX:
-                # model = convert_syncbn_model(model)
                 assert False, "APEX is not available!!!"
             else:
                 model = SyncBatchNorm.convert_sync_batchnorm(model)
@@ -128,14 +122,10 @@ def main():
                 'Failed to enable Synchronized BatchNorm. '
                 'Install Apex or Torch >= 1.1 with Exception %s', exception)
     if USE_APEX:
-        # model = DDP(model, delay_allreduce=True)
         assert False, "APEX is not available!!!"
     else:
         if args.local_rank == 0:
-            logger.info(
-                "Using paddle DistributedDataParallel. NVIDIA? Not available.")
-        # can use device str in Torch >= 1.1
-        # model = DDP(model, device_ids=[args.local_rank])
+            logger.info("Using paddle DistributedDataParallel. ")
 
     # imagenet train dataset
     train_dir = os.path.join(cfg.DATA_DIR, 'train')
@@ -159,8 +149,7 @@ def main():
         collate_fn=None,
         crop_pct=DEFAULT_CROP_PCT,
         mean=IMAGENET_DEFAULT_MEAN,
-        std=IMAGENET_DEFAULT_STD
-    )
+        std=IMAGENET_DEFAULT_STD)
 
     # imagenet validation dataset
     eval_dir = os.path.join(cfg.DATA_DIR, 'val')

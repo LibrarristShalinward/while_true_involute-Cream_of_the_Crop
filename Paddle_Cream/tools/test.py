@@ -1,8 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-# Written by Hao Du and Houwen Peng
-# email: haodu8-c@my.cityu.edu.hk and houwen.peng@microsoft.com
-
 import os
 import datetime
 from paddle.nn import CrossEntropyLoss
@@ -88,8 +83,6 @@ def main():
             '[Model-{}] Flops: {} Params: {}'.format(cfg.NET.SELECTION, macs, params))
 
     # initialize distributed parameters
-    # torch.cuda.set_device(args.local_rank)
-    # torch.distributed.init_process_group(backend='nccl', init_method='env://')
     if args.local_rank == 0:
         logger.info(
             "Training on Process {} with {} GPUs.".format(
@@ -98,8 +91,6 @@ def main():
     # resume model from checkpoint
     assert cfg.AUTO_RESUME is True and os.path.exists(cfg.RESUME_PATH)
     _, __ = resume_checkpoint(model, cfg.RESUME_PATH)
-
-    # model = model.to(device)
 
     model_ema = None
     if cfg.NET.EMA.USE:

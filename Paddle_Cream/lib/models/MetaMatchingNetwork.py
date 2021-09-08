@@ -120,11 +120,11 @@ class MetaMatchingNetwork():
 
                 validation_loss = self.forward_validation(input, target, random_cand, model, loss_fn)
 
-                # # calculate 2nd gradient
+                # calculate 2nd gradient
                 grad_teacher = self.calculate_2nd_gradient(validation_loss, model, optimizer, teacher_cand, students_weight)
 
-                # # update meta matching networks
+                # update meta matching networks
                 self.update_meta_weights_only(random_cand, teacher_cand, model, optimizer)
 
-                # # delete internal variants
+                # delete internal variants
                 del grad_teacher, grad_1st, x, validation_loss, kd_loss, students_weight

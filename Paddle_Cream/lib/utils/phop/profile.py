@@ -56,13 +56,8 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
         custom_ops = {}
     
     def add_hooks(layer: nn.Layer):
-        # layer.register_buffer('total_ops', paddle.zeros((1, 1), dtype = "float64"))
-        # layer.register_buffer('total_params', paddle.zeros((1, 1), dtype = "float64"))
         layer.register_buffer('total_ops', paddle.to_tensor([0.]))
         layer.register_buffer('total_params', paddle.to_tensor([0.]))
-
-        # for param in layer.parameters():
-        #     layer.total_params += paddle.to_tensor([param.numel()], dtype = "float32")
         
         layer_type = type(layer)
         fn = None
@@ -107,8 +102,6 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     for layer, (op_handler, params_handler) in handler_collection.items():
         op_handler.remove()
         params_handler.remove()
-        # layer.buffers().pop("total_ops")
-        # layer.buffers().pop("total_params")
 
     return total_ops, total_params
 

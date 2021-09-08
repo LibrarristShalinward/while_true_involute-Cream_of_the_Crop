@@ -279,8 +279,6 @@ def bn_flops_counter_hook(layer, input, output):
     input = input[0]
 
     batch_flops = np.prod(input.shape)
-    # if layer.affine:
-    #     batch_flops *= 2
     layer.__flops__ += int(batch_flops)
 
 
