@@ -1,13 +1,13 @@
+import _init_paths
+
 '''
 本文件为原tools/main.py的全复制
 本文件为主交互文件
 '''
 
-import os
 import argparse
 import datetime
-
-import _init_paths
+import os
 
 from lib.config import cfg
 

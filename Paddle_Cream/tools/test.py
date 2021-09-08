@@ -1,3 +1,6 @@
+'''
+本文件为原tools/test.py的转写
+'''
 import os
 import datetime
 from paddle.nn import CrossEntropyLoss

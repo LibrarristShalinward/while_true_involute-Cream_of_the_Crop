@@ -1,3 +1,7 @@
+'''
+本文件为原tools/retrain.py的转写
+'''
+
 import os
 import datetime
 import numpy as np

@@ -1,3 +1,7 @@
+'''
+本文件为原lib/models/core/retrain.py的转写
+'''
+
 import os
 import time
 from collections import OrderedDict

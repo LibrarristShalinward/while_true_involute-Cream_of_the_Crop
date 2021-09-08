@@ -1,3 +1,7 @@
+'''
+本文件为原lib/models/core/test.py的转写
+'''
+
 import time
 from collections import OrderedDict
 
