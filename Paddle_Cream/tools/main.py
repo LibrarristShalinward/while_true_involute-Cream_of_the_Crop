@@ -43,7 +43,7 @@ def main():
                   "--cfg {}".format(args.cfg))
     elif args.mode == 'test':
         os.system("python "
-                  "-m paddle.distributed.launch "
+                  # "-m paddle.distributed.launch "
                 #   "--nproc_per_node={} "
                   "tools/test.py "
                   "--cfg {}".format(args.cfg))

@@ -1,7 +1,7 @@
 AUTO_RESUME: True
 DATA_DIR: './data/imagenet'
 MODEL: 'Childnet_Testing'
-RESUME_PATH: './experiments/workspace/ckps/14.pth.tar'
+RESUME_PATH: './experiments/workspace/ckps/14.pdparams'
 SAVE_PATH: '.\\experiments\\workspace\\test'
 SEED: 42
 LOG_INTERVAL: 50
@@ -17,7 +17,7 @@ LOCAL_RANK: 0
 
 DATASET:
   NUM_CLASSES: 1000
-  IMAGE_SIZE: 224 # image patch size
+  IMAGE_SIZE: 64 # image patch size
   INTERPOLATION: 'bilinear' # Image resize interpolation type
   BATCH_SIZE: 32 # batch size
   NO_PREFECHTER: False
