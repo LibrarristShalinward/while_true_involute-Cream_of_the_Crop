@@ -2,15 +2,17 @@
 本文件为原lib/models/core/train.py的转写
 '''
 
-from lib.utils.pimm import AverageMeter
+import os
 import time
+from collections import OrderedDict
+
 import paddle
+from lib.utils.pimm import AverageMeter
+from lib.utils.pimm.utils import accuracy, reduce_tensor
 from lib.utils.util import cross_entropy_loss_with_soft_target
 from paddle.nn.functional import softmax
-from lib.utils.pimm.utils import accuracy, reduce_tensor
-import os
 from PIL import Image
-from collections import OrderedDict
+
 
 # supernet train function
 def train_epoch(

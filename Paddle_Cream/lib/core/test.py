@@ -1,9 +1,10 @@
 import time
-import paddle
-
 from collections import OrderedDict
-from lib.utils.util import AverageMeter
+
+import paddle
 from lib.utils.pimm.utils import accuracy, reduce_tensor
+from lib.utils.util import AverageMeter
+
 
 # validate function
 def validate(

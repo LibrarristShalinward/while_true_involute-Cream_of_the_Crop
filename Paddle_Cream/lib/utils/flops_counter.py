@@ -3,10 +3,12 @@
 '''
 
 import sys
-import paddle.nn as nn
-import paddle
 from functools import partial
+
 import numpy as np
+import paddle
+import paddle.nn as nn
+
 
 def get_model_complexity_info(
     model, input_res,

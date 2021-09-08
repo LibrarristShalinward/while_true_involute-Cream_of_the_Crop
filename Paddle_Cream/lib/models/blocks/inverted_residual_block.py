@@ -3,8 +3,12 @@
 '''
 
 import paddle.nn as nn
-from ...utils.pimm.models.efficientnet_blocks import make_divisible, resolve_se_args, SqueezeExcite, drop_path
+
 from ...utils.pimm.models import create_conv2d
+from ...utils.pimm.models.efficientnet_blocks import (SqueezeExcite, drop_path,
+                                                      make_divisible,
+                                                      resolve_se_args)
+
 
 class InvertedResidual(nn.Layer):
     """ Inverted residual block w/ optional SE and CondConv routing"""

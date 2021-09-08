@@ -2,10 +2,15 @@
 本文件为原lib/models/builders/build_childnet.py的转写
 '''
 
-import paddle.nn as nn
 from collections import OrderedDict
+
+import paddle.nn as nn
+
 from ...utils.pimm.models import round_channels
-from ...utils.pimm.models.efficientnet_blocks import InvertedResidual, DepthwiseSeparableConv, ConvBnAct
+from ...utils.pimm.models.efficientnet_blocks import (ConvBnAct,
+                                                      DepthwiseSeparableConv,
+                                                      InvertedResidual)
+
 
 # ChildNet Builder definition.
 class ChildNetBuilder:

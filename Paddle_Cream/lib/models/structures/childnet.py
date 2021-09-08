@@ -3,12 +3,15 @@
 '''
 
 import paddle.nn as nn
-from ...utils.pimm.models.efficientnet_blocks import round_channels, create_conv2d
+
+from ...utils.builder_util import decode_arch_def, efficientnet_init_weights
 from ...utils.pimm.models import SelectAdaptivePool2D
-from ..builders.build_childnet import ChildNetBuilder
-from ...utils.builder_util import efficientnet_init_weights, decode_arch_def
 from ...utils.pimm.models.activations import Swish, hard_sigmoid
-from ...utils.pimm.models.efficientnet_blocks import resolve_bn_args
+from ...utils.pimm.models.efficientnet_blocks import (create_conv2d,
+                                                      resolve_bn_args,
+                                                      round_channels)
+from ..builders.build_childnet import ChildNetBuilder
+
 
 # ChildNet Structures
 class ChildNet(nn.Layer):

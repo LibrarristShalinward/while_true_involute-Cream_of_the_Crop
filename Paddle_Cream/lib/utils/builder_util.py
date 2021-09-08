@@ -3,14 +3,17 @@
 '''
 
 
-from paddle.framework import create_parameter
-from paddle.nn import ReLU, ReLU6, Conv2D, BatchNorm2D, Linear, Layer
-from .pimm.models.activations import Swish
-import re
 import math
+import re
 from copy import deepcopy
+
+from paddle.framework import create_parameter
+from paddle.nn import BatchNorm2D, Conv2D, Layer, Linear, ReLU, ReLU6
+from paddle.nn.initializer import Constant, Normal, Uniform
+
 from .pimm.models import CondConv2D, get_condconv_initializer
-from paddle.nn.initializer import Normal, Constant, Uniform
+from .pimm.models.activations import Swish
+
 
 def parse_ksize(ss):
     if ss.isdigit():

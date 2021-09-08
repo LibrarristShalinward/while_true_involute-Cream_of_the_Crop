@@ -1,12 +1,11 @@
 import os
 import time
-
-
 from collections import OrderedDict
 
-from lib.utils.util import AverageMeter
 from lib.utils.pimm.utils import accuracy, reduce_tensor
+from lib.utils.util import AverageMeter
 from PIL import Image
+
 
 # retrain function
 def train_epoch(

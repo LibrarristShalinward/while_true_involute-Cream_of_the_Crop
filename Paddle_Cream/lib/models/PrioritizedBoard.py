@@ -2,9 +2,11 @@
 本文件为原lib/models/PrioritizedBoard.py的转写
 '''
 
-from paddle.nn.functional import sigmoid, softmax
-import numpy as np
 from copy import deepcopy
+
+import numpy as np
+from paddle.nn.functional import sigmoid, softmax
+
 
 # Prioritized Path Board
 class PrioritizedBoard():

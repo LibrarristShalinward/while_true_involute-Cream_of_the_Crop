@@ -2,17 +2,19 @@
 本文件为原lib/utils/util.py的转写
 '''
 
-from .pimm import AverageMeter, accuracy
-import paddle
+import argparse
 import logging
 import sys
-from paddle.optimizer import Momentum, Adam
-from paddle.optimizer.lr import LambdaDecay
-import argparse
-from ..config import cfg
-from .phop import profile, clever_format
 from copy import deepcopy
+
+import paddle
 from paddle.nn import LogSoftmax
+from paddle.optimizer import Adam, Momentum
+from paddle.optimizer.lr import LambdaDecay
+
+from ..config import cfg
+from .phop import clever_format, profile
+from .pimm import AverageMeter, accuracy
 
 
 def get_path_acc(model, path, val_loader, args, val_iters = 50):
