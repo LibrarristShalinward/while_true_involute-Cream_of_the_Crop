@@ -125,12 +125,11 @@ def main():
         batch_size=cfg.DATASET.VAL_BATCH_MUL * cfg.DATASET.BATCH_SIZE,
         is_training=False,
         num_workers=cfg.WORKERS,
-        distributed=False,
+        distributed=True,
         interpolation='bicubic',
-        pin_memory=cfg.DATASET.PIN_MEM,
         crop_pct=DEFAULT_CROP_PCT,
         mean=IMAGENET_DEFAULT_MEAN,
-        std=IMAGENET_DEFAULT_STD
+        std=IMAGENET_DEFAULT_STD, 
     )
 
     # only test accuracy of model-EMA
