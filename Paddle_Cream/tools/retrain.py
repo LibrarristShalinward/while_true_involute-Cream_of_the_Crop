@@ -16,7 +16,7 @@ from lib.utils.pimm.optim import create_optimizer
 from lib.utils.pimm.models import resume_checkpoint
 from lib.utils.pimm.scheduler import create_scheduler
 from lib.utils.pimm.data import Dataset, create_loader
-from lib.utils.pimm.utils import ModelEma, update_summary
+from lib.utils.pimm.utils import ModelEma, update_summary, CheckpointSaver
 from lib.utils.pimm.loss import LabelSmoothingCrossEntropy
 
 # import models and training functions
@@ -94,9 +94,23 @@ def main():
         drop_rate=cfg.NET.DROPOUT_RATE,
         global_pool=cfg.NET.GP)
 
+    checkpoint = paddle.load("F:/origin_weight.pdparams")
+    new_dict = model.state_dict()
+    for name, weight in zip(new_dict.keys(), checkpoint.values()):
+        shape = new_dict[name].shape
+        trans = weight
+        trans = trans.reshape(shape)
+        new_dict[name] = trans
+    model.set_state_dict(new_dict)
+
     # initialize training parameters
     eval_metric = cfg.EVAL_METRICS
     best_metric, best_epoch, saver = None, None, None
+    if args.local_rank == 0:
+        decreasing = True if eval_metric == 'loss' else False
+        saver = CheckpointSaver(
+            checkpoint_dir=output_dir,
+            decreasing=decreasing)
 
     # initialize distributed parameters
     distributed = cfg.NUM_GPU > 1
