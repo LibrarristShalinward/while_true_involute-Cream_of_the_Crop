@@ -176,7 +176,7 @@ def main():
         #     model = DDP(model, device_ids=[args.local_rank])
 
     # imagenet train dataset
-    train_dir = os.path.join(cfg.DATA_DIR, 'train')
+    train_dir = os.path.join(cfg.DATA_DIR, 'val')
     if not os.path.exists(train_dir) and args.local_rank == 0:
         logger.error('Training folder does not exist at: {}'.format(train_dir))
         exit(1)

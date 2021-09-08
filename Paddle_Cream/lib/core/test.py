@@ -67,7 +67,7 @@ def validate(
             batch_time_m.update(time.time() - end)
             end = time.time()
             # if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
-            if local_rank == 0:
+            if local_rank == 0 and (batch_idx % 10 == 0 or last_batch):
                 log_name = 'Test' + log_suffix
                 logger.info(
                     '{0}: [{1:>4d}/{2}]  '
