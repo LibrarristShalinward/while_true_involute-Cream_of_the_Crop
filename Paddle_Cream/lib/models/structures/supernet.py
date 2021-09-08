@@ -8,7 +8,9 @@ from ...utils.builder_util import decode_arch_def, efficientnet_init_weights
 from ...utils.op_by_layer_dict import flops_op_dict
 from ...utils.pimm.models import SelectAdaptivePool2D
 from ...utils.pimm.models.activations import Swish, hard_sigmoid
-from ...utils.pimm.models.efficientnet_blocks import create_conv2d, resolve_bn_args, round_channels
+from ...utils.pimm.models.efficientnet_blocks import (create_conv2d,
+                                                      resolve_bn_args,
+                                                      round_channels)
 from ...utils.search_structure_supernet import search_for_layer
 from ..builders.build_supernet import SuperNetBuilder
 
@@ -161,7 +163,6 @@ def gen_supernet(flops_minimum=0, flops_maximum=600, **kwargs):
 
     num_features = 1280
 
-    # act_layer = HardSwish
     act_layer = Swish
     arch_def = [
         # stage 0, 112x112 in

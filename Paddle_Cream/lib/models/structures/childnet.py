@@ -3,12 +3,15 @@
 '''
 
 import paddle.nn as nn
-from ...utils.pimm.models.efficientnet_blocks import round_channels, create_conv2d
+
+from ...utils.builder_util import decode_arch_def, efficientnet_init_weights
 from ...utils.pimm.models import SelectAdaptivePool2D
-from ..builders.build_childnet import ChildNetBuilder
-from ...utils.builder_util import efficientnet_init_weights, decode_arch_def
 from ...utils.pimm.models.activations import Swish, hard_sigmoid
-from ...utils.pimm.models.efficientnet_blocks import resolve_bn_args
+from ...utils.pimm.models.efficientnet_blocks import (create_conv2d,
+                                                      resolve_bn_args,
+                                                      round_channels)
+from ..builders.build_childnet import ChildNetBuilder
+
 
 # ChildNet Structures
 class ChildNet(nn.Layer):
@@ -42,7 +45,8 @@ class ChildNet(nn.Layer):
         # Stem
         stem_size = round_channels(stem_size, channel_multiplier)
         self.conv_stem = create_conv2d(
-            self._in_chs, stem_size, 3, stride=2, padding=pad_type)
+            self._in_chs, stem_size, 
+            3, stride = 2, padding = pad_type)
         self.bn1 = norm_layer(stem_size, **norm_kwargs)
         self.act1 = act_layer()
         self._in_chs = stem_size
@@ -85,15 +89,14 @@ class ChildNet(nn.Layer):
     def get_classifier(self):
         return self.classifier
 
-    def reset_classifier(self, num_classes, global_pool='avg'):
-        self.global_pool = SelectAdaptivePool2D(pool_type=global_pool)
+    def reset_classifier(self, num_classes, global_pool = 'avg'):
+        self.global_pool = SelectAdaptivePool2D(pool_type = global_pool)
         self.num_classes = num_classes
         self.classifier = nn.Linear(
             self.num_features * self.global_pool.feat_mult(),
             num_classes) if self.num_classes else None
 
     def forward_features(self, x):
-        # architecture = [[0], [], [], [], [], [0]]
         x = self.conv_stem(x)
         x = self.bn1(x)
         x = self.act1(x)
@@ -107,20 +110,20 @@ class ChildNet(nn.Layer):
         x = self.forward_features(x)
         x = x.flatten(1)
         if self.drop_rate > 0.:
-            x = nn.functional.dropout(x, p=self.drop_rate, training=self.training)
+            x = nn.functional.dropout(x, 
+                p = self.drop_rate, 
+                training = self.training)
         x = self.classifier(x)
         return x
 
 
 def gen_childnet(arch_list, arch_def, **kwargs):
-    # arch_list = [[0], [], [], [], [], [0]]
     choices = {'kernel_size': [3, 5, 7], 'exp_ratio': [4, 6]}
     choices_list = [[x, y] for x in choices['kernel_size']
                     for y in choices['exp_ratio']]
 
     num_features = 1280
 
-    # act_layer = HardSwish
     act_layer = Swish
 
     new_arch = []
@@ -151,7 +154,7 @@ def gen_childnet(arch_list, arch_def, **kwargs):
         se_kwargs = dict(
             act_layer = nn.ReLU,
             gate_fn = hard_sigmoid,
-            reduce_mid=True,
+            reduce_mid = True,
             divisor = 8),
         **kwargs,)
     model = ChildNet(**model_kwargs)

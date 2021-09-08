@@ -3,14 +3,17 @@
 '''
 
 
-from paddle.framework import create_parameter
-from paddle.nn import ReLU, ReLU6, Conv2D, BatchNorm2D, Linear, Layer
-from .pimm.models.activations import Swish
-import re
 import math
+import re
 from copy import deepcopy
+
+from paddle.framework import create_parameter
+from paddle.nn import BatchNorm2D, Conv2D, Layer, Linear, ReLU, ReLU6
+from paddle.nn.initializer import Constant, Normal, Uniform
+
 from .pimm.models import CondConv2D, get_condconv_initializer
-from paddle.nn.initializer import Normal, Constant, Uniform
+from .pimm.models.activations import Swish
+
 
 def parse_ksize(ss):
     if ss.isdigit():
@@ -124,38 +127,36 @@ def decode_block_str(block_str):
     # each type of block has different valid arguments, fill accordingly
     if block_type == 'ir':
         block_args = dict(
-            block_type=block_type,
-            dw_kernel_size=parse_ksize(options['k']),
-            exp_kernel_size=exp_kernel_size,
-            pw_kernel_size=pw_kernel_size,
-            out_chs=int(options['c']),
-            exp_ratio=float(options['e']),
-            se_ratio=float(options['se']) if 'se' in options else None,
-            stride=int(options['s']),
-            act_layer=act_layer,
-            noskip=noskip,
-        )
+            block_type = block_type,
+            dw_kernel_size = parse_ksize(options['k']),
+            exp_kernel_size = exp_kernel_size,
+            pw_kernel_size = pw_kernel_size,
+            out_chs = int(options['c']),
+            exp_ratio = float(options['e']),
+            se_ratio = float(options['se']) if 'se' in options else None,
+            stride = int(options['s']),
+            act_layer = act_layer,
+            noskip = noskip)
         if 'cc' in options:
             block_args['num_experts'] = int(options['cc'])
     elif block_type == 'ds' or block_type == 'dsa':
         block_args = dict(
-            block_type=block_type,
-            dw_kernel_size=parse_ksize(options['k']),
-            pw_kernel_size=pw_kernel_size,
-            out_chs=int(options['c']),
-            se_ratio=float(options['se']) if 'se' in options else None,
-            stride=int(options['s']),
-            act_layer=act_layer,
-            pw_act=block_type == 'dsa',
-            noskip=block_type == 'dsa' or noskip,
-        )
+            block_type = block_type,
+            dw_kernel_size = parse_ksize(options['k']),
+            pw_kernel_size = pw_kernel_size,
+            out_chs = int(options['c']),
+            se_ratio = float(options['se']) if 'se' in options else None,
+            stride = int(options['s']),
+            act_layer = act_layer,
+            pw_act = block_type == 'dsa',
+            noskip = block_type == 'dsa' or noskip)
     elif block_type == 'cn':
         block_args = dict(
-            block_type=block_type,
-            kernel_size=int(options['k']),
-            out_chs=int(options['c']),
-            stride=int(options['s']),
-            act_layer=act_layer,
+            block_type = block_type,
+            kernel_size = int(options['k']),
+            out_chs = int(options['c']),
+            stride = int(options['s']),
+            act_layer = act_layer,
         )
     else:
         assert False, 'Unknown block type (%s)' % block_type
@@ -313,5 +314,5 @@ def efficientnet_init_weights(
 
     init_fn = init_fn or init_weight_goog
     for n, m in model.named_sublayers():
-        init_fn(m, n, last_bn=last_bn)
-        init_fn(m, n, last_bn=last_bn)
+        init_fn(m, n, last_bn = last_bn)
+        init_fn(m, n, last_bn = last_bn)

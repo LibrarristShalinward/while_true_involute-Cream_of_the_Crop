@@ -2,15 +2,17 @@
 本文件为原lib/models/core/train.py的转写
 '''
 
-from lib.utils.pimm import AverageMeter
+import os
 import time
+from collections import OrderedDict
+
 import paddle
+from lib.utils.pimm import AverageMeter
+from lib.utils.pimm.utils import accuracy, reduce_tensor
 from lib.utils.util import cross_entropy_loss_with_soft_target
 from paddle.nn.functional import softmax
-from lib.utils.pimm.utils import accuracy, reduce_tensor
-import os
 from PIL import Image
-from collections import OrderedDict
+
 
 # supernet train function
 def train_epoch(
@@ -74,7 +76,7 @@ def train_epoch(
             # get soft label from teacher cand
             with paddle.no_grad():
                 teacher_output = model(input, teacher_cand).detach()
-                soft_label = softmax(teacher_output, axis=1)
+                soft_label = softmax(teacher_output, axis = 1)
             kd_loss = cross_entropy_loss_with_soft_target(output, soft_label)
 
             loss = (meta_value * kd_loss + (2 - meta_value) * valid_loss) / 2
@@ -83,7 +85,7 @@ def train_epoch(
         loss.backward()
         optimizer.step()
 
-        prec1, prec5 = accuracy(output, target, topk=(1, 5))
+        prec1, prec5 = accuracy(output, target, topk = (1, 5))
         if cfg.NUM_GPU == 1 or cfg.NUM_GPU == 0:
             reduced_loss = loss
         else:
@@ -92,9 +94,14 @@ def train_epoch(
             prec5 = reduce_tensor(prec5, cfg.NUM_GPU)
 
 
-        prioritized_board.update_prioritized_board(input, teacher_output, output, epoch, prec1, cand_flops, random_cand)
-
-        # torch.cuda.synchronize()
+        prioritized_board.update_prioritized_board(
+            input, 
+            teacher_output, 
+            output, 
+            epoch, 
+            prec1, 
+            cand_flops, 
+            random_cand)
 
         if kd_loss is not None:
             kd_losses_m.update(kd_loss.item(), input.shape[0])
@@ -107,8 +114,6 @@ def train_epoch(
             lr_scheduler.step()
 
         if last_batch or batch_idx % cfg.LOG_INTERVAL == 0:
-            # lrl = [param_group['lr'] for param_group in optimizer.param_groups]
-            # lr = sum(lrl) / len(lrl)
             lr = optimizer.get_lr()
 
             if local_rank == 0:
@@ -125,15 +130,15 @@ def train_epoch(
                         epoch,
                         batch_idx, len(loader),
                         100. * batch_idx / last_idx,
-                        loss=losses_m,
-                        kd_loss=kd_losses_m,
-                        top1=prec1_m,
-                        top5=prec5_m,
-                        batch_time=batch_time_m,
-                        rate=input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
-                        rate_avg=input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
-                        lr=lr,
-                        data_time=data_time_m))
+                        loss = losses_m,
+                        kd_loss = kd_losses_m,
+                        top1 = prec1_m,
+                        top5 = prec5_m,
+                        batch_time = batch_time_m,
+                        rate = input.shape[0] * cfg.NUM_GPU / batch_time_m.val,
+                        rate_avg = input.shape[0] * cfg.NUM_GPU / batch_time_m.avg,
+                        lr = lr,
+                        data_time = data_time_m))
 
                 if cfg.SAVE_IMAGES and output_dir:
                     image = Image.fromarray(input.numpy())
@@ -142,15 +147,11 @@ def train_epoch(
                             batch_idx)
                     with Image.open(file_name) as f:
                         image.save(f)
-                    # torchvision.utils.save_image(
-                    #     input, os.path.join(
-                    #         output_dir, 'train-batch-%d.jpg' %
-                    #         batch_idx), padding=0, normalize=True)
 
         if saver is not None and cfg.RECOVERY_INTERVAL and (
                 last_batch or (batch_idx + 1) % cfg.RECOVERY_INTERVAL == 0):
             saver.save_recovery(model, optimizer, cfg, epoch,
-                                model_ema=model_ema, batch_idx=batch_idx)
+                model_ema = model_ema, batch_idx = batch_idx)
 
         end = time.time()
 
@@ -161,7 +162,7 @@ def train_epoch(
     return OrderedDict([('loss', losses_m.avg)])
 
 
-def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', local_rank=0, logger=None):
+def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix = '', local_rank = 0, logger = None):
     batch_time_m = AverageMeter()
     losses_m = AverageMeter()
     prec1_m = AverageMeter()
@@ -180,8 +181,6 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
     with paddle.no_grad():
         for batch_idx, (input, target) in enumerate(loader):
             last_batch = batch_idx == last_idx
-            # input = input.cuda()
-            # target = target.cuda()
 
             output = model(input, random_cand)
             if isinstance(output, (tuple, list)):
@@ -194,11 +193,11 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
                     0,
                     reduce_factor,
                     reduce_factor).mean(
-                   axis=2)
+                   axis = 2)
                 target = target[0:target.shape[0]:reduce_factor]
 
             loss = loss_fn(output, target)
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             if cfg.NUM_GPU > 1:
                 reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
@@ -207,11 +206,7 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
             else:
                 reduced_loss = loss
 
-            # torch.cuda.synchronize()
-
             losses_m.update(reduced_loss.item(), input.shape[0])
-            # prec1_m.update(prec1.item(), output.shape[0])
-            # prec5_m.update(prec5.item(), output.shape[0])
             prec1_m.update(prec1, output.shape[0])
             prec5_m.update(prec5, output.shape[0])
 
@@ -227,11 +222,17 @@ def validate(model, loader, loss_fn, prioritized_board, cfg, log_suffix='', loca
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
                     'Prec@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
                     'Prec@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
-                        log_name, batch_idx, last_idx,
-                        batch_time=batch_time_m, loss=losses_m,
-                        top1=prec1_m, top5=prec5_m))
+                        log_name, 
+                        batch_idx, 
+                        last_idx,
+                        batch_time = batch_time_m, 
+                        loss = losses_m,
+                        top1 = prec1_m, 
+                        top5 = prec5_m))
 
     metrics = OrderedDict(
-        [('loss', losses_m.avg), ('prec1', prec1_m.avg), ('prec5', prec5_m.avg)])
+        [('loss', losses_m.avg), 
+            ('prec1', prec1_m.avg), 
+            ('prec5', prec5_m.avg)])
 
     return metrics

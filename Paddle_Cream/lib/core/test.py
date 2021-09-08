@@ -1,15 +1,14 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-# Written by Hao Du and Houwen Peng
-# email: haodu8-c@my.cityu.edu.hk and houwen.peng@microsoft.com
+'''
+本文件为原lib/models/core/test.py的转写
+'''
 
 import time
-import paddle
-
 from collections import OrderedDict
-from lib.utils.util import AverageMeter
+
+import paddle
 from lib.utils.pimm.utils import accuracy, reduce_tensor
-from warnings import warn
+from lib.utils.util import AverageMeter
+
 
 # validate function
 def validate(
@@ -49,7 +48,7 @@ def validate(
                 target = target[0:target.shape[0]:reduce_factor]
 
             loss = loss_fn(output, target)
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             if cfg.NUM_GPU > 1:
                 reduced_loss = reduce_tensor(loss.data, cfg.NUM_GPU)
@@ -58,15 +57,12 @@ def validate(
             else:
                 reduced_loss = loss
 
-            # torch.cuda.synchronize()
-
             losses_m.update(reduced_loss.item(), input.shape[0])
             prec1_m.update(prec1, output.shape[0])
             prec5_m.update(prec5, output.shape[0])
 
             batch_time_m.update(time.time() - end)
             end = time.time()
-            # if local_rank == 0 and (last_batch or batch_idx % cfg.LOG_INTERVAL == 0):
             if local_rank == 0 and (batch_idx % 10 == 0 or last_batch):
                 log_name = 'Test' + log_suffix
                 logger.info(
@@ -75,9 +71,13 @@ def validate(
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
                     'Prec@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
                     'Prec@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
-                        log_name, batch_idx, last_idx,
-                        batch_time=batch_time_m, loss=losses_m,
-                        top1=prec1_m, top5=prec5_m))
+                        log_name, 
+                        batch_idx, 
+                        last_idx,
+                        batch_time = batch_time_m, 
+                        loss = losses_m,
+                        top1 = prec1_m, 
+                        top5 = prec5_m))
 
                 if type(writer) != type(None):
                     writer.add_scalar(
@@ -85,15 +85,13 @@ def validate(
                         prec1_m.avg,
                         epoch * len(loader) + batch_idx)
                     writer.add_scalar(
-                        'Accuracy' +
-                        log_suffix +
-                        '/vaild',
+                        'Accuracy' + log_suffix + '/vaild',
                         prec1_m.avg,
-                        epoch *
-                        len(loader) +
-                        batch_idx)
+                        epoch * len(loader) + batch_idx)
 
     metrics = OrderedDict(
-        [('loss', losses_m.avg), ('prec1', prec1_m.avg), ('prec5', prec5_m.avg)])
+        [('loss', losses_m.avg), 
+            ('prec1', prec1_m.avg), 
+            ('prec5', prec5_m.avg)])
 
     return metrics

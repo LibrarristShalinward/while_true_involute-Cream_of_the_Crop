@@ -2,10 +2,15 @@
 本文件为原lib/models/builders/build_childnet.py的转写
 '''
 
-import paddle.nn as nn
 from collections import OrderedDict
+
+import paddle.nn as nn
+
 from ...utils.pimm.models import round_channels
-from ...utils.pimm.models.efficientnet_blocks import InvertedResidual, DepthwiseSeparableConv, ConvBnAct
+from ...utils.pimm.models.efficientnet_blocks import (ConvBnAct,
+                                                      DepthwiseSeparableConv,
+                                                      InvertedResidual)
+
 
 # ChildNet Builder definition.
 class ChildNetBuilder:
@@ -180,9 +185,8 @@ class ChildNetBuilder:
                             stage_idx, block_idx) + feature_module
                     feature_channels = block.feature_channels(extract_features)
                     self.features[feature_idx] = dict(
-                        name=feature_module,
-                        num_chs=feature_channels
-                    )
+                        name = feature_module,
+                        num_chs = feature_channels)
                     feature_idx += 1
 
                 # incr global block idx (across all stacks)

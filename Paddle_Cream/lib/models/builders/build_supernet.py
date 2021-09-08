@@ -2,12 +2,17 @@
 本文件为原lib/models/builders/build_supernet.py的转写
 '''
 
-import paddle.nn as nn
-from ...utils.pimm.models import round_channels
-from ...utils.pimm.models.efficientnet_blocks import InvertedResidual, DepthwiseSeparableConv, ConvBnAct
 from copy import deepcopy
-from ..blocks import get_Bottleneck
+
+import paddle.nn as nn
+
 from ...utils.builder_util import modify_block_args
+from ...utils.pimm.models import round_channels
+from ...utils.pimm.models.efficientnet_blocks import (ConvBnAct,
+                                                      DepthwiseSeparableConv,
+                                                      InvertedResidual)
+from ..blocks import get_Bottleneck
+
 
 # SuperNet Builder definition.
 class SuperNetBuilder:
@@ -69,8 +74,8 @@ class SuperNetBuilder:
             choice_idx,
             block_idx,
             block_count,
-            resunit=False,
-            dil_conv=False):
+            resunit = False,
+            dil_conv = False):
         drop_path_rate = self.drop_path_rate * block_idx / block_count
 
         bt = ba.pop('block_type')
@@ -192,8 +197,8 @@ class SuperNetBuilder:
                             self.choice_num - 2,
                             total_block_idx,
                             total_block_count,
-                            resunit=self.resunit,
-                            dil_conv=self.dil_conv)
+                            resunit = self.resunit,
+                            dil_conv = self.dil_conv)
                         choice_blocks.append(block)
 
                         block_args = deepcopy(block_args_copy)
@@ -203,8 +208,8 @@ class SuperNetBuilder:
                             self.choice_num - 1,
                             total_block_idx,
                             total_block_count,
-                            resunit=self.resunit,
-                            dil_conv=self.dil_conv)
+                            resunit = self.resunit,
+                            dil_conv = self.dil_conv)
                         choice_blocks.append(block)
 
                     if self.resunit:

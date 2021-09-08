@@ -49,20 +49,15 @@ register_hooks = {
 }
 
 # 原thop.profile.profile
-def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
+def profile(model: nn.Layer, inputs, custom_ops = None, verbose = True):
     handler_collection = {}
     types_collection = set()
     if custom_ops is None:
         custom_ops = {}
     
     def add_hooks(layer: nn.Layer):
-        # layer.register_buffer('total_ops', paddle.zeros((1, 1), dtype = "float64"))
-        # layer.register_buffer('total_params', paddle.zeros((1, 1), dtype = "float64"))
         layer.register_buffer('total_ops', paddle.to_tensor([0.]))
         layer.register_buffer('total_params', paddle.to_tensor([0.]))
-
-        # for param in layer.parameters():
-        #     layer.total_params += paddle.to_tensor([param.numel()], dtype = "float32")
         
         layer_type = type(layer)
         fn = None
@@ -89,7 +84,7 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     with paddle.no_grad():
         model(inputs)
     
-    def dfs_count(model: nn.Layer, prefix="\t"):
+    def dfs_count(model: nn.Layer, prefix = "\t"):
         total_ops, total_params = 0, 0
         for layer in model.sublayers():
             if layer in handler_collection and not isinstance(layer, (nn.Sequential, nn.LayerList)):
@@ -107,13 +102,11 @@ def profile(model: nn.Layer, inputs, custom_ops=None, verbose=True):
     for layer, (op_handler, params_handler) in handler_collection.items():
         op_handler.remove()
         params_handler.remove()
-        # layer.buffers().pop("total_ops")
-        # layer.buffers().pop("total_params")
 
     return total_ops, total_params
 
 # 原thop.utils.clever_format
-def clever_format(nums, format="%.2f"):
+def clever_format(nums, format = "%.2f"):
     if not isinstance(nums, Iterable):
         nums = [nums]
     clever_nums = []

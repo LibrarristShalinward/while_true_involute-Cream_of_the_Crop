@@ -2,17 +2,19 @@
 本文件为原lib/utils/util.py的转写
 '''
 
-from .pimm import AverageMeter, accuracy
-import paddle
+import argparse
 import logging
 import sys
-from paddle.optimizer import Momentum, Adam
-from paddle.optimizer.lr import LambdaDecay
-import argparse
-from ..config import cfg
-from .phop import profile, clever_format
 from copy import deepcopy
+
+import paddle
 from paddle.nn import LogSoftmax
+from paddle.optimizer import Adam, Momentum
+from paddle.optimizer.lr import LambdaDecay
+
+from ..config import cfg
+from .phop import clever_format, profile
+from .pimm import AverageMeter, accuracy
 
 
 def get_path_acc(model, path, val_loader, args, val_iters = 50):
@@ -37,12 +39,10 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
                     0,
                     reduce_factor,
                     reduce_factor).mean(
-                    dim=2)
+                        dim = 2)
                 target = target[0:target.shape[0]:reduce_factor]
 
-            prec1, prec5 = accuracy(output, target, topk=(1, 5))
-
-            # torch.cuda.synchronize()
+            prec1, prec5 = accuracy(output, target, topk = (1, 5))
 
             prec1_m.update(prec1.item(), output.shape[0])
             prec5_m.update(prec5.item(), output.shape[0])
@@ -53,11 +53,11 @@ def get_path_acc(model, path, val_loader, args, val_iters = 50):
 def get_logger(file_path):
     """ Make python logger """
     log_format = '%(asctime)s | %(message)s'
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
-                        format=log_format, datefmt='%m/%d %I:%M:%S %p')
+    logging.basicConfig(stream = sys.stdout, level = logging.INFO,
+        format = log_format, datefmt = '%m/%d %I:%M:%S %p')
     logger = logging.getLogger('')
 
-    formatter = logging.Formatter(log_format, datefmt='%m/%d %I:%M:%S %p')
+    formatter = logging.Formatter(log_format, datefmt = '%m/%d %I:%M:%S %p')
     file_handler = logging.FileHandler(file_path)
     file_handler.setFormatter(formatter)
 
@@ -98,10 +98,6 @@ def create_optimizer_supernet(args, model, scheduler = None, filter_bias_and_bn 
     weight_decay = args.weight_decay
     if 'adamw' in opt_lower or 'radam' in opt_lower:
         weight_decay /= args.lr
-    # if weight_decay and filter_bias_and_bn:
-    #     parameters = add_weight_decay_supernet(model, args, weight_decay)
-    #     weight_decay = 0.
-    # else:
     parameters = model.parameters()
     sched = 1e-3 if type(scheduler) == type(None) else scheduler
 
@@ -140,12 +136,14 @@ def convert_lowercase(cfg):
 
 
 def parse_config_args(exp_name):
-    parser = argparse.ArgumentParser(description=exp_name)
-    parser.add_argument('--cfg', type=str,
-                        default='../experiments/workspace/retrain/retrain.yaml',
-                        help='configuration of cream')
-    parser.add_argument('--local_rank', type=int, default=0,
-                        help='local_rank')
+    parser = argparse.ArgumentParser(description = exp_name)
+    parser.add_argument('--cfg', type = str,
+                        default = '../experiments/workspace/retrain/retrain.yaml',
+                        help = 'configuration of cream')
+    parser.add_argument('--local_rank', 
+        type = int, 
+        default = 0,
+        help = 'local_rank')
     args = parser.parse_args()
 
     cfg.merge_from_file(args.cfg)
@@ -154,9 +152,9 @@ def parse_config_args(exp_name):
     return args, converted_cfg
 
 
-def get_model_flops_params(model, input_size=(1, 3, 224, 224)):
+def get_model_flops_params(model, input_size = (1, 3, 224, 224)):
     input = paddle.randn(input_size)
-    macs, params = profile(deepcopy(model), inputs=input, verbose=False)
+    macs, params = profile(deepcopy(model), inputs = input, verbose = False)
     macs, params = clever_format([macs, params], "%.3f")
     return macs, params
 
