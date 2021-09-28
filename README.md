@@ -218,7 +218,7 @@ yacs
 ```
 cd Paddle_Cream
 python ./tools/main.py test .\experiments\configs\test\train.yaml
-python ./tools/main.py test .\experiments\configs\test\retrain.yaml
+python ./tools/main.py test .\experiments\configs\test\14.yaml
 ```
 
 ## 复现结果于测试
